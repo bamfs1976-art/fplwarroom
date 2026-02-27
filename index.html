@@ -422,6 +422,7 @@
   .nav-tabs {
     grid-column: 1 / -1;
     display: flex;
+    flex-wrap: wrap;
     gap: 2px;
     background: var(--border);
     padding: 1px;
@@ -429,16 +430,17 @@
 
   .nav-tab {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.12em;
+    font-size: 13px;
+    letter-spacing: 0.08em;
     color: var(--text-dim);
     background: var(--surface);
     border: none;
-    padding: 12px 24px;
+    padding: 10px 16px;
     cursor: pointer;
     transition: all 0.2s;
     position: relative;
-    flex: 1;
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
 
   .nav-tab:hover { color: var(--amber); background: var(--surface2); }
@@ -1519,7 +1521,7 @@
   <div class="init-form">
     <label>ENTER TEAM ID TO BEGIN INTELLIGENCE BRIEFING</label>
     <div class="init-input-row">
-      <input class="init-input" id="init-team-id" type="number" placeholder="TEAM ID" autocomplete="off">
+      <input class="init-input" id="init-team-id" type="number" placeholder="TEAM ID" autocomplete="off" value="56787">
       <button class="init-btn" onclick="loadTeam()">DEPLOY</button>
     </div>
     <span class="init-demo" onclick="document.getElementById('init-team-id').value='1'; loadTeam()">→ USE DEMO TEAM (ID: 1)</span>
@@ -1544,7 +1546,7 @@
   </div>
   <span id="gw-badge" class="gw-badge" style="display:none"></span>
   <div class="header-input-group">
-    <input class="cmd-input" id="header-team-id" type="number" placeholder="CHANGE TEAM ID">
+    <input class="cmd-input" id="header-team-id" type="number" placeholder="CHANGE TEAM ID" value="56787">
     <button class="cmd-btn" onclick="reloadTeam()">SYNC</button>
   </div>
 </header>
@@ -1784,7 +1786,7 @@
         <div class="card-meta">ENTER YOUR LEAGUE ID TO LOAD</div>
       </div>
       <div style="padding:16px;display:flex;gap:10px;align-items:center">
-        <input id="league-id-input" placeholder="Enter League ID..." style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;font-family:inherit;font-size:13px;flex:1;max-width:300px">
+        <input id="league-id-input" placeholder="Enter League ID..." value="10537" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;font-family:inherit;font-size:13px;flex:1;max-width:300px">
         <button onclick="loadMiniLeague()" style="background:var(--amber);color:var(--bg);border:none;padding:10px 20px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px">LOAD LEAGUE</button>
       </div>
       <div id="minileague-table" style="padding:0 16px 16px;overflow-x:auto">
@@ -2472,58 +2474,83 @@ function renderTransfers() {
 
 // ====== RENDER CHIPS ======
 function renderChips() {
-  if (!state.history) return;
+  const gridEl = document.getElementById('chips-grid');
+  if (!state.history) {
+    // Don't overwrite the default empty state if no team loaded
+    return;
+  }
 
   const usedChips = state.history.chips || [];
-  // Fix dual wildcard: FPL returns both WCs as 'wildcard' - differentiate by GW
+  // 2025/26: Two sets of all chips. Wildcards always split by GW.
   const wc1Used = usedChips.some(c => c.name === 'wildcard' && c.event <= 19);
   const wc2Used = usedChips.some(c => c.name === 'wildcard' && c.event > 19);
-  const usedSet = new Set(usedChips.map(c => c.name));
+  // BB, TC, FH now have TWO each — one per half (GW1-19 and GW20-38)
+  const bb1Used  = usedChips.some(c => c.name === 'bboost'   && c.event <= 19);
+  const bb2Used  = usedChips.some(c => c.name === 'bboost'   && c.event > 19);
+  const tc1Used  = usedChips.some(c => c.name === '3xc'      && c.event <= 19);
+  const tc2Used  = usedChips.some(c => c.name === '3xc'      && c.event > 19);
+  const fh1Used  = usedChips.some(c => c.name === 'freehit'  && c.event <= 19);
+  const fh2Used  = usedChips.some(c => c.name === 'freehit'  && c.event > 19);
+  // Assistant Manager chip SCRAPPED in 2025/26
 
   const chipData = [
+    // ---- FIRST HALF (GW1–19) ----
     {
-      key: 'wildcard1',
-      name: 'WILDCARD 1',
-      cls: 'wildcard',
-      desc: 'Unlimited free transfers for one gameweek (GW1–19). Use to rebuild team after injuries, blanks, or before a fixture run.',
-      timing: '⚡ OPTIMAL: GW3-5 (price settle) or 4 GWs before DGW chip combo',
+      name: 'WILDCARD 1',      cls: 'wildcard',       half: 1,
+      desc: 'Unlimited free transfers (GW1–19). Permanently overhauls squad. Ideal before a key fixture run or after a price crash.',
+      timing: '⚡ OPTIMAL: GW3–5 (settle prices) or ~4 GWs before a DGW BB combo',
       isUsed: wc1Used
     },
     {
-      key: 'wildcard2',
-      name: 'WILDCARD 2',
-      cls: 'wildcard',
-      desc: 'Unlimited free transfers for one gameweek (GW20–38). Second bite at rebuilding your squad in the second half.',
-      timing: '⚡ OPTIMAL: GW20-22 or 4 GWs before a key DGW run',
+      name: 'BENCH BOOST 1',   cls: 'bench-boost',    half: 1,
+      desc: 'All 15 players score this GW. Use in a DGW or high-fixture week after a Wildcard bolsters your bench depth.',
+      timing: '⚡ OPTIMAL: First DGW or strong fixture GW with 5+ bench starters',
+      isUsed: bb1Used
+    },
+    {
+      name: 'TRIPLE CAPTAIN 1', cls: 'triple-captain', half: 1,
+      desc: 'Captain earns 3× points instead of 2×. Big ceiling vs promoted sides or in a Double GW.',
+      timing: '⚡ OPTIMAL: Premium vs promoted team (Burnley/Leeds/Sunderland) or DGW',
+      isUsed: tc1Used
+    },
+    {
+      name: 'FREE HIT 1',      cls: 'free-hit',       half: 1,
+      desc: 'Unlimited transfers for one GW — squad reverts next deadline. Use during a BGW or to sidestep a Haaland vs Salah clash.',
+      timing: '⚡ OPTIMAL: BGW or GW where your premiums face each other (e.g. LIV vs MCI)',
+      isUsed: fh1Used
+    },
+    // ---- SECOND HALF (GW20–38) ----
+    {
+      name: 'WILDCARD 2',      cls: 'wildcard',       half: 2,
+      desc: 'Unlimited free transfers (GW20–38). Fresh rebuild for the run-in. Set up bench depth ahead of a DGW Bench Boost.',
+      timing: '⚡ OPTIMAL: GW20–22 or ~4 GWs before a confirmed DGW BB combo',
       isUsed: wc2Used
     },
     {
-      key: 'bboost',
-      name: 'BENCH BOOST',
-      cls: 'bench-boost',
-      desc: 'All 15 players score points this gameweek. Best used in a Double Gameweek with strong bench coverage.',
-      timing: '⚡ OPTIMAL: Double GW with 6+ bench players having fixtures',
-      isUsed: usedSet.has('bboost')
+      name: 'BENCH BOOST 2',   cls: 'bench-boost',    half: 2,
+      desc: 'All 15 players score this GW. Second half DGWs tend to be bigger — save for a week with 7–8 bench fixtures.',
+      timing: '⚡ OPTIMAL: Largest confirmed DGW of the second half',
+      isUsed: bb2Used
     },
     {
-      key: '3xc',
-      name: 'TRIPLE CAPTAIN',
-      cls: 'triple-captain',
-      desc: 'Your captain scores 3× points instead of 2×. Devastating in a Double GW for Haaland or Salah.',
-      timing: '⚡ OPTIMAL: DGW with premium captain (Haaland/Salah) at home vs FDR≤2',
-      isUsed: usedSet.has('3xc')
+      name: 'TRIPLE CAPTAIN 2', cls: 'triple-captain', half: 2,
+      desc: 'Captain earns 3× points. Second-half DGWs often deliver the highest TC ceilings of the season.',
+      timing: '⚡ OPTIMAL: DGW premium captain (Haaland/Salah) at home vs FDR ≤ 2',
+      isUsed: tc2Used
     },
     {
-      key: 'freehit',
-      name: 'FREE HIT',
-      cls: 'free-hit',
-      desc: 'Completely new squad for one GW, reverts after. Critical for Blank Gameweeks where half the PL doesn\'t play.',
-      timing: '⚡ OPTIMAL: BGW to avoid blank players — pick ONLY players with fixtures',
-      isUsed: usedSet.has('freehit')
-    }
+      name: 'FREE HIT 2',      cls: 'free-hit',       half: 2,
+      desc: 'Unlimited transfers for one GW — reverts after. Essential safety net for a nasty BGW in the second half.',
+      timing: '⚡ OPTIMAL: BGW with 4+ of your starters blank — go full fixture coverage',
+      isUsed: fh2Used
+    },
   ];
 
-  const cards = chipData.map(chip => {
+  // Section headers
+  const h1Header = `<div style="grid-column:1/-1;font-size:11px;letter-spacing:2px;color:var(--accent);padding:6px 0 2px;border-bottom:1px solid var(--border);margin-bottom:4px">▌ FIRST HALF — GW1–19 (MUST USE BY GW19 DEADLINE)</div>`;
+  const h2Header = `<div style="grid-column:1/-1;font-size:11px;letter-spacing:2px;color:var(--accent);padding:10px 0 2px;border-bottom:1px solid var(--border);margin-bottom:4px">▌ SECOND HALF — GW20–38</div>`;
+
+  const renderCard = chip => {
     const isUsed = chip.isUsed;
     return `
       <div class="chip-card ${chip.cls} ${isUsed ? 'used' : ''}">
@@ -2533,9 +2560,17 @@ function renderChips() {
         <div class="chip-timing">${chip.timing}</div>
       </div>
     `;
-  });
+  };
 
-  document.getElementById('chips-grid').innerHTML = cards.join('');
+  const h1Cards = chipData.filter(c => c.half === 1).map(renderCard).join('');
+  const h2Cards = chipData.filter(c => c.half === 2).map(renderCard).join('');
+
+  document.getElementById('chips-grid').innerHTML =
+    h1Header + h1Cards +
+    h2Header + h2Cards +
+    `<div style="grid-column:1/-1;font-size:10px;color:var(--dim);margin-top:8px">
+      RAW CHIP DATA: ${usedChips.length ? usedChips.map(c => `${c.name}(GW${c.event})`).join(', ') : 'NONE USED'}
+    </div>`;
 }
 
 // ====== RENDER FIXTURES ======
@@ -2820,6 +2855,13 @@ function switchTab(tab) {
   if (tab === 'intel') {
     renderIntelFeed();
   }
+  // Render new feature tabs
+  if (tab === 'prices') renderPriceTracker();
+  if (tab === 'templates') renderTemplateTeams();
+  if (tab === 'dgw') renderDGWPlanner();
+  if (tab === 'squadvalue') renderSquadValueTracker();
+  if (tab === 'lineup') renderOptimalLineup();
+  if (tab === 'chips') renderChips();
 }
 
 // ====== INTEL FEED ======
