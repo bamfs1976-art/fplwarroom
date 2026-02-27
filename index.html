@@ -1,0 +1,2773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPL WAR ROOM — Command Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #040a0f;
+    --surface: #070e14;
+    --surface2: #0a1520;
+    --border: #0d2535;
+    --border-glow: #1a4a6e;
+    --amber: #ffb020;
+    --amber-dim: #7a5010;
+    --amber-glow: rgba(255,176,32,0.15);
+    --green: #00e57a;
+    --green-dim: #005c32;
+    --green-glow: rgba(0,229,122,0.12);
+    --red: #ff3b3b;
+    --red-glow: rgba(255,59,59,0.15);
+    --cyan: #00d4ff;
+    --cyan-glow: rgba(0,212,255,0.12);
+    --white: #e8f4ff;
+    --muted: #7a9eb8;
+    --text-dim: #a8c8e0;
+    --fpl-purple: #37003c;
+    --fpl-green: #00ff87;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Corner grid decorations */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at top left, rgba(0,212,255,0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(255,176,32,0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .mono { font-family: 'Share Tech Mono', monospace; }
+  .display { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; }
+
+  /* ========== HEADER ========== */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(4,10,15,0.95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--amber);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    animation: pulse-amber 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-amber {
+    0%, 100% { box-shadow: 0 0 0 rgba(255,176,32,0); }
+    50% { box-shadow: 0 0 20px rgba(255,176,32,0.4); }
+  }
+
+  .logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--amber);
+    line-height: 1;
+  }
+
+  .logo-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .header-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .header-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .cmd-input {
+    background: var(--surface2);
+    border: 1px solid var(--border-glow);
+    color: var(--amber);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    padding: 8px 14px;
+    width: 160px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .cmd-input::placeholder { color: var(--muted); }
+  .cmd-input:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 12px rgba(255,176,32,0.2), inset 0 0 8px rgba(255,176,32,0.05);
+  }
+
+  .cmd-btn {
+    background: var(--amber);
+    color: #000;
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  .cmd-btn:hover {
+    background: #ffc840;
+    box-shadow: 0 0 20px rgba(255,176,32,0.4);
+  }
+
+  .gw-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    border: 1px solid rgba(0,212,255,0.3);
+    padding: 4px 10px;
+    letter-spacing: 0.1em;
+  }
+
+  /* ========== LOADING/INIT SCREEN ========== */
+  #init-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    transition: opacity 0.6s, visibility 0.6s;
+  }
+
+  #init-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .init-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 10vw, 100px);
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    text-shadow: 0 0 60px rgba(255,176,32,0.5);
+    animation: glitch 4s ease-in-out infinite;
+  }
+
+  @keyframes glitch {
+    0%, 92%, 100% { transform: none; filter: none; }
+    93% { transform: translate(-3px,0) skewX(-2deg); filter: hue-rotate(20deg); }
+    94% { transform: translate(3px,0) skewX(2deg); filter: hue-rotate(-20deg); }
+    95% { transform: none; }
+  }
+
+  .init-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .init-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .init-form label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .init-input-row {
+    display: flex;
+    gap: 0;
+    width: 100%;
+  }
+
+  .init-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border-glow);
+    border-right: none;
+    color: var(--amber);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 18px;
+    padding: 14px 20px;
+    text-align: center;
+    letter-spacing: 0.2em;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .init-input:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 20px rgba(255,176,32,0.2);
+  }
+
+  .init-btn {
+    background: var(--amber);
+    color: #000;
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.15em;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .init-btn:hover {
+    background: #ffc840;
+    box-shadow: 0 0 30px rgba(255,176,32,0.5);
+  }
+
+  .init-demo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+
+  .init-demo:hover { color: var(--text-dim); }
+
+  /* Animated grid background on init */
+  .init-grid {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: grid-move 20s linear infinite;
+  }
+
+  @keyframes grid-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 60px 60px; }
+  }
+
+  /* ========== LOADING BAR ========== */
+  #loading-bar {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--border);
+    z-index: 200;
+  }
+
+  #loading-bar.active { display: block; }
+
+  #loading-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--amber), var(--cyan));
+    width: 0%;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px var(--amber);
+  }
+
+  /* ========== MAIN LAYOUT ========== */
+  #app {
+    display: none;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 16px;
+  }
+
+  #app.visible { display: grid; }
+
+  /* ========== TACTICAL HEADER BAR ========== */
+  .tac-bar {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .tac-stat {
+    background: var(--surface);
+    padding: 16px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tac-stat::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .tac-stat.amber::before { background: var(--amber); }
+  .tac-stat.green::before { background: var(--green); }
+  .tac-stat.cyan::before { background: var(--cyan); }
+  .tac-stat.red::before { background: var(--red); }
+  .tac-stat.purple::before { background: #a855f7; }
+
+  .tac-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .tac-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    color: var(--white);
+  }
+
+  .tac-value.amber { color: var(--amber); }
+  .tac-value.green { color: var(--green); }
+  .tac-value.cyan { color: var(--cyan); }
+
+  .tac-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* ========== NAV TABS ========== */
+  .nav-tabs {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 2px;
+    background: var(--border);
+    padding: 1px;
+  }
+
+  .nav-tab {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    background: var(--surface);
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    flex: 1;
+  }
+
+  .nav-tab:hover { color: var(--amber); background: var(--surface2); }
+
+  .nav-tab.active {
+    color: #000;
+    background: var(--amber);
+  }
+
+  .nav-tab .tab-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    margin-left: 6px;
+    opacity: 0.7;
+  }
+
+  /* ========== PANEL SECTIONS ========== */
+  .panel {
+    display: none;
+    grid-column: 1 / -1;
+    animation: fade-in 0.3s ease;
+  }
+
+  .panel.active { display: contents; }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========== CARDS ========== */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(255,176,32,0.02) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.12em;
+    color: var(--amber);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title .icon {
+    width: 6px;
+    height: 6px;
+    background: var(--amber);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .card-meta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  /* ========== PITCH VIEW ========== */
+  .pitch-container {
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+  }
+
+  .pitch-field {
+    flex: 1;
+    background: linear-gradient(180deg, 
+      #042a18 0%, #053020 14.28%, 
+      #042a18 14.28%, #042a18 28.56%, 
+      #053020 28.56%, #053020 42.84%,
+      #042a18 42.84%, #042a18 57.12%,
+      #053020 57.12%, #053020 71.4%,
+      #042a18 71.4%, #042a18 85.68%,
+      #053020 85.68%, #053020 100%
+    );
+    border: 1px solid rgba(0,229,122,0.2);
+    position: relative;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 8px;
+  }
+
+  /* Pitch markings */
+  .pitch-field::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .pitch-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex: 1;
+    align-items: center;
+  }
+
+  .player-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 70px;
+  }
+
+  .player-card:hover { transform: scale(1.05); }
+
+  .player-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--border-glow);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .player-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .player-avatar.captain { border-color: var(--amber); box-shadow: 0 0 12px rgba(255,176,32,0.4); }
+  .player-avatar.vice-captain { border-color: var(--cyan); box-shadow: 0 0 8px rgba(0,212,255,0.3); }
+
+  .player-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .player-badge.c { background: var(--amber); color: #000; }
+  .player-badge.vc { background: var(--cyan); color: #000; }
+
+  .player-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--white);
+    text-align: center;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .player-pts {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+  }
+
+  .player-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .pos-pill {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+
+  .pos-pill.gk { background: rgba(255,176,32,0.2); color: var(--amber); }
+  .pos-pill.def { background: rgba(0,212,255,0.2); color: var(--cyan); }
+  .pos-pill.mid { background: rgba(0,229,122,0.2); color: var(--green); }
+  .pos-pill.fwd { background: rgba(255,59,59,0.2); color: var(--red); }
+
+  /* Bench */
+  .bench-section {
+    width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bench-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-align: center;
+    padding: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bench-player {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bench-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    width: 16px;
+    text-align: center;
+  }
+
+  .bench-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .bench-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .bench-info { flex: 1; min-width: 0; }
+
+  .bench-name {
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--white);
+  }
+
+  .bench-meta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* ========== CAPTAIN PANEL ========== */
+  .captain-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .captain-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 16px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .captain-card:hover { border-color: var(--border-glow); }
+
+  .captain-card.primary {
+    border-color: var(--amber);
+    background: linear-gradient(135deg, rgba(255,176,32,0.08) 0%, transparent 60%);
+  }
+
+  .captain-card.primary::before {
+    content: 'PRIMARY TARGET';
+    position: absolute;
+    top: -1px; right: 12px;
+    background: var(--amber);
+    color: #000;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    padding: 2px 8px;
+  }
+
+  .captain-card.differential {
+    border-color: rgba(168,85,247,0.4);
+    background: linear-gradient(135deg, rgba(168,85,247,0.05) 0%, transparent 60%);
+  }
+
+  .captain-card.differential::before {
+    content: 'DIFFERENTIAL';
+    position: absolute;
+    top: -1px; right: 12px;
+    background: #a855f7;
+    color: #fff;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    padding: 2px 8px;
+  }
+
+  .captain-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid var(--border-glow);
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--text-dim);
+  }
+
+  .captain-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .captain-info { flex: 1; }
+
+  .captain-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .captain-team {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .captain-stats {
+    display: flex;
+    gap: 12px;
+  }
+
+  .cap-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .cap-stat-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--amber);
+  }
+
+  .cap-stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .score-bar-container {
+    margin-top: 10px;
+  }
+
+  .score-bar-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .score-bar {
+    height: 3px;
+    background: var(--border);
+    position: relative;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--amber), var(--green));
+    transition: width 1s ease;
+  }
+
+  /* Fixtures difficulty colors */
+  .fdr-1 { background: #00ff87; color: #000; }
+  .fdr-2 { background: #00d4ff; color: #000; }
+  .fdr-3 { background: #ffb020; color: #000; }
+  .fdr-4 { background: #ff6b35; color: #000; }
+  .fdr-5 { background: #ff3b3b; color: #fff; }
+
+  .fixture-pill {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding: 2px 6px;
+    display: inline-block;
+    margin: 1px;
+  }
+
+  /* ========== TRANSFER PANEL ========== */
+  .transfer-list { padding: 0; }
+
+  .transfer-row {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .transfer-row:hover { background: var(--surface2); }
+
+  .transfer-player {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .transfer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .transfer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .transfer-info { flex: 1; min-width: 0; }
+  .transfer-name { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .transfer-meta { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim); }
+
+  .transfer-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    color: var(--amber);
+  }
+
+  .transfer-gain {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+  }
+
+  .transfer-out { border-left: 3px solid var(--red); }
+  .transfer-in-side { border-left: 3px solid var(--green); }
+
+  /* ========== FIXTURE GRID ========== */
+  .fixture-grid {
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .fg-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+  }
+
+  .fg-table th {
+    background: var(--surface2);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    padding: 10px 8px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .fg-table th.team-col {
+    text-align: left;
+    padding-left: 16px;
+    width: 120px;
+  }
+
+  .fg-table td {
+    border: 1px solid var(--border);
+    padding: 8px;
+    text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+  }
+
+  .fg-table td.team-name {
+    text-align: left;
+    padding-left: 16px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--surface2);
+  }
+
+  .fg-table tr:hover td { filter: brightness(1.2); }
+
+  /* ========== DIFFERENTIALS ========== */
+  .diff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .diff-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 16px;
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .diff-card:hover {
+    border-color: rgba(168,85,247,0.4);
+    transform: translateY(-2px);
+  }
+
+  .diff-ownership {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #a855f7;
+    letter-spacing: 0.05em;
+  }
+
+  .diff-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(168,85,247,0.4);
+    overflow: hidden;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  .diff-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .diff-name { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .diff-team { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
+
+  .diff-stats {
+    display: flex;
+    gap: 12px;
+  }
+
+  .diff-stat-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: #a855f7;
+  }
+
+  .diff-stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ========== RANK HISTORY ========== */
+  .rank-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    grid-column: 1 / -1;
+  }
+
+  canvas { width: 100%; height: 200px; }
+
+  /* ========== CHIPS PANEL ========== */
+  .chips-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .chip-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chip-card.used { opacity: 0.6; }
+
+  .chip-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+  }
+
+  .chip-card.wildcard::before { background: linear-gradient(180deg, var(--amber), transparent); }
+  .chip-card.bench-boost::before { background: linear-gradient(180deg, var(--green), transparent); }
+  .chip-card.triple-captain::before { background: linear-gradient(180deg, var(--cyan), transparent); }
+  .chip-card.free-hit::before { background: linear-gradient(180deg, #a855f7, transparent); }
+
+  .chip-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  .chip-card.wildcard .chip-name { color: var(--amber); }
+  .chip-card.bench-boost .chip-name { color: var(--green); }
+  .chip-card.triple-captain .chip-name { color: var(--cyan); }
+  .chip-card.free-hit .chip-name { color: #a855f7; }
+
+  .chip-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+
+  .chip-status.available { color: var(--green); }
+  .chip-status.used { color: var(--red); }
+
+  .chip-advice {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin-top: 8px;
+  }
+
+  .chip-timing {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--amber);
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ========== ALERT TICKER ========== */
+  .alert-ticker {
+    grid-column: 1 / -1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    height: 32px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .ticker-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--amber);
+    background: rgba(255,176,32,0.15);
+    padding: 0 12px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+  }
+
+  .ticker-scroll {
+    white-space: nowrap;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    animation: ticker 30s linear infinite;
+    padding-left: 20px;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ========== UTILITY ========== */
+  .tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 2px 6px;
+    border: 1px solid;
+  }
+
+  .tag.up { border-color: var(--green); color: var(--green); }
+  .tag.down { border-color: var(--red); color: var(--red); }
+  .tag.neutral { border-color: var(--text-dim); color: var(--text-dim); }
+
+  .section-header {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-header::before {
+    content: '//';
+    color: var(--amber);
+    font-size: 11px;
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    background: linear-gradient(90deg, var(--surface) 0%, var(--surface2) 50%, var(--surface) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: 2px;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    color: var(--muted);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    gap: 8px;
+  }
+
+  .empty-icon {
+    font-size: 32px;
+    opacity: 0.3;
+  }
+
+  /* ========== ERROR ========== */
+  .error-msg {
+    background: rgba(255,59,59,0.1);
+    border: 1px solid rgba(255,59,59,0.3);
+    color: var(--red);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 12px 16px;
+    margin: 16px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .tac-bar { grid-template-columns: repeat(3, 1fr); }
+    .captain-grid { grid-template-columns: 1fr; }
+    .chips-grid { grid-template-columns: 1fr; }
+    .rank-panel { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 0 12px; }
+    .nav-tab { padding: 10px 12px; font-size: 12px; }
+    #app { padding: 10px; }
+    .tac-bar { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ========== INTEL FEED ========== */
+  .intel-filter {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 6px 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+    transition: all 0.2s;
+  }
+  .intel-filter:hover { color: var(--amber); border-color: var(--amber-dim); }
+  .intel-filter.active { color: var(--amber); border-color: var(--amber); background: var(--amber-glow); }
+
+  .intel-loading {
+    color: var(--muted);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    padding: 32px;
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+
+  .intel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 12px;
+  }
+
+  .intel-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .intel-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .intel-card.status-out { border-color: rgba(255,59,59,0.3); }
+  .intel-card.status-out::before { background: var(--red); }
+  .intel-card.status-doubt75 { border-color: rgba(255,176,32,0.3); }
+  .intel-card.status-doubt75::before { background: var(--amber); }
+  .intel-card.status-doubt50 { border-color: rgba(255,140,0,0.3); }
+  .intel-card.status-doubt50::before { background: #ff8c00; }
+  .intel-card.status-doubt25 { border-color: rgba(255,59,59,0.2); }
+  .intel-card.status-doubt25::before { background: #ff6b35; }
+  .intel-card.status-unknown { border-color: rgba(106,143,168,0.3); }
+  .intel-card.status-unknown::before { background: var(--text-dim); }
+
+  .intel-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 12px;
+  }
+
+  .intel-player-info { flex: 1; }
+  .intel-player-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .intel-player-meta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .intel-status-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  .badge-out { color: var(--red); border-color: var(--red); background: var(--red-glow); }
+  .badge-doubt75 { color: var(--amber); border-color: var(--amber); background: var(--amber-glow); }
+  .badge-doubt50 { color: #ff8c00; border-color: #ff8c00; background: rgba(255,140,0,0.1); }
+  .badge-doubt25 { color: #ff6b35; border-color: #ff6b35; background: rgba(255,107,53,0.1); }
+  .badge-unknown { color: var(--text-dim); border-color: var(--muted); background: transparent; }
+
+  .intel-chance-bar {
+    height: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin: 10px 0 8px;
+    overflow: hidden;
+  }
+  .intel-chance-fill {
+    height: 100%;
+    transition: width 0.5s ease;
+  }
+
+  .intel-news {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .intel-news strong { color: var(--white); font-style: normal; }
+
+  .intel-stats-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .intel-stat { text-align: center; }
+  .intel-stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    color: var(--cyan);
+  }
+  .intel-stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .intel-squad-tag {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    background: var(--green-glow);
+    color: var(--green);
+    border: 1px solid var(--green-dim);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .intel-empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--muted);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+  }
+
+  .intel-count-badge {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 11px;
+    font-family: 'Share Tech Mono', monospace;
+    text-align: center;
+    line-height: 16px;
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: pulse-ring 2s infinite;
+  }
+</style>
+</head>
+<body>
+
+<!-- Init Screen -->
+<div id="init-screen">
+  <div class="init-grid"></div>
+  <div>
+    <div class="init-logo">FPL WAR ROOM</div>
+    <div class="init-sub">FANTASY PREMIER LEAGUE — TACTICAL INTELLIGENCE SYSTEM</div>
+  </div>
+  <div class="init-form">
+    <label>ENTER TEAM ID TO BEGIN INTELLIGENCE BRIEFING</label>
+    <div class="init-input-row">
+      <input class="init-input" id="init-team-id" type="number" placeholder="TEAM ID" autocomplete="off">
+      <button class="init-btn" onclick="loadTeam()">DEPLOY</button>
+    </div>
+    <span class="init-demo" onclick="document.getElementById('init-team-id').value='1'; loadTeam()">→ USE DEMO TEAM (ID: 1)</span>
+  </div>
+</div>
+
+<!-- Loading bar -->
+<div id="loading-bar"><div id="loading-progress"></div></div>
+
+<!-- Header -->
+<header>
+  <div class="header-logo">
+    <div class="logo-icon">FPL</div>
+    <div>
+      <div class="logo-text">WAR ROOM</div>
+      <div class="logo-sub">TACTICAL INTELLIGENCE</div>
+    </div>
+  </div>
+  <div class="header-status">
+    <div class="status-dot"></div>
+    <span id="status-text">AWAITING DEPLOYMENT</span>
+  </div>
+  <span id="gw-badge" class="gw-badge" style="display:none"></span>
+  <div class="header-input-group">
+    <input class="cmd-input" id="header-team-id" type="number" placeholder="CHANGE TEAM ID">
+    <button class="cmd-btn" onclick="reloadTeam()">SYNC</button>
+  </div>
+</header>
+
+<!-- Main App -->
+<div id="app">
+
+  <!-- Ticker -->
+  <div class="alert-ticker">
+    <div class="ticker-label">INTEL FEED</div>
+    <div class="ticker-scroll" id="ticker-text">
+      LOADING INTELLIGENCE DATA... ⬥ CONNECTING TO FPL SYSTEMS... ⬥ DEPLOYING TACTICAL ANALYSIS... ⬥ LOADING INTELLIGENCE DATA... ⬥ CONNECTING TO FPL SYSTEMS... ⬥ DEPLOYING TACTICAL ANALYSIS...
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="tac-bar">
+    <div class="tac-stat amber">
+      <div class="tac-label">OVERALL RANK</div>
+      <div class="tac-value amber" id="stat-rank">—</div>
+      <div class="tac-sub" id="stat-rank-move">—</div>
+    </div>
+    <div class="tac-stat green">
+      <div class="tac-label">TOTAL POINTS</div>
+      <div class="tac-value green" id="stat-points">—</div>
+      <div class="tac-sub" id="stat-gw-points">—</div>
+    </div>
+    <div class="tac-stat cyan">
+      <div class="tac-label">TEAM VALUE</div>
+      <div class="tac-value cyan" id="stat-value">—</div>
+      <div class="tac-sub" id="stat-bank">—</div>
+    </div>
+    <div class="tac-stat red">
+      <div class="tac-label">TRANSFERS</div>
+      <div class="tac-value" id="stat-transfers">—</div>
+      <div class="tac-sub" id="stat-hits">—</div>
+    </div>
+    <div class="tac-stat purple">
+      <div class="tac-label">FREE TRANSFERS</div>
+      <div class="tac-value" id="stat-ft">—</div>
+      <div class="tac-sub" id="stat-deadline">—</div>
+    </div>
+  </div>
+
+  <!-- Nav Tabs -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('squad')">◈ SQUAD</button>
+    <button class="nav-tab" onclick="switchTab('captain')">⚑ CAPTAIN</button>
+    <button class="nav-tab" onclick="switchTab('transfers')">⇄ TRANSFERS</button>
+    <button class="nav-tab" onclick="switchTab('chips')">◆ CHIPS</button>
+    <button class="nav-tab" onclick="switchTab('fixtures')">▦ FIXTURES</button>
+    <button class="nav-tab" onclick="switchTab('differentials')">◉ DIFFERENTIALS</button>
+    <button class="nav-tab" onclick="switchTab('rank')">↑ RANK HISTORY</button>
+    <button class="nav-tab" onclick="switchTab('intel')" id="tab-intel">⚠ INTEL FEED</button>
+  </div>
+
+  <!-- SQUAD PANEL -->
+  <div class="panel active" id="panel-squad" style="grid-column:1/-1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="icon"></div>SQUAD DEPLOYMENT</div>
+        <div class="card-meta" id="squad-meta">AWAITING DATA</div>
+      </div>
+      <div class="pitch-container" id="pitch-container">
+        <div class="empty-state" style="flex:1">
+          <div class="empty-icon">⚽</div>
+          <div>ENTER TEAM ID TO LOAD SQUAD</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAPTAIN PANEL -->
+  <div class="panel" id="panel-captain" style="grid-column:1/-1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="icon"></div>CAPTAIN INTELLIGENCE</div>
+        <div class="card-meta">SCORING ALGORITHM: FORM × 2 + xP × 1.5</div>
+      </div>
+      <div class="captain-grid" id="captain-grid">
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-icon">⚑</div>
+          <div>LOAD TEAM TO ANALYSE CAPTAINCY OPTIONS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSFERS PANEL -->
+  <div class="panel" id="panel-transfers" style="grid-column:1/-1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="icon"></div>TRANSFER INTELLIGENCE</div>
+        <div class="card-meta">TOP 3 RECOMMENDED OPERATIONS</div>
+      </div>
+      <div id="transfer-container">
+        <div class="empty-state">
+          <div class="empty-icon">⇄</div>
+          <div>LOAD TEAM TO ANALYSE TRANSFER TARGETS</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="hit-calc-card" style="display:none">
+      <div class="card-header">
+        <div class="card-title"><div class="icon"></div>HIT CALCULATOR</div>
+        <div class="card-meta">-4 PT PENALTY ANALYSIS</div>
+      </div>
+      <div id="hit-container" style="padding:16px"></div>
+    </div>
+  </div>
+
+  <!-- CHIPS PANEL -->
+  <div class="panel" id="panel-chips" style="grid-column:1/-1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="icon"></div>CHIP ARSENAL</div>
+        <div class="card-meta">STRATEGIC DEPLOYMENT ANALYSIS</div>
+      </div>
+      <div class="chips-grid" id="chips-grid">
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-icon">◆</div>
+          <div>LOAD TEAM TO VIEW CHIP STATUS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIXTURES PANEL -->
+  <div class="panel" id="panel-fixtures" style="grid-column:1/-1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="icon"></div>FIXTURE INTELLIGENCE MAP</div>
+        <div class="card-meta">NEXT 8 GAMEWEEKS — FDR COLOUR CODED</div>
+      </div>
+      <div class="fixture-grid" id="fixture-grid">
+        <div class="empty-state">
+          <div class="empty-icon">▦</div>
+          <div>LOAD DATA TO VIEW FIXTURE ANALYSIS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIFFERENTIALS PANEL -->
+  <div class="panel" id="panel-differentials" style="grid-column:1/-1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="icon"></div>DIFFERENTIAL INTELLIGENCE</div>
+        <div class="card-meta">OWNERSHIP &lt;10% · FORM ≥4.0 · RANK ATTACK TARGETS</div>
+      </div>
+      <div class="diff-grid" id="diff-grid">
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-icon">◉</div>
+          <div>LOAD TEAM TO IDENTIFY DIFFERENTIALS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RANK PANEL -->
+  <div class="panel" id="panel-rank" style="grid-column:1/-1">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header">
+        <div class="card-title"><div class="icon"></div>RANK INTELLIGENCE</div>
+        <div class="card-meta">SEASON TRAJECTORY ANALYSIS</div>
+      </div>
+      <div class="rank-panel">
+        <div>
+          <div class="section-header">OVERALL RANK PROGRESSION</div>
+          <div style="padding:16px"><canvas id="rank-chart" height="180"></canvas></div>
+        </div>
+        <div>
+          <div class="section-header">GAMEWEEK POINTS HISTORY</div>
+          <div style="padding:16px"><canvas id="points-chart" height="180"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-intel" style="grid-column:1/-1">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header">
+        <div class="card-title"><div class="icon" style="background:var(--red)"></div>INTEL FEED — INJURY & NEWS</div>
+        <div class="card-meta" id="intel-meta">LIVE PLAYER STATUS INTELLIGENCE</div>
+      </div>
+      <!-- Filters -->
+      <div style="display:flex;gap:10px;padding:0 16px 16px;flex-wrap:wrap">
+        <button class="intel-filter active" data-filter="all" onclick="setIntelFilter('all',this)">ALL ALERTS</button>
+        <button class="intel-filter" data-filter="doubt" onclick="setIntelFilter('doubt',this)">DOUBTFUL</button>
+        <button class="intel-filter" data-filter="out" onclick="setIntelFilter('out',this)">UNAVAILABLE</button>
+        <button class="intel-filter" data-filter="mysquad" onclick="setIntelFilter('mysquad',this)">MY SQUAD</button>
+      </div>
+      <div id="intel-feed" style="padding:0 16px 16px">
+        <div class="intel-loading">SCANNING PLAYER INTEL...</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ====== STATE ======
+let state = {
+  teamId: null,
+  bootstrap: null,
+  picks: null,
+  history: null,
+  fixtures: null,
+  currentGw: null,
+  teamMap: {},
+  playerMap: {},
+};
+
+const cache = {};
+
+// ====== API ======
+async function fplFetch(path, ttl = 5) {
+  const key = path;
+  const now = Date.now();
+  if (cache[key] && (now - cache[key].ts) < ttl * 60000) return cache[key].data;
+
+  let data = null;
+
+  // 1. Try direct browser fetch (uses FPL session cookie if user is logged in to FPL)
+  try {
+    const res = await fetch(`https://fantasy.premierleague.com/api/${path}`, {
+      credentials: 'include',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.ok) { data = await res.json(); console.log('[FPL] Direct fetch OK:', path); }
+  } catch (e) { console.warn('[FPL] Direct fetch failed:', path, e.message); }
+
+  // 2. Try Netlify proxy fallback
+  if (!data) {
+    try {
+      const res = await fetch(`/.netlify/functions/fpl-proxy?path=${encodeURIComponent(path)}`);
+      if (res.ok) { data = await res.json(); console.log('[FPL] Proxy fetch OK:', path); }
+      else console.warn('[FPL] Proxy returned', res.status, 'for', path);
+    } catch (e) { console.warn('[FPL] Proxy failed:', path, e.message); }
+  }
+
+  if (data) {
+    cache[key] = { data, ts: now };
+    return data;
+  }
+  throw new Error('API unavailable');
+}
+
+function setProgress(pct) {
+  document.getElementById('loading-progress').style.width = pct + '%';
+}
+
+// ====== MAIN LOADER ======
+async function loadTeam(teamId) {
+  teamId = teamId || parseInt(document.getElementById('init-team-id').value);
+  if (!teamId || isNaN(teamId)) {
+    alert('Please enter a valid Team ID');
+    return;
+  }
+
+  state.teamId = teamId;
+  document.getElementById('header-team-id').value = teamId;
+  
+  // Show loading
+  document.getElementById('loading-bar').classList.add('active');
+  setProgress(10);
+  document.getElementById('status-text').textContent = 'ESTABLISHING UPLINK...';
+
+  try {
+    // Fetch bootstrap
+    setProgress(20);
+    state.bootstrap = await fplFetch('bootstrap-static/');
+    setProgress(40);
+
+    // Build maps
+    state.playerMap = {};
+    state.teamMap = {};
+    state.bootstrap.elements.forEach(p => state.playerMap[p.id] = p);
+    state.bootstrap.teams.forEach(t => state.teamMap[t.id] = t);
+
+    // Find current GW
+    const events = state.bootstrap.events;
+    const currentEvent = events.find(e => e.is_current) || events.find(e => e.is_next) || events[events.length - 1];
+    state.currentGw = currentEvent.id;
+    document.getElementById('gw-badge').textContent = `GW ${state.currentGw}`;
+    document.getElementById('gw-badge').style.display = 'inline';
+
+    // Fetch user data
+    setProgress(55);
+    state.history = await fplFetch(`entry/${teamId}/history/`);
+    setProgress(70);
+    state.picks = await fplFetch(`entry/${teamId}/event/${state.currentGw}/picks/`);
+    setProgress(82);
+    state.fixtures = await fplFetch('fixtures/');
+    setProgress(95);
+
+    // Render everything
+    renderStats();
+    renderSquad();
+    renderCaptain();
+    renderTransfers();
+    renderChips();
+    renderFixtures();
+    renderDifferentials();
+    renderRankHistory();
+    renderIntelFeed();
+    updateTicker();
+
+    document.getElementById('status-text').textContent = `TEAM ${teamId} — DEPLOYED GW${state.currentGw}`;
+    setProgress(100);
+
+    // Hide init
+    document.getElementById('init-screen').classList.add('hidden');
+    const app = document.getElementById('app');
+    app.style.display = 'grid';
+    app.classList.add('visible');
+
+  } catch (err) {
+    console.error('FPL load error:', err);
+    document.getElementById('status-text').textContent = 'LIVE API FAILED — DEMO MODE ACTIVE';
+    loadDemoMode(teamId);
+  }
+
+  setTimeout(() => {
+    document.getElementById('loading-bar').classList.remove('active');
+    setProgress(0);
+  }, 600);
+}
+
+function reloadTeam() {
+  const id = parseInt(document.getElementById('header-team-id').value);
+  if (id) loadTeam(id);
+}
+
+// ====== DEMO MODE ======
+function loadDemoMode(teamId) {
+  state.currentGw = 26;
+  state.teamId = teamId || 1;
+
+  const teams = [
+    {id:1,name:'Arsenal',short_name:'ARS'},{id:2,name:'Aston Villa',short_name:'AVL'},
+    {id:3,name:'Bournemouth',short_name:'BOU'},{id:4,name:'Brentford',short_name:'BRE'},
+    {id:5,name:'Brighton',short_name:'BHA'},{id:6,name:'Chelsea',short_name:'CHE'},
+    {id:7,name:'Crystal Palace',short_name:'CRY'},{id:8,name:'Everton',short_name:'EVE'},
+    {id:9,name:'Fulham',short_name:'FUL'},{id:10,name:'Ipswich',short_name:'IPS'},
+    {id:11,name:'Leicester',short_name:'LEI'},{id:12,name:'Liverpool',short_name:'LIV'},
+    {id:13,name:'Man City',short_name:'MCI'},{id:14,name:'Man Utd',short_name:'MUN'},
+    {id:15,name:'Newcastle',short_name:'NEW'},{id:16,name:'Nott\'m Forest',short_name:'NFO'},
+    {id:17,name:'Southampton',short_name:'SOU'},{id:18,name:'Spurs',short_name:'TOT'},
+    {id:19,name:'West Ham',short_name:'WHU'},{id:20,name:'Wolves',short_name:'WOL'}
+  ];
+
+  const players = [
+    {id:1,web_name:'Raya',element_type:1,team:1,now_cost:55,form:'6.0',total_points:120,selected_by_percent:'25.0',ep_next:'6.0',code:169187,status:'a',news:'',chance_of_playing_next_round:100,transfers_out_event:12000},
+    {id:2,web_name:'Alexander-Arnold',element_type:2,team:12,now_cost:78,form:'8.0',total_points:140,selected_by_percent:'32.0',ep_next:'8.2',code:69140,status:'d',news:'Hamstring concern - missed training Thursday. 75% chance of playing vs Everton.',chance_of_playing_next_round:75,transfers_out_event:45000},
+    {id:3,web_name:'Pedro Porro',element_type:2,team:18,now_cost:58,form:'6.0',total_points:110,selected_by_percent:'15.0',ep_next:'5.5',code:244723,status:'a',news:'',chance_of_playing_next_round:100,transfers_out_event:5000},
+    {id:4,web_name:'Robertson',element_type:2,team:12,now_cost:66,form:'5.5',total_points:105,selected_by_percent:'12.0',ep_next:'5.0',code:122798,status:'i',news:'Knee injury sustained in training. Expected to miss 3-4 weeks.',chance_of_playing_next_round:0,transfers_out_event:88000},
+    {id:5,web_name:'Pedro',element_type:2,team:16,now_cost:50,form:'5.0',total_points:95,selected_by_percent:'8.5',ep_next:'4.8',code:226597,status:'a',news:'',chance_of_playing_next_round:100,transfers_out_event:2000},
+    {id:6,web_name:'Salah',element_type:3,team:12,now_cost:132,form:'12.0',total_points:190,selected_by_percent:'78.0',ep_next:'12.5',code:118748,status:'a',news:'',chance_of_playing_next_round:100,transfers_out_event:3000},
+    {id:7,web_name:'Palmer',element_type:3,team:6,now_cost:110,form:'9.0',total_points:165,selected_by_percent:'52.0',ep_next:'9.0',code:244723,status:'d',news:'Ankle knock - 50% chance of featuring vs Wolves. Manager to give fitness update Friday.',chance_of_playing_next_round:50,transfers_out_event:120000},
+    {id:8,web_name:'Mbeumo',element_type:3,team:4,now_cost:80,form:'8.5',total_points:145,selected_by_percent:'28.0',ep_next:'7.8',code:357,status:'a',news:'',chance_of_playing_next_round:100,transfers_out_event:8000},
+    {id:9,web_name:'Saka',element_type:3,team:1,now_cost:99,form:'7.0',total_points:135,selected_by_percent:'35.0',ep_next:'7.2',code:223340,status:'i',news:'Groin strain. Out for 2-3 weeks. Arteta confirms he will not feature this gameweek.',chance_of_playing_next_round:0,transfers_out_event:210000},
+    {id:10,web_name:'Andreas',element_type:3,team:9,now_cost:57,form:'7.5',total_points:125,selected_by_percent:'7.2',ep_next:'6.5',code:106917,status:'a',news:'',chance_of_playing_next_round:100,transfers_out_event:1500},
+    {id:11,web_name:'Haaland',element_type:4,team:13,now_cost:147,form:'10.0',total_points:175,selected_by_percent:'68.0',ep_next:'10.5',code:223094,status:'d',news:'Minor muscle fatigue. Guardiola suggests 75% chance to start. Fit enough to bench at minimum.',chance_of_playing_next_round:75,transfers_out_event:55000},
+    {id:12,web_name:'Isak',element_type:4,team:15,now_cost:89,form:'8.0',total_points:140,selected_by_percent:'22.0',ep_next:'8.0',code:244708,status:'a',news:'',chance_of_playing_next_round:100,transfers_out_event:4000},
+    {id:13,web_name:'Watkins',element_type:4,team:2,now_cost:90,form:'6.0',total_points:120,selected_by_percent:'18.0',ep_next:'6.0',code:178301,status:'s',news:'Suspended for 1 match following red card vs Man City. Returns GW27.',chance_of_playing_next_round:0,transfers_out_event:75000},
+    // Bench
+    {id:14,web_name:'Flekken',element_type:1,team:4,now_cost:45,form:'5.0',total_points:90,selected_by_percent:'5.0',ep_next:'4.5',code:223803,status:'a',news:'',chance_of_playing_next_round:100,transfers_out_event:500},
+    {id:15,web_name:'Mykolenko',element_type:2,team:8,now_cost:44,form:'4.0',total_points:70,selected_by_percent:'3.0',ep_next:'3.5',code:205651,status:'a',news:'',chance_of_playing_next_round:100,transfers_out_event:200},
+    {id:16,web_name:'Wissa',element_type:4,team:4,now_cost:63,form:'6.5',total_points:110,selected_by_percent:'9.0',ep_next:'6.0',code:174889,status:'a',news:'',chance_of_playing_next_round:100,transfers_out_event:1200},
+    {id:17,web_name:'Bernardo',element_type:3,team:13,now_cost:60,form:'5.5',total_points:95,selected_by_percent:'4.5',ep_next:'5.0',code:97566,status:'d',news:'Back problem - day-to-day assessment. Guardiola rules him out of cup but hopeful for PL.',chance_of_playing_next_round:25,transfers_out_event:3500},
+  ];
+
+  teams.forEach(t => state.teamMap[t.id] = t);
+  players.forEach(p => state.playerMap[p.id] = p);
+
+  state.bootstrap = { elements: players, teams, events: Array.from({length:38},(_,i)=>({id:i+1,is_current:i===25,is_next:i===26,deadline_time:'2025-03-01T11:00:00Z'})) };
+
+  state.picks = {
+    active_chip: null,
+    entry_history: { points: 87, total_points: 1456, rank: 102543, rank_sort: 102543, overall_rank: 102543, bank: 5, value: 1005, event_transfers: 1, event_transfers_cost: 0, points_on_bench: 6 },
+    picks: [
+      {element:1,position:1,multiplier:1,is_captain:false,is_vice_captain:false},
+      {element:2,position:2,multiplier:1,is_captain:false,is_vice_captain:false},
+      {element:3,position:3,multiplier:1,is_captain:false,is_vice_captain:false},
+      {element:4,position:4,multiplier:1,is_captain:false,is_vice_captain:false},
+      {element:5,position:5,multiplier:1,is_captain:false,is_vice_captain:false},
+      {element:6,position:6,multiplier:3,is_captain:true,is_vice_captain:false},
+      {element:7,position:7,multiplier:1,is_captain:false,is_vice_captain:false},
+      {element:8,position:8,multiplier:1,is_captain:false,is_vice_captain:true},
+      {element:9,position:9,multiplier:1,is_captain:false,is_vice_captain:false},
+      {element:10,position:10,multiplier:1,is_captain:false,is_vice_captain:false},
+      {element:11,position:11,multiplier:1,is_captain:false,is_vice_captain:false},
+      {element:14,position:12,multiplier:0,is_captain:false,is_vice_captain:false},
+      {element:15,position:13,multiplier:0,is_captain:false,is_vice_captain:false},
+      {element:16,position:14,multiplier:0,is_captain:false,is_vice_captain:false},
+      {element:17,position:15,multiplier:0,is_captain:false,is_vice_captain:false},
+    ]
+  };
+
+  state.history = {
+    current: Array.from({length:26},(_,i)=>({
+      event: i+1, points: 40+Math.floor(Math.random()*60),
+      total_points: 800+i*45, overall_rank: 250000-i*7000+Math.floor(Math.random()*20000),
+      event_transfers: Math.floor(Math.random()*3), event_transfers_cost: 0
+    })),
+    chips: []
+  };
+
+  // Fake fixtures
+  const fixtureData = [];
+  let fId = 1;
+  for (let gw = 27; gw <= 38; gw++) {
+    for (let t = 1; t <= 20; t += 2) {
+      const opponent = t + 1;
+      const diff_h = 1 + Math.floor(Math.random()*5);
+      const diff_a = 1 + Math.floor(Math.random()*5);
+      fixtureData.push({id:fId++,event:gw,team_h:t,team_a:opponent,finished:false,team_h_difficulty:diff_h,team_a_difficulty:diff_a});
+    }
+  }
+  state.fixtures = fixtureData;
+
+  document.getElementById('gw-badge').textContent = `GW ${state.currentGw}`;
+  document.getElementById('gw-badge').style.display = 'inline';
+  document.getElementById('status-text').textContent = `DEMO MODE — GW${state.currentGw}`;
+
+  renderStats();
+  renderSquad();
+  renderCaptain();
+  renderTransfers();
+  renderChips();
+  renderFixtures();
+  renderDifferentials();
+  renderRankHistory();
+  renderIntelFeed();
+  updateTicker();
+
+  document.getElementById('init-screen').classList.add('hidden');
+  const app = document.getElementById('app');
+  app.style.display = 'grid';
+  app.classList.add('visible');
+}
+
+// ====== HELPERS ======
+function playerPhoto(code) {
+  return `https://resources.premierleague.com/premierleague/photos/players/110x140/p${code}.png`;
+}
+
+function posClass(type) {
+  return {1:'gk',2:'def',3:'mid',4:'fwd'}[type] || 'mid';
+}
+
+function posLabel(type) {
+  return {1:'GK',2:'DEF',3:'MID',4:'FWD'}[type] || '?';
+}
+
+function formatRank(n) {
+  if (!n) return '—';
+  if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
+  if (n >= 1000) return (n/1000).toFixed(0)+'K';
+  return n.toLocaleString();
+}
+
+function getNextFixtures(teamId, n = 6) {
+  if (!state.fixtures) return [];
+  return state.fixtures
+    .filter(f => !f.finished && (f.team_h === teamId || f.team_a === teamId))
+    .slice(0, n)
+    .map(f => {
+      const isHome = f.team_h === teamId;
+      const oppId = isHome ? f.team_a : f.team_h;
+      const diff = isHome ? f.team_h_difficulty : f.team_a_difficulty;
+      const opp = state.teamMap[oppId];
+      return {
+        opponent: opp ? opp.short_name : '???',
+        difficulty: diff,
+        isHome,
+        gw: f.event
+      };
+    });
+}
+
+function fixturePills(teamId, n = 4) {
+  const fixtures = getNextFixtures(teamId, n);
+  return fixtures.map(f => {
+    const label = `${f.isHome ? '' : ''}${f.opponent}`;
+    return `<span class="fixture-pill fdr-${f.difficulty}">${label}${f.isHome ? ' H' : ' A'}</span>`;
+  }).join('');
+}
+
+// ====== RENDER STATS ======
+function renderStats() {
+  const eh = state.picks?.entry_history;
+  if (!eh) return;
+
+  document.getElementById('stat-rank').textContent = formatRank(eh.overall_rank);
+  document.getElementById('stat-points').textContent = eh.total_points;
+  document.getElementById('stat-gw-points').textContent = `GW${state.currentGw}: ${eh.points} PTS`;
+  document.getElementById('stat-value').textContent = '£' + (eh.value / 10).toFixed(1) + 'M';
+  document.getElementById('stat-bank').textContent = 'BANK: £' + (eh.bank / 10).toFixed(1) + 'M';
+  document.getElementById('stat-transfers').textContent = eh.event_transfers;
+  document.getElementById('stat-hits').textContent = eh.event_transfers_cost ? `-${eh.event_transfers_cost} PT HIT` : 'NO HIT';
+  
+  const history = state.history?.current;
+  if (history && history.length >= 2) {
+    const last = history[history.length - 1];
+    const prev = history[history.length - 2];
+    if (last && prev && last.overall_rank && prev.overall_rank) {
+      const diff = prev.overall_rank - last.overall_rank;
+      const arrow = diff > 0 ? '▲' : diff < 0 ? '▼' : '—';
+      const color = diff > 0 ? 'var(--green)' : diff < 0 ? 'var(--red)' : '';
+      document.getElementById('stat-rank-move').innerHTML = `<span style="color:${color}">${arrow} ${Math.abs(diff).toLocaleString()} FROM LAST GW</span>`;
+    }
+  }
+
+  // Find next deadline
+  const nextEvent = state.bootstrap?.events?.find(e => e.is_next);
+  const ft = state.picks?.entry_history?.event_transfers_cost === 0 ? '2' : '1';
+  document.getElementById('stat-ft').textContent = ft;
+  if (nextEvent) {
+    const dl = new Date(nextEvent.deadline_time);
+    document.getElementById('stat-deadline').textContent = `GW${nextEvent.id} DL: ${dl.toLocaleDateString('en-GB', {day:'numeric',month:'short'})}`;
+  }
+}
+
+// ====== RENDER SQUAD ======
+function renderSquad() {
+  if (!state.picks || !state.picks.picks) return;
+
+  const picks = state.picks.picks;
+  const playing = picks.filter(p => p.position <= 11);
+  const bench = picks.filter(p => p.position > 11).sort((a,b) => a.position - b.position);
+
+  // Build rows by position type
+  const gks = playing.filter(p => state.playerMap[p.element]?.element_type === 1);
+  const defs = playing.filter(p => state.playerMap[p.element]?.element_type === 2);
+  const mids = playing.filter(p => state.playerMap[p.element]?.element_type === 3);
+  const fwds = playing.filter(p => state.playerMap[p.element]?.element_type === 4);
+
+  function playerCardHTML(pick) {
+    const player = state.playerMap[pick.element];
+    if (!player) return '';
+    const pos = posClass(player.element_type);
+    const isCap = pick.is_captain;
+    const isVC = pick.is_vice_captain;
+    return `
+      <div class="player-card">
+        <div class="player-avatar ${isCap ? 'captain' : isVC ? 'vice-captain' : ''}">
+          <img src="${playerPhoto(player.code)}" alt="${player.web_name}" onerror="this.style.display='none';this.parentElement.innerHTML+='${player.web_name.substring(0,3).toUpperCase()}'">
+          ${isCap ? '<div class="player-badge c">C</div>' : isVC ? '<div class="player-badge vc">V</div>' : ''}
+        </div>
+        <span class="player-name">${player.web_name}</span>
+        <span class="pos-pill ${pos}">${posLabel(player.element_type)}</span>
+        <span class="player-pts">${player.total_points}pts</span>
+        <span class="player-price">£${(player.now_cost/10).toFixed(1)}m</span>
+      </div>
+    `;
+  }
+
+  function benchPlayerHTML(pick, idx) {
+    const player = state.playerMap[pick.element];
+    if (!player) return '';
+    const pos = posClass(player.element_type);
+    return `
+      <div class="bench-player">
+        <div class="bench-num">${idx}</div>
+        <div class="bench-avatar">
+          <img src="${playerPhoto(player.code)}" alt="${player.web_name}" onerror="this.style.display='none';this.parentElement.textContent='${player.web_name.substring(0,3).toUpperCase()}'">
+        </div>
+        <div class="bench-info">
+          <div class="bench-name">${player.web_name}</div>
+          <div class="bench-meta"><span class="pos-pill ${pos}">${posLabel(player.element_type)}</span> £${(player.now_cost/10).toFixed(1)}m</div>
+        </div>
+      </div>
+    `;
+  }
+
+  const pitchHTML = `
+    <div class="pitch-row">${gks.map(playerCardHTML).join('')}</div>
+    <div class="pitch-row">${defs.map(playerCardHTML).join('')}</div>
+    <div class="pitch-row">${mids.map(playerCardHTML).join('')}</div>
+    <div class="pitch-row">${fwds.map(playerCardHTML).join('')}</div>
+  `;
+
+  const benchHTML = `
+    <div class="bench-section">
+      <div class="bench-label">BENCH</div>
+      ${bench.map((p, i) => benchPlayerHTML(p, i + 1)).join('')}
+    </div>
+  `;
+
+  document.getElementById('pitch-container').innerHTML = `
+    <div class="pitch-field">${pitchHTML}</div>
+    ${benchHTML}
+  `;
+
+  document.getElementById('squad-meta').textContent = `${playing.length} DEPLOYED · ${bench.length} BENCH · GW${state.currentGw}`;
+}
+
+// ====== RENDER CAPTAIN ======
+function renderCaptain() {
+  if (!state.picks || !state.picks.picks) return;
+
+  const playing = state.picks.picks.filter(p => p.position <= 11);
+
+  // Score each player
+  const scored = playing.map(pick => {
+    const player = state.playerMap[pick.element];
+    if (!player) return null;
+    const form = parseFloat(player.form) || 0;
+    const xp = parseFloat(player.ep_next) || 0;
+    const score = (form * 2) + (xp * 1.5);
+    const fixtures = getNextFixtures(player.team, 1);
+    const fdr = fixtures[0]?.difficulty || 3;
+    return { player, pick, score, form, xp, fdr, fixtures };
+  }).filter(Boolean).sort((a, b) => b.score - a.score);
+
+  const top4 = scored.slice(0, 4);
+  const maxScore = top4[0]?.score || 1;
+
+  const cards = top4.map((item, idx) => {
+    const { player, score, form, xp, fdr } = item;
+    const team = state.teamMap[player.team];
+    const isPrimary = idx === 0;
+    const isDiff = parseFloat(player.selected_by_percent) < 15 && idx <= 2;
+
+    let cls = '';
+    if (isPrimary) cls = 'primary';
+    else if (isDiff && idx === 2) cls = 'differential';
+
+    const scorePct = Math.round((score / maxScore) * 100);
+
+    return `
+      <div class="captain-card ${cls}">
+        <div class="captain-avatar">
+          <img src="${playerPhoto(player.code)}" alt="${player.web_name}" onerror="this.style.display='none';this.parentElement.textContent='${player.web_name.substring(0,2).toUpperCase()}'">
+        </div>
+        <div class="captain-info">
+          <div class="captain-name">${player.web_name}</div>
+          <div class="captain-team">${team?.name || '—'} · ${parseFloat(player.selected_by_percent).toFixed(1)}% OWNED</div>
+          <div class="captain-stats">
+            <div class="cap-stat"><div class="cap-stat-val">${form}</div><div class="cap-stat-label">FORM</div></div>
+            <div class="cap-stat"><div class="cap-stat-val">${xp}</div><div class="cap-stat-label">xPTS</div></div>
+            <div class="cap-stat"><div class="cap-stat-val">FDR${fdr}</div><div class="cap-stat-label">FIXTURE</div></div>
+            <div class="cap-stat"><div class="cap-stat-val">${score.toFixed(1)}</div><div class="cap-stat-label">SCORE</div></div>
+          </div>
+          <div class="score-bar-container">
+            <div class="score-bar-label"><span>INTEL SCORE</span><span>${scorePct}%</span></div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:${scorePct}%"></div></div>
+          </div>
+          <div style="margin-top:8px">${fixturePills(player.team, 3)}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById('captain-grid').innerHTML = cards.join('') || '<div class="empty-state">NO DATA</div>';
+}
+
+// ====== RENDER TRANSFERS ======
+function renderTransfers() {
+  if (!state.picks || !state.bootstrap) return;
+
+  const playing = state.picks.picks.filter(p => p.position <= 11);
+
+  // Score each player
+  const scored = playing.map(pick => {
+    const player = state.playerMap[pick.element];
+    if (!player) return null;
+    const form = parseFloat(player.form) || 0;
+    const xp = parseFloat(player.ep_next) || 0;
+    return { player, pick, score: form + xp };
+  }).filter(Boolean).sort((a, b) => a.score - b.score);
+
+  const worst3 = scored.slice(0, 3);
+  const budget = (state.picks.entry_history?.bank || 0) / 10;
+
+  // Find best replacements
+  const suggestions = worst3.map(item => {
+    const { player, score } = item;
+    const maxBudget = (player.now_cost / 10) + budget + 0.5;
+
+    const candidates = state.bootstrap.elements
+      .filter(p =>
+        p.element_type === player.element_type &&
+        p.id !== player.id &&
+        p.status === 'a' &&
+        (p.now_cost / 10) <= maxBudget &&
+        parseFloat(p.selected_by_percent) < 85
+      )
+      .map(p => ({ p, score: parseFloat(p.form) + parseFloat(p.ep_next) }))
+      .sort((a, b) => b.score - a.score)[0];
+
+    return { out: item, in: candidates };
+  });
+
+  const rows = suggestions.map(({ out, in: replacement }) => {
+    const outPlayer = out.player;
+    const inPlayer = replacement?.p;
+    if (!inPlayer) return '';
+
+    const gain = (replacement.score - out.score).toFixed(1);
+    const gainColor = gain > 0 ? 'var(--green)' : 'var(--red)';
+    const gainPrefix = gain > 0 ? '+' : '';
+    const netGain = (replacement.score - out.score - 0.4).toFixed(1); // 0.4 = 4pts scaled
+    const outTeam = state.teamMap[outPlayer.team];
+    const inTeam = state.teamMap[inPlayer.team];
+
+    return `
+      <div class="transfer-row">
+        <div class="transfer-player transfer-out">
+          <div class="transfer-avatar">
+            <img src="${playerPhoto(outPlayer.code)}" alt="${outPlayer.web_name}" onerror="this.style.display='none';this.parentElement.textContent='${outPlayer.web_name.substring(0,3)}'">
+          </div>
+          <div class="transfer-info">
+            <div class="transfer-name">${outPlayer.web_name}</div>
+            <div class="transfer-meta">${outTeam?.short_name || '—'} · £${(outPlayer.now_cost/10).toFixed(1)}m · FORM ${outPlayer.form}</div>
+            <div style="margin-top:3px">${fixturePills(outPlayer.team, 3)}</div>
+          </div>
+        </div>
+        <div class="transfer-arrow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="var(--amber)" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="transfer-gain" style="color:${gainColor}">${gainPrefix}${gain}</div>
+        </div>
+        <div class="transfer-player transfer-in-side">
+          <div class="transfer-avatar">
+            <img src="${playerPhoto(inPlayer.code)}" alt="${inPlayer.web_name}" onerror="this.style.display='none';this.parentElement.textContent='${inPlayer.web_name.substring(0,3)}'">
+          </div>
+          <div class="transfer-info">
+            <div class="transfer-name">${inPlayer.web_name}</div>
+            <div class="transfer-meta">${inTeam?.short_name || '—'} · £${(inPlayer.now_cost/10).toFixed(1)}m · FORM ${inPlayer.form}</div>
+            <div style="margin-top:3px">${fixturePills(inPlayer.team, 3)}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  const container = document.getElementById('transfer-container');
+  container.innerHTML = `
+    <div class="section-header">TOP TRANSFER RECOMMENDATIONS — SORTED BY FORM DEFICIT</div>
+    <div class="transfer-list">${rows.join('')}</div>
+  `;
+
+  // Hit calculator
+  const hitCalc = document.getElementById('hit-calc-card');
+  const hitContainer = document.getElementById('hit-container');
+  hitCalc.style.display = 'block';
+
+  const ft = 1; // assumed
+  const extraTransfers = suggestions.length;
+  const hits = Math.max(0, extraTransfers - ft);
+  const hitCost = hits * 4;
+
+  const totalGain = suggestions.reduce((sum, { out, in: r }) => {
+    return sum + (r ? (r.score - out.score) : 0);
+  }, 0);
+
+  const expectedPtsGain = (totalGain * 6).toFixed(0); // rough scaling
+  const netGainFinal = (expectedPtsGain - hitCost).toFixed(0);
+  const verdict = netGainFinal > 0 ? { text: 'HIT RECOMMENDED', color: 'var(--green)' } : { text: 'HOLD FREE TRANSFER', color: 'var(--amber)' };
+
+  hitContainer.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px">
+      <div><div class="tac-label">TRANSFER GAIN</div><div class="tac-value" style="font-size:24px;color:var(--green)">+${expectedPtsGain}pts</div></div>
+      <div><div class="tac-label">HIT COST</div><div class="tac-value" style="font-size:24px;color:var(--red)">-${hitCost}pts</div></div>
+      <div><div class="tac-label">NET GAIN</div><div class="tac-value" style="font-size:24px;color:${netGainFinal > 0 ? 'var(--green)' : 'var(--red)'}">${netGainFinal > 0 ? '+' : ''}${netGainFinal}pts</div></div>
+      <div><div class="tac-label">VERDICT</div><div class="tac-value" style="font-size:16px;color:${verdict.color}">${verdict.text}</div></div>
+    </div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:0.05em">
+      ANALYSIS: ${hits} additional transfer(s) would cost ${hitCost} points. Estimated gain from suggested transfers is ~${expectedPtsGain} points based on form differential × projected minutes. Net position: ${netGainFinal > 0 ? 'POSITIVE — consider taking the hit' : 'NEGATIVE — roll free transfer unless injury/blank forces action'}.
+    </div>
+  `;
+}
+
+// ====== RENDER CHIPS ======
+function renderChips() {
+  if (!state.history) return;
+
+  const used = new Set(state.history.chips?.map(c => c.name) || []);
+
+  const chipData = [
+    {
+      key: 'wildcard',
+      name: 'WILDCARD',
+      cls: 'wildcard',
+      desc: 'Unlimited free transfers for one gameweek. Use to rebuild team after injuries, blanks, or before a fixture run.',
+      timing: '⚡ OPTIMAL: GW3-5 (price settle) or 4 GWs before DGW chip combo'
+    },
+    {
+      key: 'bboost',
+      name: 'BENCH BOOST',
+      cls: 'bench-boost',
+      desc: 'All 15 players score points this gameweek. Best used in a Double Gameweek with strong bench coverage.',
+      timing: '⚡ OPTIMAL: Double GW with 6+ bench players having fixtures'
+    },
+    {
+      key: '3xc',
+      name: 'TRIPLE CAPTAIN',
+      cls: 'triple-captain',
+      desc: 'Your captain scores 3× points instead of 2×. Devastating in a Double GW for Haaland or Salah.',
+      timing: '⚡ OPTIMAL: DGW with premium captain (Haaland/Salah) at home vs FDR≤2'
+    },
+    {
+      key: 'freehit',
+      name: 'FREE HIT',
+      cls: 'free-hit',
+      desc: 'Completely new squad for one GW, reverts after. Critical for Blank Gameweeks where half the PL doesn\'t play.',
+      timing: '⚡ OPTIMAL: BGW to avoid blank players — pick ONLY players with fixtures'
+    }
+  ];
+
+  const cards = chipData.map(chip => {
+    const isUsed = used.has(chip.key);
+    return `
+      <div class="chip-card ${chip.cls} ${isUsed ? 'used' : ''}">
+        <div class="chip-name">${chip.name}</div>
+        <div class="chip-status ${isUsed ? 'used' : 'available'}">${isUsed ? '● DEPLOYED' : '● AVAILABLE'}</div>
+        <div class="chip-advice">${chip.desc}</div>
+        <div class="chip-timing">${chip.timing}</div>
+      </div>
+    `;
+  });
+
+  document.getElementById('chips-grid').innerHTML = cards.join('');
+}
+
+// ====== RENDER FIXTURES ======
+function renderFixtures() {
+  if (!state.fixtures || !state.bootstrap) return;
+
+  const teams = state.bootstrap.teams;
+  const currentGw = state.currentGw;
+  const gws = Array.from({ length: 8 }, (_, i) => currentGw + i).filter(g => g <= 38);
+
+  let html = `<table class="fg-table">
+    <thead>
+      <tr>
+        <th class="team-col">TEAM</th>
+        ${gws.map(g => `<th>GW${g}</th>`).join('')}
+      </tr>
+    </thead>
+    <tbody>`;
+
+  teams.forEach(team => {
+    const cells = gws.map(gw => {
+      const fix = state.fixtures.find(f =>
+        f.event === gw && !f.finished && (f.team_h === team.id || f.team_a === team.id)
+      );
+      if (!fix) return `<td style="color:var(--muted)">—</td>`;
+      const isHome = fix.team_h === team.id;
+      const oppId = isHome ? fix.team_a : fix.team_h;
+      const diff = isHome ? fix.team_h_difficulty : fix.team_a_difficulty;
+      const opp = state.teamMap[oppId];
+      const label = `${opp?.short_name || '?'} ${isHome ? 'H' : 'A'}`;
+      return `<td class="fdr-${diff}">${label}</td>`;
+    });
+    html += `<tr><td class="team-name">${team.name}</td>${cells.join('')}</tr>`;
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('fixture-grid').innerHTML = html;
+}
+
+// ====== RENDER DIFFERENTIALS ======
+function renderDifferentials() {
+  if (!state.bootstrap) return;
+
+  const diffs = state.bootstrap.elements
+    .filter(p =>
+      parseFloat(p.selected_by_percent) <= 10 &&
+      parseFloat(p.form) >= 4.0 &&
+      p.status === 'a'
+    )
+    .map(p => ({
+      player: p,
+      score: parseFloat(p.form) + parseFloat(p.ep_next || 0),
+      ownership: parseFloat(p.selected_by_percent)
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 12);
+
+  if (!diffs.length) {
+    document.getElementById('diff-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div>NO DIFFERENTIALS FOUND</div></div>';
+    return;
+  }
+
+  const cards = diffs.map(({ player, ownership }) => {
+    const team = state.teamMap[player.team];
+    const pos = posClass(player.element_type);
+    return `
+      <div class="diff-card">
+        <div class="diff-ownership">${ownership.toFixed(1)}% OWN</div>
+        <div class="diff-avatar">
+          <img src="${playerPhoto(player.code)}" alt="${player.web_name}" onerror="this.style.display='none';this.parentElement.textContent='${player.web_name.substring(0,3).toUpperCase()}'">
+        </div>
+        <div class="diff-name">${player.web_name}</div>
+        <div class="diff-team">${team?.name || '—'} · <span class="pos-pill ${pos}">${posLabel(player.element_type)}</span> · £${(player.now_cost/10).toFixed(1)}m</div>
+        <div class="diff-stats">
+          <div><div class="diff-stat-val">${player.form}</div><div class="diff-stat-label">FORM</div></div>
+          <div><div class="diff-stat-val">${player.total_points}</div><div class="diff-stat-label">TOTAL</div></div>
+          <div><div class="diff-stat-val">${player.ep_next || '?'}</div><div class="diff-stat-label">xPTS</div></div>
+        </div>
+        <div style="margin-top:8px">${fixturePills(player.team, 3)}</div>
+      </div>
+    `;
+  });
+
+  document.getElementById('diff-grid').innerHTML = cards.join('');
+}
+
+// ====== RENDER RANK HISTORY ======
+function renderRankHistory() {
+  const history = state.history?.current;
+  if (!history || !history.length) return;
+
+  const rankData = history.map(h => h.overall_rank).filter(Boolean);
+  const pointsData = history.map(h => h.points);
+  const labels = history.map(h => `GW${h.event}`);
+
+  drawChart('rank-chart', labels.slice(-rankData.length), rankData, 'var(--amber)', true);
+  drawChart('points-chart', labels, pointsData, 'var(--cyan)', false);
+}
+
+function drawChart(canvasId, labels, data, color, inverted) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.parentElement.clientWidth;
+  const h = 180;
+
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const pad = { top: 16, right: 16, bottom: 28, left: 50 };
+  const chartW = w - pad.left - pad.right;
+  const chartH = h - pad.top - pad.bottom;
+
+  // Background
+  ctx.fillStyle = '#040a0f';
+  ctx.fillRect(0, 0, w, h);
+
+  if (!data.length) return;
+
+  const minVal = Math.min(...data);
+  const maxVal = Math.max(...data);
+  const range = maxVal - minVal || 1;
+
+  function getY(val) {
+    const normalized = (val - minVal) / range;
+    if (inverted) {
+      return pad.top + normalized * chartH;
+    }
+    return pad.top + (1 - normalized) * chartH;
+  }
+
+  function getX(i) {
+    return pad.left + (i / (data.length - 1)) * chartW;
+  }
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(13,37,53,0.8)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (i / 4) * chartH;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + chartW, y);
+    ctx.stroke();
+  }
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
+  grad.addColorStop(0, color.replace('var(--amber)', '#ffb020').replace('var(--cyan)', '#00d4ff') + '40');
+  grad.addColorStop(1, 'transparent');
+
+  ctx.beginPath();
+  ctx.moveTo(getX(0), getY(data[0]));
+  for (let i = 1; i < data.length; i++) {
+    const x0 = getX(i - 1), y0 = getY(data[i - 1]);
+    const x1 = getX(i), y1 = getY(data[i]);
+    const cpX = (x0 + x1) / 2;
+    ctx.bezierCurveTo(cpX, y0, cpX, y1, x1, y1);
+  }
+  ctx.lineTo(getX(data.length - 1), pad.top + chartH);
+  ctx.lineTo(pad.left, pad.top + chartH);
+  ctx.closePath();
+
+  const rawColor = color.includes('--amber') ? '#ffb020' : color.includes('--cyan') ? '#00d4ff' : color;
+  ctx.fillStyle = rawColor + '20';
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.moveTo(getX(0), getY(data[0]));
+  for (let i = 1; i < data.length; i++) {
+    const x0 = getX(i - 1), y0 = getY(data[i - 1]);
+    const x1 = getX(i), y1 = getY(data[i]);
+    const cpX = (x0 + x1) / 2;
+    ctx.bezierCurveTo(cpX, y0, cpX, y1, x1, y1);
+  }
+  ctx.strokeStyle = rawColor;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Dots at data points
+  data.forEach((val, i) => {
+    ctx.beginPath();
+    ctx.arc(getX(i), getY(val), 3, 0, Math.PI * 2);
+    ctx.fillStyle = rawColor;
+    ctx.fill();
+  });
+
+  // Last point callout
+  const lastX = getX(data.length - 1);
+  const lastY = getY(data[data.length - 1]);
+  ctx.beginPath();
+  ctx.arc(lastX, lastY, 5, 0, Math.PI * 2);
+  ctx.fillStyle = rawColor;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(lastX, lastY, 8, 0, Math.PI * 2);
+  ctx.strokeStyle = rawColor + '50';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Labels
+  ctx.fillStyle = '#3a5a72';
+  ctx.font = '9px "Share Tech Mono"';
+  ctx.textAlign = 'center';
+
+  const step = Math.ceil(data.length / 8);
+  labels.forEach((label, i) => {
+    if (i % step === 0 || i === data.length - 1) {
+      ctx.fillText(label, getX(i), h - 8);
+    }
+  });
+
+  // Y axis labels
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 2; i++) {
+    const val = minVal + (range * i / 2);
+    const y = inverted
+      ? pad.top + ((val - minVal) / range) * chartH
+      : pad.top + (1 - (val - minVal) / range) * chartH;
+    const formatted = val >= 1000000 ? (val / 1000000).toFixed(1) + 'M' : val >= 1000 ? (val / 1000).toFixed(0) + 'K' : Math.round(val);
+    ctx.fillText(formatted, pad.left - 4, y + 3);
+  }
+}
+
+// ====== UPDATE TICKER ======
+function updateTicker() {
+  const items = [];
+
+  // Top scorer
+  if (state.bootstrap) {
+    const top = [...state.bootstrap.elements].sort((a, b) => b.total_points - a.total_points)[0];
+    if (top) items.push(`TOP SCORER: ${top.web_name} · ${top.total_points} PTS`);
+  }
+
+  // Captain
+  if (state.picks) {
+    const cap = state.picks.picks.find(p => p.is_captain);
+    if (cap) {
+      const player = state.playerMap[cap.element];
+      items.push(`CAPTAIN: ${player?.web_name || '—'}`);
+    }
+  }
+
+  // Rank
+  if (state.picks?.entry_history?.overall_rank) {
+    items.push(`OVERALL RANK: ${formatRank(state.picks.entry_history.overall_rank)}`);
+  }
+
+  items.push(
+    `GW${state.currentGw} ACTIVE`,
+    'CHIP INTEL: SAVE TRIPLE CAPTAIN FOR DGW',
+    'DIFFERENTIAL ALERT: CHECK OWNERSHIP < 10% PLAYERS',
+    'RANK ATTACK: TAKE CALCULATED RISK WITH DIFFERENTIALS',
+    'FDR TIP: TARGET TEAMS WITH 3+ GWS FDR ≤ 3'
+  );
+
+  const full = [...items, ...items].join(' ⬥ ');
+  document.getElementById('ticker-text').textContent = full;
+}
+
+// ====== TAB SWITCHING ======
+function switchTab(tab) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+
+  const btn = event?.target || document.querySelectorAll('.nav-tab')[['squad','captain','transfers','chips','fixtures','differentials','rank','intel'].indexOf(tab)];
+  btn?.classList.add('active');
+  document.getElementById(`panel-${tab}`)?.classList.add('active');
+
+  // Redraw charts if switching to rank
+  if (tab === 'rank') {
+    setTimeout(renderRankHistory, 50);
+  }
+  // Render intel feed
+  if (tab === 'intel') {
+    renderIntelFeed();
+  }
+}
+
+// ====== INTEL FEED ======
+let intelFilter = 'all';
+
+function setIntelFilter(filter, el) {
+  intelFilter = filter;
+  document.querySelectorAll('.intel-filter').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderIntelFeed();
+}
+
+function getIntelStatus(player) {
+  const cop = player.chance_of_playing_next_round;
+  const status = player.status; // 'a'=available, 'd'=doubtful, 'u'=unavailable, 'i'=injured, 's'=suspended, 'n'=n/a
+
+  if (status === 'u' || status === 'i' || status === 's') return 'out';
+  if (cop === 75) return 'doubt75';
+  if (cop === 50) return 'doubt50';
+  if (cop === 25) return 'doubt25';
+  if (cop === 0) return 'out';
+  if (status === 'd') return 'doubt50';
+  if (player.news && player.news.length > 0) return 'unknown';
+  return null;
+}
+
+function getStatusLabel(intelStatus, cop) {
+  if (intelStatus === 'out') return { cls: 'badge-out', text: 'UNAVAILABLE' };
+  if (intelStatus === 'doubt75') return { cls: 'badge-doubt75', text: '75% CHANCE' };
+  if (intelStatus === 'doubt50') return { cls: 'badge-doubt50', text: '50% CHANCE' };
+  if (intelStatus === 'doubt25') return { cls: 'badge-doubt25', text: '25% CHANCE' };
+  return { cls: 'badge-unknown', text: 'MONITOR' };
+}
+
+function getChanceBarColor(intelStatus) {
+  if (intelStatus === 'out') return 'var(--red)';
+  if (intelStatus === 'doubt75') return 'var(--amber)';
+  if (intelStatus === 'doubt50') return '#ff8c00';
+  if (intelStatus === 'doubt25') return '#ff6b35';
+  return 'var(--text-dim)';
+}
+
+function getChancePct(intelStatus) {
+  if (intelStatus === 'out') return 0;
+  if (intelStatus === 'doubt75') return 75;
+  if (intelStatus === 'doubt50') return 50;
+  if (intelStatus === 'doubt25') return 25;
+  return 50;
+}
+
+function renderIntelFeed() {
+  const container = document.getElementById('intel-feed');
+  if (!state.bootstrap) {
+    container.innerHTML = '<div class="intel-loading">⚠ LOAD A TEAM TO ACCESS INTEL FEED</div>';
+    return;
+  }
+
+  const posMap = { 1: 'GKP', 2: 'DEF', 3: 'MID', 4: 'FWD' };
+  const mySquadIds = new Set(state.picks?.picks?.map(p => p.element) || []);
+
+  // Get all players with news or unavailability
+  let alerts = state.bootstrap.elements.filter(p => {
+    const status = p.status;
+    const hasNews = p.news && p.news.trim().length > 0;
+    const isUnavailable = status !== 'a';
+    return hasNews || isUnavailable;
+  });
+
+  // Apply filter
+  if (intelFilter === 'doubt') {
+    alerts = alerts.filter(p => {
+      const s = getIntelStatus(p);
+      return s && s !== 'out';
+    });
+  } else if (intelFilter === 'out') {
+    alerts = alerts.filter(p => getIntelStatus(p) === 'out');
+  } else if (intelFilter === 'mysquad') {
+    alerts = alerts.filter(p => mySquadIds.has(p.id));
+  }
+
+  // Sort: my squad first, then by severity (out > doubt25 > doubt50 > doubt75 > unknown)
+  const severityOrder = { out: 0, doubt25: 1, doubt50: 2, doubt75: 3, unknown: 4, null: 5 };
+  alerts.sort((a, b) => {
+    const aInSquad = mySquadIds.has(a.id) ? 0 : 1;
+    const bInSquad = mySquadIds.has(b.id) ? 0 : 1;
+    if (aInSquad !== bInSquad) return aInSquad - bInSquad;
+    const aSev = severityOrder[getIntelStatus(a)] ?? 5;
+    const bSev = severityOrder[getIntelStatus(b)] ?? 5;
+    return aSev - bSev;
+  });
+
+  // Update count badge on tab
+  const tabBtn = document.getElementById('tab-intel');
+  const squadAlerts = alerts.filter(p => mySquadIds.has(p.id)).length;
+  if (squadAlerts > 0) {
+    tabBtn.innerHTML = `⚠ INTEL FEED <span class="intel-count-badge">${squadAlerts}</span>`;
+  }
+
+  document.getElementById('intel-meta').textContent = `${alerts.length} ALERTS · ${squadAlerts} IN YOUR SQUAD`;
+
+  if (alerts.length === 0) {
+    container.innerHTML = `<div class="intel-empty">◈ NO ALERTS MATCH THIS FILTER<br><span style="color:var(--muted);font-size:10px">ALL CLEAR ON SELECTED CRITERIA</span></div>`;
+    return;
+  }
+
+  const html = `<div class="intel-grid">${alerts.map(player => {
+    const intelStatus = getIntelStatus(player);
+    const badge = getStatusLabel(intelStatus, player.chance_of_playing_next_round);
+    const chancePct = getChancePct(intelStatus);
+    const barColor = getChanceBarColor(intelStatus);
+    const team = state.teamMap[player.team];
+    const teamName = team?.name || '—';
+    const pos = posMap[player.element_type] || '—';
+    const isInSquad = mySquadIds.has(player.id);
+    const isCaptain = state.picks?.picks?.find(p => p.element === player.id && p.is_captain);
+
+    // Format news text - highlight key injury terms
+    let newsText = player.news || 'No additional news available.';
+    newsText = newsText
+      .replace(/(injured?|injury|hamstring|knee|ankle|thigh|calf|groin|back|shoulder|muscle|strain|fracture|surgery|operation)/gi, '<strong>$1</strong>')
+      .replace(/(suspended?|ban|red card)/gi, '<strong style="color:var(--amber)">$1</strong>')
+      .replace(/(75%|50%|25%|100%|0%)/g, '<strong style="color:var(--cyan)">$1</strong>');
+
+    const squadTag = isInSquad ? `<span class="intel-squad-tag">${isCaptain ? '★ CAPT' : '✓ SQUAD'}</span>` : '';
+
+    return `
+    <div class="intel-card status-${intelStatus || 'unknown'}">
+      <div class="intel-card-header">
+        <div class="intel-player-info">
+          <div class="intel-player-name">${player.web_name}${squadTag}</div>
+          <div class="intel-player-meta">${pos} · ${teamName} · £${(player.now_cost / 10).toFixed(1)}m · ${player.total_points} PTS</div>
+        </div>
+        <div class="intel-status-badge ${badge.cls}">${badge.text}</div>
+      </div>
+      <div class="intel-chance-bar">
+        <div class="intel-chance-fill" style="width:${chancePct}%;background:${barColor}"></div>
+      </div>
+      <div class="intel-news">${newsText}</div>
+      <div class="intel-stats-row">
+        <div class="intel-stat">
+          <div class="intel-stat-val">${player.form}</div>
+          <div class="intel-stat-label">FORM</div>
+        </div>
+        <div class="intel-stat">
+          <div class="intel-stat-val">${player.ep_next}</div>
+          <div class="intel-stat-label">xPTS NEXT</div>
+        </div>
+        <div class="intel-stat">
+          <div class="intel-stat-val">${(player.selected_by_percent)}%</div>
+          <div class="intel-stat-label">OWNED</div>
+        </div>
+        <div class="intel-stat">
+          <div class="intel-stat-val">${player.transfers_out_event?.toLocaleString?.() || 0}</div>
+          <div class="intel-stat-label">SOLD GW</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+
+  container.innerHTML = html;
+}
+
+// ====== KEYBOARD ======
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const initInput = document.getElementById('init-team-id');
+    const headerInput = document.getElementById('header-team-id');
+    if (document.activeElement === initInput) loadTeam();
+    if (document.activeElement === headerInput) reloadTeam();
+  }
+});
+
+// ====== INIT ======
+document.getElementById('init-team-id').focus();
+</script>
+</body>
+</html>
