@@ -1997,6 +1997,7 @@ async function loadTeam(teamId) {
     renderCaptain();
     renderTransfers();
     renderChips();
+    renderDeadlineCountdown();
     renderFixtures();
     renderDifferentials();
     renderRankHistory();
@@ -2071,7 +2072,7 @@ function loadDemoMode(teamId) {
   teams.forEach(t => state.teamMap[t.id] = t);
   players.forEach(p => state.playerMap[p.id] = p);
 
-  state.bootstrap = { elements: players, teams, events: Array.from({length:38},(_,i)=>({id:i+1,is_current:i===25,is_next:i===26,deadline_time:'2025-03-01T11:00:00Z'})) };
+  state.bootstrap = { elements: players, teams, events: Array.from({length:38},(_,i)=>({id:i+1,is_current:i===25,is_next:i===26,deadline_time: i===26 ? '2026-03-14T11:00:00Z' : '2026-03-01T11:00:00Z'})) };
 
   state.picks = {
     active_chip: null,
@@ -2126,6 +2127,7 @@ function loadDemoMode(teamId) {
   renderCaptain();
   renderTransfers();
   renderChips();
+  renderDeadlineCountdown();
   renderFixtures();
   renderDifferentials();
   renderRankHistory();
@@ -2862,6 +2864,7 @@ function switchTab(tab) {
   if (tab === 'squadvalue') renderSquadValueTracker();
   if (tab === 'lineup') renderOptimalLineup();
   if (tab === 'chips') renderChips();
+  if (tab === 'deadline') renderDeadlineCountdown();
 }
 
 // ====== INTEL FEED ======
