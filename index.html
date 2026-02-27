@@ -1443,6 +1443,68 @@
     vertical-align: middle;
     animation: pulse-ring 2s infinite;
   }
+
+  /* ====== NEW PANELS CSS ====== */
+  .price-rise { color: #00e676; }
+  .price-fall { color: #ff5252; }
+  .price-neutral { color: var(--dim); }
+
+  .deadline-clock {
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--amber);
+    font-family: 'Share Tech Mono', monospace;
+    text-shadow: 0 0 30px rgba(255,180,0,0.4);
+    margin: 16px 0;
+  }
+  .deadline-label { color: var(--dim); font-size: 11px; letter-spacing: 2px; margin-bottom: 8px; }
+  .deadline-urgent { color: var(--red) !important; animation: pulse-ring 1s infinite; }
+
+  .value-bar { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .value-bar-label { color: var(--dim); font-size: 11px; width: 40px; }
+  .value-bar-track { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .value-bar-fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.5s; }
+  .value-bar-num { color: var(--text); font-size: 12px; width: 60px; text-align: right; font-family: 'Share Tech Mono', monospace; }
+
+  .compare-stat-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .compare-stat-left { text-align: right; font-family: 'Share Tech Mono', monospace; font-size: 13px; }
+  .compare-stat-label { color: var(--dim); font-size: 10px; letter-spacing: 1px; text-align: center; }
+  .compare-stat-right { text-align: left; font-family: 'Share Tech Mono', monospace; font-size: 13px; }
+  .compare-winner { color: var(--green); font-weight: 700; }
+  .compare-loser { color: var(--dim); }
+  .compare-header { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; margin-bottom: 16px; padding: 16px 0; border-bottom: 2px solid var(--amber); }
+  .compare-player-name { font-size: 15px; font-weight: 700; }
+  .compare-player-meta { color: var(--dim); font-size: 11px; margin-top: 4px; }
+
+  .lineup-pitch { display: flex; flex-direction: column; gap: 20px; padding: 20px 0; }
+  .lineup-row { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  .lineup-player { background: var(--surface2); border: 1px solid var(--border); padding: 10px 12px; text-align: center; min-width: 80px; position: relative; }
+  .lineup-player.captain { border-color: var(--amber); }
+  .lineup-player.vice { border-color: var(--blue); }
+  .lineup-player-name { font-size: 11px; font-weight: 700; }
+  .lineup-player-pts { font-size: 18px; color: var(--amber); font-family: 'Share Tech Mono', monospace; }
+  .lineup-player-team { font-size: 10px; color: var(--dim); }
+  .lineup-captain-badge { position: absolute; top: -8px; right: -8px; background: var(--amber); color: var(--bg); font-size: 9px; font-weight: 700; padding: 2px 4px; }
+  .lineup-vice-badge { position: absolute; top: -8px; right: -8px; background: var(--blue); color: white; font-size: 9px; font-weight: 700; padding: 2px 4px; }
+
+  .template-row { display: flex; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); align-items: center; }
+  .template-own { min-width: 60px; font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--amber); }
+  .template-name { flex: 1; font-size: 13px; }
+  .template-in-squad { color: var(--green); font-size: 11px; }
+  .template-not-squad { color: var(--dim); font-size: 11px; }
+
+  .dgw-badge { display: inline-block; padding: 2px 8px; font-size: 10px; font-weight: 700; letter-spacing: 1px; margin: 2px; }
+  .dgw-badge.double { background: rgba(0,230,118,0.2); border: 1px solid var(--green); color: var(--green); }
+  .dgw-badge.blank { background: rgba(255,82,82,0.2); border: 1px solid var(--red); color: var(--red); }
+  .dgw-badge.single { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--dim); }
+
+  .league-table { width: 100%; border-collapse: collapse; }
+  .league-table th { background: var(--surface2); color: var(--amber); font-size: 11px; letter-spacing: 1px; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  .league-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .league-table tr:hover td { background: var(--surface2); }
+  .league-rank { color: var(--amber); font-family: 'Share Tech Mono', monospace; font-weight: 700; }
+  .league-my-team td { border-left: 2px solid var(--amber); }
 </style>
 </head>
 <body>
@@ -1537,6 +1599,14 @@
     <button class="nav-tab" onclick="switchTab('differentials')">◉ DIFFERENTIALS</button>
     <button class="nav-tab" onclick="switchTab('rank')">↑ RANK HISTORY</button>
     <button class="nav-tab" onclick="switchTab('intel')" id="tab-intel">⚠ INTEL FEED</button>
+    <button class="nav-tab" onclick="switchTab('prices')">💹 PRICES</button>
+    <button class="nav-tab" onclick="switchTab('minileague')">🏆 MINI-LEAGUE</button>
+    <button class="nav-tab" onclick="switchTab('lineup')">⚙ OPTIMAL XI</button>
+    <button class="nav-tab" onclick="switchTab('templates')">📋 TEMPLATES</button>
+    <button class="nav-tab" onclick="switchTab('dgw')">📅 DGW PLANNER</button>
+    <button class="nav-tab" onclick="switchTab('deadline')">⏱ DEADLINE</button>
+    <button class="nav-tab" onclick="switchTab('squadvalue')">💰 SQUAD VALUE</button>
+    <button class="nav-tab" onclick="switchTab('compare')">⚔ COMPARE</button>
   </div>
 
   <!-- SQUAD PANEL -->
@@ -1681,6 +1751,132 @@
     </div>
   </div>
 
+  <!-- PRICES PANEL -->
+  <div class="panel" id="panel-prices" style="grid-column:1/-1">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header">
+        <div class="card-title"><div class="icon" style="background:var(--green)"></div>LIVE PRICE TRACKER</div>
+        <div class="card-meta" id="prices-meta">PRICE CHANGES & OWNERSHIP</div>
+      </div>
+      <div style="padding:0 16px 8px;display:flex;gap:10px;flex-wrap:wrap">
+        <input id="prices-search" placeholder="Search player..." oninput="filterPrices()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:inherit;font-size:12px;flex:1;min-width:150px">
+        <select id="prices-pos" onchange="filterPrices()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:inherit;font-size:12px">
+          <option value="">ALL POSITIONS</option>
+          <option value="1">GKP</option><option value="2">DEF</option><option value="3">MID</option><option value="4">FWD</option>
+        </select>
+        <select id="prices-sort" onchange="filterPrices()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:inherit;font-size:12px">
+          <option value="price_desc">PRICE ↓</option>
+          <option value="price_asc">PRICE ↑</option>
+          <option value="own_desc">OWNERSHIP ↓</option>
+          <option value="form_desc">FORM ↓</option>
+          <option value="pts_desc">TOTAL PTS ↓</option>
+        </select>
+      </div>
+      <div id="prices-table" style="padding:0 16px 16px;overflow-x:auto"></div>
+    </div>
+  </div>
+
+  <!-- MINI-LEAGUE PANEL -->
+  <div class="panel" id="panel-minileague" style="grid-column:1/-1">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header">
+        <div class="card-title"><div class="icon" style="background:var(--amber)"></div>MINI-LEAGUE TABLE</div>
+        <div class="card-meta">ENTER YOUR LEAGUE ID TO LOAD</div>
+      </div>
+      <div style="padding:16px;display:flex;gap:10px;align-items:center">
+        <input id="league-id-input" placeholder="Enter League ID..." style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;font-family:inherit;font-size:13px;flex:1;max-width:300px">
+        <button onclick="loadMiniLeague()" style="background:var(--amber);color:var(--bg);border:none;padding:10px 20px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px">LOAD LEAGUE</button>
+      </div>
+      <div id="minileague-table" style="padding:0 16px 16px;overflow-x:auto">
+        <div style="color:var(--dim);font-size:12px;padding:20px">Enter a league ID above to view standings</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTIMAL LINEUP PANEL -->
+  <div class="panel" id="panel-lineup" style="grid-column:1/-1">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header">
+        <div class="card-title"><div class="icon" style="background:var(--blue)"></div>OPTIMAL XI SUGGESTER</div>
+        <div class="card-meta">BEST 11 FROM YOUR SQUAD BY FORM + FIXTURES</div>
+      </div>
+      <div id="lineup-content" style="padding:16px">
+        <div style="color:var(--dim);font-size:12px">Load a team first to see optimal lineup suggestions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMPLATE TEAMS PANEL -->
+  <div class="panel" id="panel-templates" style="grid-column:1/-1">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header">
+        <div class="card-title"><div class="icon" style="background:var(--purple,#9b59b6)"></div>TEMPLATE TEAM FINDER</div>
+        <div class="card-meta">MOST POPULAR HIGH-OWNERSHIP COMBINATIONS</div>
+      </div>
+      <div id="templates-content" style="padding:16px;overflow-x:auto">
+        <div style="color:var(--dim);font-size:12px">Load a team first to compare vs template</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DGW PLANNER PANEL -->
+  <div class="panel" id="panel-dgw" style="grid-column:1/-1">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header">
+        <div class="card-title"><div class="icon" style="background:var(--cyan,#00bcd4)"></div>BLANK / DOUBLE GW PLANNER</div>
+        <div class="card-meta">GAMEWEEK FIXTURE COVERAGE ANALYSIS</div>
+      </div>
+      <div id="dgw-content" style="padding:16px;overflow-x:auto">
+        <div style="color:var(--dim);font-size:12px">Load a team first to see DGW planner</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEADLINE PANEL -->
+  <div class="panel" id="panel-deadline" style="grid-column:1/-1">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header">
+        <div class="card-title"><div class="icon" style="background:var(--red)"></div>TRANSFER DEADLINE COUNTDOWN</div>
+        <div class="card-meta">TIME REMAINING UNTIL GW LOCKS</div>
+      </div>
+      <div id="deadline-content" style="padding:32px 16px;text-align:center">
+        <div style="color:var(--dim);font-size:12px">Load a team first to see deadline info</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SQUAD VALUE PANEL -->
+  <div class="panel" id="panel-squadvalue" style="grid-column:1/-1">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header">
+        <div class="card-title"><div class="icon" style="background:var(--green)"></div>SQUAD VALUE TRACKER</div>
+        <div class="card-meta">VALUE ACROSS THE SEASON</div>
+      </div>
+      <div id="squadvalue-content" style="padding:16px">
+        <div style="color:var(--dim);font-size:12px">Load a team first to see squad value history</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARE PANEL -->
+  <div class="panel" id="panel-compare" style="grid-column:1/-1">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header">
+        <div class="card-title"><div class="icon" style="background:var(--amber)"></div>PLAYER COMPARISON TOOL</div>
+        <div class="card-meta">HEAD-TO-HEAD STATS</div>
+      </div>
+      <div style="padding:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input id="compare-p1" placeholder="Player 1 name..." oninput="compareAutocomplete('compare-p1','compare-list1')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;font-family:inherit;font-size:13px;flex:1;min-width:180px" autocomplete="off">
+        <datalist id="compare-list1"></datalist>
+        <span style="color:var(--amber);font-weight:700">VS</span>
+        <input id="compare-p2" placeholder="Player 2 name..." oninput="compareAutocomplete('compare-p2','compare-list2')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;font-family:inherit;font-size:13px;flex:1;min-width:180px" autocomplete="off">
+        <datalist id="compare-list2"></datalist>
+        <button onclick="runComparison()" style="background:var(--amber);color:var(--bg);border:none;padding:10px 20px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px">COMPARE</button>
+      </div>
+      <div id="compare-result" style="padding:0 16px 16px"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -1763,7 +1959,7 @@ async function loadTeam(teamId) {
     state.bootstrap.elements.forEach(p => state.playerMap[p.id] = p);
     state.bootstrap.teams.forEach(t => state.teamMap[t.id] = t);
 
-    // Find current GW
+    // Find current GW (bootstrap is_current can lag, so we verify with history)
     const events = state.bootstrap.events;
     const currentEvent = events.find(e => e.is_current) || events.find(e => e.is_next) || events[events.length - 1];
     state.currentGw = currentEvent.id;
@@ -1774,6 +1970,20 @@ async function loadTeam(teamId) {
     setProgress(55);
     state.history = await fplFetch(`entry/${teamId}/history/`);
     setProgress(70);
+
+    // Use the latest GW the team actually has picks for (avoids data lag)
+    if (state.history?.current?.length) {
+      const latestPickedGw = state.history.current[state.history.current.length - 1].event;
+      if (latestPickedGw !== state.currentGw) {
+        // Verify current GW has picks, fallback to latest known GW
+        try {
+          await fplFetch(`entry/${teamId}/event/${state.currentGw}/picks/`);
+        } catch(e) {
+          state.currentGw = latestPickedGw;
+          document.getElementById('gw-badge').textContent = `GW ${state.currentGw}`;
+        }
+      }
+    }
     state.picks = await fplFetch(`entry/${teamId}/event/${state.currentGw}/picks/`);
     setProgress(82);
     state.fixtures = await fplFetch('fixtures/');
@@ -2264,41 +2474,57 @@ function renderTransfers() {
 function renderChips() {
   if (!state.history) return;
 
-  const used = new Set(state.history.chips?.map(c => c.name) || []);
+  const usedChips = state.history.chips || [];
+  // Fix dual wildcard: FPL returns both WCs as 'wildcard' - differentiate by GW
+  const wc1Used = usedChips.some(c => c.name === 'wildcard' && c.event <= 19);
+  const wc2Used = usedChips.some(c => c.name === 'wildcard' && c.event > 19);
+  const usedSet = new Set(usedChips.map(c => c.name));
 
   const chipData = [
     {
-      key: 'wildcard',
-      name: 'WILDCARD',
+      key: 'wildcard1',
+      name: 'WILDCARD 1',
       cls: 'wildcard',
-      desc: 'Unlimited free transfers for one gameweek. Use to rebuild team after injuries, blanks, or before a fixture run.',
-      timing: '⚡ OPTIMAL: GW3-5 (price settle) or 4 GWs before DGW chip combo'
+      desc: 'Unlimited free transfers for one gameweek (GW1–19). Use to rebuild team after injuries, blanks, or before a fixture run.',
+      timing: '⚡ OPTIMAL: GW3-5 (price settle) or 4 GWs before DGW chip combo',
+      isUsed: wc1Used
+    },
+    {
+      key: 'wildcard2',
+      name: 'WILDCARD 2',
+      cls: 'wildcard',
+      desc: 'Unlimited free transfers for one gameweek (GW20–38). Second bite at rebuilding your squad in the second half.',
+      timing: '⚡ OPTIMAL: GW20-22 or 4 GWs before a key DGW run',
+      isUsed: wc2Used
     },
     {
       key: 'bboost',
       name: 'BENCH BOOST',
       cls: 'bench-boost',
       desc: 'All 15 players score points this gameweek. Best used in a Double Gameweek with strong bench coverage.',
-      timing: '⚡ OPTIMAL: Double GW with 6+ bench players having fixtures'
+      timing: '⚡ OPTIMAL: Double GW with 6+ bench players having fixtures',
+      isUsed: usedSet.has('bboost')
     },
     {
       key: '3xc',
       name: 'TRIPLE CAPTAIN',
       cls: 'triple-captain',
       desc: 'Your captain scores 3× points instead of 2×. Devastating in a Double GW for Haaland or Salah.',
-      timing: '⚡ OPTIMAL: DGW with premium captain (Haaland/Salah) at home vs FDR≤2'
+      timing: '⚡ OPTIMAL: DGW with premium captain (Haaland/Salah) at home vs FDR≤2',
+      isUsed: usedSet.has('3xc')
     },
     {
       key: 'freehit',
       name: 'FREE HIT',
       cls: 'free-hit',
       desc: 'Completely new squad for one GW, reverts after. Critical for Blank Gameweeks where half the PL doesn\'t play.',
-      timing: '⚡ OPTIMAL: BGW to avoid blank players — pick ONLY players with fixtures'
+      timing: '⚡ OPTIMAL: BGW to avoid blank players — pick ONLY players with fixtures',
+      isUsed: usedSet.has('freehit')
     }
   ];
 
   const cards = chipData.map(chip => {
-    const isUsed = used.has(chip.key);
+    const isUsed = chip.isUsed;
     return `
       <div class="chip-card ${chip.cls} ${isUsed ? 'used' : ''}">
         <div class="chip-name">${chip.name}</div>
@@ -2754,6 +2980,468 @@ function renderIntelFeed() {
   }).join('')}</div>`;
 
   container.innerHTML = html;
+}
+
+
+// ====== FEATURE 1: PRICE TRACKER ======
+function renderPriceTracker() {
+  if (!state.bootstrap) return;
+  filterPrices();
+}
+
+function filterPrices() {
+  if (!state.bootstrap) return;
+  const search = (document.getElementById('prices-search')?.value || '').toLowerCase();
+  const posFilter = document.getElementById('prices-pos')?.value || '';
+  const sortMode = document.getElementById('prices-sort')?.value || 'price_desc';
+  const pos = ['','GKP','DEF','MID','FWD'];
+
+  let players = state.bootstrap.elements.filter(p => {
+    if (posFilter && p.element_type != posFilter) return false;
+    if (search && !`${p.first_name} ${p.second_name}`.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  players.sort((a, b) => {
+    if (sortMode === 'price_desc') return b.now_cost - a.now_cost;
+    if (sortMode === 'price_asc') return a.now_cost - b.now_cost;
+    if (sortMode === 'own_desc') return parseFloat(b.selected_by_percent) - parseFloat(a.selected_by_percent);
+    if (sortMode === 'form_desc') return parseFloat(b.form) - parseFloat(a.form);
+    if (sortMode === 'pts_desc') return b.total_points - a.total_points;
+    return 0;
+  });
+
+  players = players.slice(0, 100);
+
+  const mySquadIds = new Set((state.picks?.picks || []).map(p => p.element));
+
+  let html = `<table class="fg-table"><thead><tr>
+    <th>PLAYER</th><th>POS</th><th>TEAM</th><th>PRICE</th><th>FORM</th>
+    <th>OWNED %</th><th>TOTAL PTS</th><th>GW PTS</th><th>IN SQUAD</th>
+  </tr></thead><tbody>`;
+
+  players.forEach(p => {
+    const team = state.teamMap[p.team];
+    const inSquad = mySquadIds.has(p.id);
+    const costDiff = (p.now_cost - p.cost_change_start);
+    const diffStr = costDiff > 0 ? `<span class="price-rise">▲${(costDiff/10).toFixed(1)}</span>` 
+                  : costDiff < 0 ? `<span class="price-fall">▼${Math.abs(costDiff/10).toFixed(1)}</span>` 
+                  : `<span class="price-neutral">—</span>`;
+    html += `<tr>
+      <td><strong>${p.web_name}</strong></td>
+      <td>${pos[p.element_type]}</td>
+      <td>${team?.short_name || ''}</td>
+      <td>£${(p.now_cost/10).toFixed(1)}m ${diffStr}</td>
+      <td>${p.form}</td>
+      <td>${p.selected_by_percent}%</td>
+      <td>${p.total_points}</td>
+      <td>${p.event_points || 0}</td>
+      <td>${inSquad ? '<span style="color:var(--green)">✓</span>' : ''}</td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('prices-table').innerHTML = html;
+  document.getElementById('prices-meta').textContent = `${players.length} PLAYERS — SORTED BY ${sortMode.toUpperCase().replace('_',' ')}`;
+}
+
+// ====== FEATURE 2: MINI-LEAGUE ======
+async function loadMiniLeague() {
+  const leagueId = document.getElementById('league-id-input')?.value?.trim();
+  if (!leagueId) { alert('Enter a league ID'); return; }
+  const el = document.getElementById('minileague-table');
+  el.innerHTML = '<div style="color:var(--dim);padding:20px;font-size:12px">LOADING LEAGUE DATA...</div>';
+  try {
+    const data = await fplFetch(`leagues-classic/${leagueId}/standings/`);
+    const standings = data.standings?.results || [];
+    const myId = state.teamId;
+    let html = `<div style="margin-bottom:12px;color:var(--amber);font-size:14px;font-weight:700">${data.league?.name || 'LEAGUE'}</div>`;
+    html += `<table class="league-table"><thead><tr>
+      <th>RNK</th><th>MANAGER</th><th>TEAM</th><th>GW PTS</th><th>TOTAL</th><th>+/-</th>
+    </tr></thead><tbody>`;
+    standings.forEach(e => {
+      const isMe = e.entry == myId;
+      const rankChange = e.last_rank - e.rank;
+      const changeStr = rankChange > 0 ? `<span class="price-rise">▲${rankChange}</span>`
+                      : rankChange < 0 ? `<span class="price-fall">▼${Math.abs(rankChange)}</span>`
+                      : '<span class="price-neutral">—</span>';
+      html += `<tr class="${isMe ? 'league-my-team' : ''}">
+        <td class="league-rank">${e.rank}</td>
+        <td>${e.player_name}${isMe ? ' <span style="color:var(--amber);font-size:10px">◄ YOU</span>' : ''}</td>
+        <td>${e.entry_name}</td>
+        <td style="font-family:'Share Tech Mono',monospace">${e.event_total}</td>
+        <td style="font-family:'Share Tech Mono',monospace;font-weight:700">${e.total}</td>
+        <td>${changeStr}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    if (data.standings?.has_next) html += '<div style="color:var(--dim);font-size:11px;padding:10px 0">Showing top 50 entries</div>';
+    el.innerHTML = html;
+  } catch(err) {
+    el.innerHTML = `<div style="color:var(--red);padding:20px;font-size:12px">Failed to load league. Check the ID and try again.</div>`;
+  }
+}
+
+// ====== FEATURE 3: OPTIMAL LINEUP ======
+function renderOptimalLineup() {
+  const el = document.getElementById('lineup-content');
+  if (!state.picks || !state.bootstrap) {
+    el.innerHTML = '<div style="color:var(--dim);font-size:12px">Load a team first</div>';
+    return;
+  }
+
+  const pos = ['','GKP','DEF','MID','FWD'];
+  const startingPicks = state.picks.picks.filter(p => p.position <= 11);
+  const benchPicks = state.picks.picks.filter(p => p.position > 11);
+
+  // Score each player by form * fixture difficulty
+  function playerScore(pick) {
+    const player = state.playerMap[pick.element];
+    if (!player) return 0;
+    return parseFloat(player.form || 0) * (6 - (player.ep_next ? 3 : 3));
+  }
+
+  // Group starting players by position
+  const byPos = {1:[], 2:[], 3:[], 4:[]};
+  startingPicks.forEach(pick => {
+    const p = state.playerMap[pick.element];
+    if (p) byPos[p.element_type].push({...p, pick});
+  });
+
+  // Find best captain candidate (highest expected points)
+  const allStarters = startingPicks.map(p => state.playerMap[p.element]).filter(Boolean);
+  const sorted = [...allStarters].sort((a,b) => parseFloat(b.ep_next||0) - parseFloat(a.ep_next||0));
+  const captainId = sorted[0]?.id;
+  const viceId = sorted[1]?.id;
+
+  function renderRow(players, label) {
+    if (!players.length) return '';
+    const cards = players.map(p => {
+      const isCap = p.id === captainId;
+      const isVice = p.id === viceId;
+      return `<div class="lineup-player ${isCap?'captain':isVice?'vice':''}">
+        ${isCap ? '<div class="lineup-captain-badge">C</div>' : isVice ? '<div class="lineup-vice-badge">V</div>' : ''}
+        <div class="lineup-player-pts">${p.event_points || p.ep_next || '—'}</div>
+        <div class="lineup-player-name">${p.web_name}</div>
+        <div class="lineup-player-team">${state.teamMap[p.team]?.short_name || ''}</div>
+      </div>`;
+    }).join('');
+    return `<div style="text-align:center;color:var(--dim);font-size:10px;letter-spacing:2px;margin-bottom:8px">${label}</div><div class="lineup-row">${cards}</div>`;
+  }
+
+  let html = '<div class="lineup-pitch">';
+  html += renderRow(byPos[1], 'GOALKEEPER');
+  html += renderRow(byPos[2], 'DEFENDERS');
+  html += renderRow(byPos[3], 'MIDFIELDERS');
+  html += renderRow(byPos[4], 'FORWARDS');
+  html += '</div>';
+
+  // Bench
+  html += '<div style="border-top:2px dashed var(--border);padding-top:16px;margin-top:8px">';
+  html += '<div style="text-align:center;color:var(--dim);font-size:10px;letter-spacing:2px;margin-bottom:8px">BENCH</div>';
+  html += '<div class="lineup-row">';
+  benchPicks.forEach(pick => {
+    const p = state.playerMap[pick.element];
+    if (!p) return;
+    html += `<div class="lineup-player">
+      <div class="lineup-player-pts">${p.event_points || '—'}</div>
+      <div class="lineup-player-name">${p.web_name}</div>
+      <div class="lineup-player-team">${state.teamMap[p.team]?.short_name || ''}</div>
+    </div>`;
+  });
+  html += '</div></div>';
+
+  const totalPts = allStarters.reduce((s, p) => s + (p.event_points || 0), 0);
+  html += `<div style="text-align:center;padding:16px;color:var(--amber);font-family:'Share Tech Mono',monospace;font-size:20px">TOTAL: ${totalPts} pts</div>`;
+
+  el.innerHTML = html;
+}
+
+// ====== FEATURE 4: TEMPLATE TEAMS ======
+function renderTemplateTeams() {
+  const el = document.getElementById('templates-content');
+  if (!state.bootstrap) {
+    el.innerHTML = '<div style="color:var(--dim);font-size:12px">Load a team first</div>';
+    return;
+  }
+
+  const mySquadIds = new Set((state.picks?.picks || []).map(p => p.element));
+
+  // Get top owned players per position
+  const pos = ['','GKP','DEF','MID','FWD'];
+  const posColors = ['','var(--amber)','var(--blue)','var(--green)','var(--red)'];
+  let html = '<div style="margin-bottom:16px;color:var(--dim);font-size:11px">Most owned players in the game. Highlighted players are in your squad.</div>';
+
+  [1,2,3,4].forEach(posType => {
+    const players = state.bootstrap.elements
+      .filter(p => p.element_type === posType)
+      .sort((a,b) => parseFloat(b.selected_by_percent) - parseFloat(a.selected_by_percent))
+      .slice(0, 10);
+
+    html += `<div style="margin-bottom:20px"><div style="color:${posColors[posType]};font-size:11px;font-weight:700;letter-spacing:2px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">${pos[posType]}</div>`;
+    players.forEach((p, i) => {
+      const inSquad = mySquadIds.has(p.id);
+      html += `<div class="template-row">
+        <div class="template-own">${p.selected_by_percent}%</div>
+        <div class="template-name">${p.web_name} <span style="color:var(--dim);font-size:10px">${state.teamMap[p.team]?.short_name || ''} £${(p.now_cost/10).toFixed(1)}m</span></div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--amber)">${p.total_points}pts</div>
+        <div class="${inSquad ? 'template-in-squad' : 'template-not-squad'}">${inSquad ? '✓ IN SQUAD' : '✗ NOT IN'}</div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+}
+
+// ====== FEATURE 5: DGW/BGW PLANNER ======
+function renderDGWPlanner() {
+  const el = document.getElementById('dgw-content');
+  if (!state.fixtures || !state.bootstrap) {
+    el.innerHTML = '<div style="color:var(--dim);font-size:12px">Load a team first</div>';
+    return;
+  }
+
+  const mySquadIds = new Set((state.picks?.picks || []).map(p => p.element));
+  const teams = state.bootstrap.teams;
+  const currentGw = state.currentGw;
+  const gws = Array.from({length: 10}, (_, i) => currentGw + i).filter(g => g <= 38);
+
+  // Count fixtures per team per GW
+  const teamFixtures = {};
+  teams.forEach(t => {
+    teamFixtures[t.id] = {};
+    gws.forEach(g => teamFixtures[t.id][g] = []);
+  });
+
+  state.fixtures.forEach(f => {
+    if (!gws.includes(f.event)) return;
+    if (teamFixtures[f.team_h]) teamFixtures[f.team_h][f.event].push({ opp: f.team_a, home: true });
+    if (teamFixtures[f.team_a]) teamFixtures[f.team_a][f.event].push({ opp: f.team_h, home: false });
+  });
+
+  let html = `<table class="fg-table"><thead><tr>
+    <th>TEAM</th>
+    ${gws.map(g => `<th>GW${g}</th>`).join('')}
+  </tr></thead><tbody>`;
+
+  // Show my squad teams first, then all
+  const myTeamIds = new Set();
+  if (state.picks) {
+    state.picks.picks.forEach(pick => {
+      const p = state.playerMap[pick.element];
+      if (p) myTeamIds.add(p.team);
+    });
+  }
+
+  const sortedTeams = [...teams].sort((a,b) => {
+    const aMe = myTeamIds.has(a.id) ? 0 : 1;
+    const bMe = myTeamIds.has(b.id) ? 0 : 1;
+    return aMe - bMe || a.name.localeCompare(b.name);
+  });
+
+  sortedTeams.forEach(team => {
+    const isMyTeam = myTeamIds.has(team.id);
+    html += `<tr ${isMyTeam ? 'style="background:rgba(255,180,0,0.05)"' : ''}>
+      <td class="team-name" style="${isMyTeam ? 'color:var(--amber)' : ''}">${team.short_name}</td>
+      ${gws.map(g => {
+        const fixtures = teamFixtures[team.id]?.[g] || [];
+        const count = fixtures.length;
+        if (count === 0) return `<td><span class="dgw-badge blank">BLANK</span></td>`;
+        if (count >= 2) return `<td>${fixtures.map(f => {
+          const opp = teams.find(t => t.id === f.opp);
+          return `<span class="dgw-badge double">${opp?.short_name || '?'}${f.home ? '(H)' : '(A)'}</span>`;
+        }).join('')}</td>`;
+        const opp = teams.find(t => t.id === fixtures[0].opp);
+        return `<td><span class="dgw-badge single">${opp?.short_name || '?'}${fixtures[0].home ? '(H)' : '(A)'}</span></td>`;
+      }).join('')}
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+// ====== FEATURE 6: DEADLINE COUNTDOWN ======
+let deadlineTimer = null;
+
+function renderDeadlineCountdown() {
+  const el = document.getElementById('deadline-content');
+  if (!state.bootstrap) {
+    el.innerHTML = '<div style="color:var(--dim);font-size:12px">Load a team first</div>';
+    return;
+  }
+
+  const events = state.bootstrap.events;
+  const nextEvent = events.find(e => e.is_next) || events.find(e => e.is_current);
+  if (!nextEvent) {
+    el.innerHTML = '<div style="color:var(--dim)">No upcoming deadline found</div>';
+    return;
+  }
+
+  const deadline = new Date(nextEvent.deadline_time);
+
+  if (deadlineTimer) clearInterval(deadlineTimer);
+
+  function updateClock() {
+    const now = new Date();
+    const diff = deadline - now;
+    if (diff <= 0) {
+      el.innerHTML = `<div class="deadline-label">GW${nextEvent.id} DEADLINE</div><div class="deadline-clock deadline-urgent">LOCKED</div>`;
+      clearInterval(deadlineTimer);
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+
+    const urgent = diff < 3600000;
+    const clockClass = urgent ? 'deadline-clock deadline-urgent' : 'deadline-clock';
+
+    el.innerHTML = `
+      <div class="deadline-label">GW${nextEvent.id} TRANSFER DEADLINE</div>
+      <div class="${clockClass}">${days > 0 ? days+'d ' : ''}${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}</div>
+      <div class="deadline-label">${deadline.toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'})} at ${deadline.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</div>
+      ${urgent ? '<div style="color:var(--red);font-size:12px;margin-top:12px;letter-spacing:1px">⚠ DEADLINE APPROACHING — MAKE YOUR TRANSFERS NOW</div>' : ''}
+    `;
+  }
+
+  updateClock();
+  deadlineTimer = setInterval(updateClock, 1000);
+}
+
+// ====== FEATURE 7: SQUAD VALUE TRACKER ======
+function renderSquadValueTracker() {
+  const el = document.getElementById('squadvalue-content');
+  if (!state.history) {
+    el.innerHTML = '<div style="color:var(--dim);font-size:12px">Load a team first</div>';
+    return;
+  }
+
+  const gwHistory = state.history.current || [];
+  if (!gwHistory.length) {
+    el.innerHTML = '<div style="color:var(--dim);font-size:12px">No history data available</div>';
+    return;
+  }
+
+  const maxValue = Math.max(...gwHistory.map(g => g.value));
+  const minValue = Math.min(...gwHistory.map(g => g.value));
+  const latestValue = gwHistory[gwHistory.length - 1].value;
+  const startValue = gwHistory[0].value;
+  const gain = latestValue - startValue;
+
+  let html = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:24px">
+      <div style="text-align:center;padding:16px;background:var(--surface2);border:1px solid var(--border)">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:22px;color:var(--amber)">£${(latestValue/10).toFixed(1)}m</div>
+        <div style="color:var(--dim);font-size:10px;letter-spacing:1px;margin-top:4px">CURRENT VALUE</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:var(--surface2);border:1px solid var(--border)">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:22px;color:${gain>=0?'var(--green)':'var(--red)'}">${gain>=0?'+':''}£${(gain/10).toFixed(1)}m</div>
+        <div style="color:var(--dim);font-size:10px;letter-spacing:1px;margin-top:4px">SEASON GAIN/LOSS</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:var(--surface2);border:1px solid var(--border)">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:22px;color:var(--green)">£${(maxValue/10).toFixed(1)}m</div>
+        <div style="color:var(--dim);font-size:10px;letter-spacing:1px;margin-top:4px">PEAK VALUE</div>
+      </div>
+    </div>
+    <div style="color:var(--amber);font-size:11px;letter-spacing:2px;margin-bottom:12px">VALUE BY GAMEWEEK</div>
+  `;
+
+  gwHistory.forEach(gw => {
+    const pct = maxValue > minValue ? ((gw.value - minValue) / (maxValue - minValue) * 100) : 50;
+    html += `<div class="value-bar">
+      <div class="value-bar-label">GW${gw.event}</div>
+      <div class="value-bar-track"><div class="value-bar-fill" style="width:${pct}%"></div></div>
+      <div class="value-bar-num">£${(gw.value/10).toFixed(1)}m</div>
+    </div>`;
+  });
+
+  el.innerHTML = html;
+}
+
+// ====== FEATURE 8: PLAYER COMPARISON ======
+function compareAutocomplete(inputId, listId) {
+  if (!state.bootstrap) return;
+  const val = document.getElementById(inputId)?.value?.toLowerCase() || '';
+  const list = document.getElementById(listId);
+  if (!list || val.length < 2) return;
+  const matches = state.bootstrap.elements.filter(p =>
+    `${p.first_name} ${p.second_name}`.toLowerCase().includes(val) ||
+    p.web_name.toLowerCase().includes(val)
+  ).slice(0, 8);
+  list.innerHTML = matches.map(p => `<option value="${p.web_name} (${state.teamMap[p.team]?.short_name || ''})">${p.first_name} ${p.second_name}</option>`).join('');
+}
+
+function findPlayerByName(name) {
+  if (!state.bootstrap || !name) return null;
+  const search = name.toLowerCase().replace(/\s*\(.*\)/, '').trim();
+  return state.bootstrap.elements.find(p =>
+    p.web_name.toLowerCase() === search ||
+    `${p.first_name} ${p.second_name}`.toLowerCase() === search ||
+    p.web_name.toLowerCase().includes(search)
+  );
+}
+
+function runComparison() {
+  const el = document.getElementById('compare-result');
+  if (!state.bootstrap) { el.innerHTML = '<div style="color:var(--red)">Load a team first</div>'; return; }
+
+  const name1 = document.getElementById('compare-p1')?.value || '';
+  const name2 = document.getElementById('compare-p2')?.value || '';
+  const p1 = findPlayerByName(name1);
+  const p2 = findPlayerByName(name2);
+
+  if (!p1 || !p2) {
+    el.innerHTML = `<div style="color:var(--red);padding:12px">${!p1 ? 'Player 1 not found' : 'Player 2 not found'}. Try a different name.</div>`;
+    return;
+  }
+
+  const pos = ['','GKP','DEF','MID','FWD'];
+
+  const stats = [
+    { label: 'PRICE', v1: `£${(p1.now_cost/10).toFixed(1)}m`, v2: `£${(p2.now_cost/10).toFixed(1)}m`, better: p1.now_cost < p2.now_cost ? 1 : p2.now_cost < p1.now_cost ? 2 : 0 },
+    { label: 'FORM', v1: p1.form, v2: p2.form, better: parseFloat(p1.form) > parseFloat(p2.form) ? 1 : parseFloat(p2.form) > parseFloat(p1.form) ? 2 : 0 },
+    { label: 'TOTAL PTS', v1: p1.total_points, v2: p2.total_points, better: p1.total_points > p2.total_points ? 1 : p2.total_points > p1.total_points ? 2 : 0 },
+    { label: 'GW PTS', v1: p1.event_points || 0, v2: p2.event_points || 0, better: (p1.event_points||0) > (p2.event_points||0) ? 1 : (p2.event_points||0) > (p1.event_points||0) ? 2 : 0 },
+    { label: 'GOALS', v1: p1.goals_scored, v2: p2.goals_scored, better: p1.goals_scored > p2.goals_scored ? 1 : p2.goals_scored > p1.goals_scored ? 2 : 0 },
+    { label: 'ASSISTS', v1: p1.assists, v2: p2.assists, better: p1.assists > p2.assists ? 1 : p2.assists > p1.assists ? 2 : 0 },
+    { label: 'CLEAN SHEETS', v1: p1.clean_sheets, v2: p2.clean_sheets, better: p1.clean_sheets > p2.clean_sheets ? 1 : p2.clean_sheets > p1.clean_sheets ? 2 : 0 },
+    { label: 'OWNED %', v1: `${p1.selected_by_percent}%`, v2: `${p2.selected_by_percent}%`, better: parseFloat(p1.selected_by_percent) > parseFloat(p2.selected_by_percent) ? 1 : parseFloat(p2.selected_by_percent) > parseFloat(p1.selected_by_percent) ? 2 : 0 },
+    { label: 'PTS/GAME', v1: p1.points_per_game, v2: p2.points_per_game, better: parseFloat(p1.points_per_game) > parseFloat(p2.points_per_game) ? 1 : parseFloat(p2.points_per_game) > parseFloat(p1.points_per_game) ? 2 : 0 },
+    { label: 'TRANSFERS IN', v1: p1.transfers_in_event?.toLocaleString() || 0, v2: p2.transfers_in_event?.toLocaleString() || 0, better: (p1.transfers_in_event||0) > (p2.transfers_in_event||0) ? 1 : (p2.transfers_in_event||0) > (p1.transfers_in_event||0) ? 2 : 0 },
+    { label: 'BONUS PTS', v1: p1.bonus, v2: p2.bonus, better: p1.bonus > p2.bonus ? 1 : p2.bonus > p1.bonus ? 2 : 0 },
+  ];
+
+  let html = `<div class="compare-header">
+    <div>
+      <div class="compare-player-name">${p1.web_name}</div>
+      <div class="compare-player-meta">${pos[p1.element_type]} · ${state.teamMap[p1.team]?.name || ''}</div>
+    </div>
+    <div style="color:var(--amber);font-size:20px;font-weight:700;align-self:center">VS</div>
+    <div style="text-align:right">
+      <div class="compare-player-name">${p2.web_name}</div>
+      <div class="compare-player-meta">${pos[p2.element_type]} · ${state.teamMap[p2.team]?.name || ''}</div>
+    </div>
+  </div>`;
+
+  stats.forEach(s => {
+    html += `<div class="compare-stat-row">
+      <div class="compare-stat-left ${s.better===1?'compare-winner':s.better===2?'compare-loser':''}">${s.v1}</div>
+      <div class="compare-stat-label">${s.label}</div>
+      <div class="compare-stat-right ${s.better===2?'compare-winner':s.better===1?'compare-loser':''}">${s.v2}</div>
+    </div>`;
+  });
+
+  const p1Wins = stats.filter(s => s.better === 1).length;
+  const p2Wins = stats.filter(s => s.better === 2).length;
+  const winner = p1Wins > p2Wins ? p1.web_name : p2Wins > p1Wins ? p2.web_name : null;
+  html += `<div style="text-align:center;padding:20px;color:var(--amber);font-size:14px;font-weight:700;letter-spacing:1px;border-top:1px solid var(--border);margin-top:8px">
+    ${winner ? `◆ ${winner.toUpperCase()} WINS (${Math.max(p1Wins,p2Wins)}-${Math.min(p1Wins,p2Wins)})` : '◆ DRAW — EVEN CONTEST'}
+  </div>`;
+
+  el.innerHTML = html;
 }
 
 // ====== KEYBOARD ======
