@@ -1011,6 +1011,8 @@ async function loadSquad(){
       }).join('');
       rdSmTgts(S.bs);
     }
+    // Auto-start live rank engine once squad is loaded
+    if(S.mid && S.bs) startLiveRank();
   }catch(e){console.error(e);document.getElementById('sq-bod').innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--rd);padding:24px">Failed to load. Check Manager ID or try again.</td></tr>';}
 }
 
@@ -1601,16 +1603,7 @@ function renderCapScenarios(){
   </tbody></table>`;
 }
 
-// ─── Integration with existing squad load ───────────────────
-// After squad loads, hook into live engine if we have data
-const _origLoadSquad=loadSquad;
-async function loadSquad(){
-  await _origLoadSquad();
-  // Start live rank automatically if squad loaded successfully
-  if(S.mid && S.bs){
-    await startLiveRank();
-  }
-}
+// Live rank auto-starts after squad loads — triggered from within loadSquad directly
 
 
 // INIT
