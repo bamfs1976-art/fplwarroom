@@ -537,11 +537,7 @@ select.inp{-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Cs
     <div class="ph"><h2>Smart Alerts</h2><p>Price rises &middot; Injury changes &middot; Yellow card warnings &middot; Deadline reminders</p></div>
     <div class="card mb-16">
       <div class="fbc mb-16"><div class="sh" style="margin-bottom:0">Active Alerts</div><button class="btn btn-g btn-sm" onclick="clearAlerts()">Clear All</button></div>
-      <div id="al-list">
-        <div class="alitem"><span class="alitem-ic">&#128176;</span><div class="alitem-b"><strong>Price Rise:</strong> N. Munoz rises to &pound;5.3m tonight. Buy before 6am.</div><span class="alitem-t">2h ago</span></div>
-        <div class="alitem"><span class="alitem-ic">&#127973;</span><div class="alitem-b"><strong>Injury Update:</strong> H&oslash;jlund &mdash; hamstring, out until GW32. Alternative captain needed.</div><span class="alitem-t">5h ago</span></div>
-        <div class="alitem"><span class="alitem-ic">&#129000;</span><div class="alitem-b"><strong>Yellow Card Warning:</strong> Rodri &mdash; 4 bookings. One more = 1-match ban.</div><span class="alitem-t">1d ago</span></div>
-      </div>
+      <div id="al-list"><div class="spinner"></div></div>
     </div>
     <div class="card"><div class="ct">Alert Preferences</div>
       <div class="g2 gap-16">
@@ -771,7 +767,7 @@ async function loadBoot(){
     if(sel)sel.innerHTML=d.events.map(e=>`<option value="${e.id}"${e.id===S.gw?' selected':''}>${e.is_current?'⚡ ':''}GW ${e.id}</option>`).join('');
     const dtg=document.getElementById('d-tgt-gw');if(dtg)dtg.textContent='GW'+S.gw;
     const eg=document.getElementById('eo-gw');if(eg)eg.innerHTML='<span class="tag tg">GW'+S.gw+'</span>';
-    rdTgts(d);rdFDR(d);rdCaps(d);rdDiffs(d);rdInj(d);rdPrices(d);rdRot(d);rdTmpl(d);rdSP(d);rdBonus();
+    rdTgts(d);rdFDR(d);rdCaps(d);rdDiffs(d);rdInj(d);rdPrices(d);rdRot(d);rdTmpl(d);rdSP(d);rdBonus();rdAlerts(d);
     rdSmTgts(d);
     return d;
   }catch(e){console.warn('Boot failed, using demo data:',e.message);showApiStatus('demo');loadDemo();}
@@ -910,12 +906,35 @@ function rdDemoInj(){
   document.getElementById('inj-bod').innerHTML=DM.inj.map(i=>`<tr><td class="cp">${i.n}</td><td class="t2c">${i.cl}</td><td>${i.iss}</td><td>${i.ret}</td><td>${stIc[i.s]} <span class="xs t2c">${stLb[i.s]}</span></td></tr>`).join('');
 }
 function rdInj(d){
-  const inj=d.elements.filter(e=>e.status!=='a'&&e.status!=='s').slice(0,12);
   const tm={};d.teams.forEach(t=>tm[t.id]=t);
-  const smp={'i':'out','d':'doubt','u':'out','n':'monitor'};
-  const o=inj.filter(e=>e.status==='i'||e.status==='u').length,dd=inj.filter(e=>e.status==='d').length;
-  document.getElementById('inj-out').textContent=o;document.getElementById('inj-d').textContent=dd;document.getElementById('inj-m').textContent=inj.length-o-dd;
-  document.getElementById('inj-bod').innerHTML=inj.map(e=>`<tr><td class="cp">${e.web_name}</td><td class="t2c">${(tm[e.team]||{}).short_name||'—'}</td><td>${e.news||'Injured'}</td><td>${e.news_added?new Date(e.news_added).toLocaleDateString('en-GB'):'—'}</td><td>${stIc[smp[e.status]||'monitor']} <span class="xs t2c">${stLb[smp[e.status]||'monitor']}</span></td></tr>`).join('');
+  // FPL statuses: 'a'=available, 'd'=doubt, 'i'=injured, 'u'=unavailable, 'n'=not in squad
+  // Show everyone who isn't straightforwardly available
+  const inj=d.elements.filter(e=>e.status!=='a').filter(e=>e.news||e.status!=='n');
+  const smp={'i':'out','d':'doubt','u':'out','n':'monitor','s':'monitor'};
+  const o=inj.filter(e=>e.status==='i'||e.status==='u').length;
+  const dd=inj.filter(e=>e.status==='d').length;
+  const mo=inj.length-o-dd;
+  document.getElementById('inj-out').textContent=o;
+  document.getElementById('inj-d').textContent=dd;
+  document.getElementById('inj-m').textContent=mo;
+  if(!inj.length){
+    document.getElementById('inj-bod').innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--t3)">No injuries or doubts reported</td></tr>';
+    return;
+  }
+  // Sort: out first, then doubt, then monitor; then alphabetically within each tier
+  const order={i:0,u:0,d:1,n:2,s:2};
+  inj.sort((a,b)=>(order[a.status]||2)-(order[b.status]||2)||a.web_name.localeCompare(b.web_name));
+  document.getElementById('inj-bod').innerHTML=inj.map(e=>{
+    const s=smp[e.status]||'monitor';
+    const newsDate=e.news_added?new Date(e.news_added).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'—';
+    return `<tr>
+      <td class="cp">${e.web_name}</td>
+      <td class="t2c">${(tm[e.team]||{}).short_name||'—'}</td>
+      <td class="xs">${e.news||'—'}</td>
+      <td class="xs t3c">${newsDate}</td>
+      <td>${stIc[s]} <span class="xs t2c">${stLb[s]}</span></td>
+    </tr>`;
+  }).join('');
 }
 
 function rdDemoRot(){
@@ -933,9 +952,70 @@ function rdDemoSP(){
 }
 
 function rdBonus(){
-  document.getElementById('bn-top').textContent='42';document.getElementById('bn-who').textContent='M. Salah';
-  document.getElementById('bn-mine').textContent='3';document.getElementById('bn-live').textContent='4';
-  document.getElementById('bn-bod').innerHTML=DM.bps.map(p=>`<tr><td class="cp">${p.n}</td><td class="t2c">${p.cl}</td><td class="r w7 cy">${p.bps}</td><td class="r">${p.bonus>0?`<span class="tag tg">+${p.bonus}</span>`:'<span class="t3c">—</span>'}</td><td class="t2c">${p.match}</td></tr>`).join('');
+  // Bonus monitor still shows demo data — live BPS requires event/live endpoint
+  // which is only fetched during matchday. Placeholder values until live GW active.
+  document.getElementById('bn-top').textContent='—';document.getElementById('bn-who').textContent='Load squad for live data';
+  document.getElementById('bn-mine').textContent='—';document.getElementById('bn-live').textContent='—';
+  document.getElementById('bn-bod').innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--t3)">Live BPS data available during active matches. Load squad then visit Live Rank tab to trigger.</td></tr>';
+}
+
+// Build smart alerts from live bootstrap data
+function rdAlerts(d){
+  const tm={};d.teams.forEach(t=>tm[t.id]=t);
+  const alerts=[];
+
+  // 1. Injury alerts — players with news in the last 7 days
+  const recent=Date.now()-7*24*3600*1000;
+  d.elements.filter(e=>e.status!=='a'&&e.news&&e.news_added).forEach(e=>{
+    const added=new Date(e.news_added).getTime();
+    if(added<recent) return;
+    const s=e.status==='d'?'doubt':e.status==='i'||e.status==='u'?'out':'monitor';
+    const age=Math.floor((Date.now()-added)/3600000);
+    const ageStr=age<24?age+'h ago':Math.floor(age/24)+'d ago';
+    const ic=s==='out'?'&#127973;':'&#129000;';
+    const label=s==='out'?'Confirmed Out':s==='doubt'?'50/50 Doubt':'Monitor';
+    alerts.push({ic,title:`Injury — ${e.web_name} (${(tm[e.team]||{}).short_name||'?'})`,msg:`${label}: ${e.news}`,age:ageStr,priority:s==='out'?0:s==='doubt'?1:2});
+  });
+
+  // 2. Price rise alerts — players with positive cost_change_event
+  const rising=d.elements.filter(e=>e.cost_change_event>0).sort((a,b)=>b.cost_change_event-a.cost_change_event).slice(0,3);
+  rising.forEach(e=>{
+    alerts.push({ic:'&#128176;',title:`Price Rise — ${e.web_name}`,msg:`Up £${(e.cost_change_event/10).toFixed(1)}m this GW to £${(e.now_cost/10).toFixed(1)}m. Own: ${e.selected_by_percent}%`,age:'Today',priority:3});
+  });
+
+  // 3. Price fall alerts
+  const falling=d.elements.filter(e=>e.cost_change_event<0).sort((a,b)=>a.cost_change_event-b.cost_change_event).slice(0,2);
+  falling.forEach(e=>{
+    alerts.push({ic:'&#128197;',title:`Price Fall — ${e.web_name}`,msg:`Down £${Math.abs(e.cost_change_event/10).toFixed(1)}m this GW to £${(e.now_cost/10).toFixed(1)}m`,age:'Today',priority:4});
+  });
+
+  // 4. Highly transferred-in players (>100k net)
+  const hotTx=d.elements.filter(e=>e.transfers_in_event-e.transfers_out_event>100000).sort((a,b)=>(b.transfers_in_event-b.transfers_out_event)-(a.transfers_in_event-a.transfers_out_event)).slice(0,2);
+  hotTx.forEach(e=>{
+    const net=(e.transfers_in_event-e.transfers_out_event);
+    alerts.push({ic:'&#128200;',title:`Transfer Surge — ${e.web_name}`,msg:`+${net.toLocaleString()} net transfers in. Form: ${e.form}. £${(e.now_cost/10).toFixed(1)}m`,age:'This GW',priority:5});
+  });
+
+  alerts.sort((a,b)=>a.priority-b.priority);
+
+  const el=document.getElementById('al-list');
+  if(!el) return;
+
+  // Update the badge count
+  const nb=document.getElementById('al-nb');
+  if(nb){nb.textContent=alerts.length;nb.style.display=alerts.length?'':'none';}
+
+  if(!alerts.length){
+    el.innerHTML='<div class="al as"><span class="al-ic">&#10003;</span><div>No active alerts right now.</div></div>';
+    return;
+  }
+
+  el.innerHTML=alerts.map(a=>`
+    <div class="alitem">
+      <span class="alitem-ic">${a.ic}</span>
+      <div class="alitem-b"><strong>${a.title}:</strong> ${a.msg}</div>
+      <span class="alitem-t">${a.age}</span>
+    </div>`).join('');
 }
 
 function rdDemoTmpl(){
@@ -1208,7 +1288,11 @@ function rdWatch(){
   if(!S.watch.length){c.innerHTML='<div class="al ai"><span class="al-ic">&#9711;</span><div>Watchlist is empty. Add players you\'re considering buying.</div></div>';return;}
   c.innerHTML=S.watch.map((p,i)=>`<div class="wp"><div style="flex:1"><div class="cp sm">${p.n}</div><div class="xs t3c">Added ${p.added}</div></div><button onclick="rmWatch(${i})" style="color:var(--rd);font-size:12px;padding:4px;background:var(--rdd);border-radius:4px">✕</button></div>`).join('');
 }
-function clearAlerts(){const el=document.getElementById('al-list');if(el)el.innerHTML='<div class="al as"><span class="al-ic">&#10003;</span><div>All alerts cleared.</div></div>';const nb=document.getElementById('al-nb');if(nb)nb.style.display='none';}
+function clearAlerts(){
+  const el=document.getElementById('al-list');
+  if(el)el.innerHTML='<div class="al as"><span class="al-ic">&#10003;</span><div>Alerts cleared. Refresh to reload live alerts from FPL data.</div></div>';
+  const nb=document.getElementById('al-nb');if(nb)nb.style.display='none';
+}
 function refreshAll(){loadBoot();}
 
 function tickCD(){
