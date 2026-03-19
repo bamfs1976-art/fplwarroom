@@ -685,7 +685,7 @@ select.inp{-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Cs
 const S={
   mid:localStorage.getItem('fwr_mid')||'',gw:29,deadline:null,bs:null,
   charts:{},cmpData:[null,null,null,null],txN:0,liveData:null,liveInterval:null,myPicks:null,
-  chips:{wc1:lg('wc1'),wc2:lg('wc2'),fh1:lg('fh1'),fh2:lg('fh2'),bb1:lg('bb1'),bb2:lg('bb2'),tc1:lg('tc1'),tc2:lg('tc2')},
+  chips:{wc1:'available',wc2:'available',fh1:'available',fh2:'available',bb1:'available',bb2:'available',tc1:'available',tc2:'available'},
   rivals:JSON.parse(localStorage.getItem('fwr_rivals')||'[]'),
   watch:JSON.parse(localStorage.getItem('fwr_watch')||'[]')
 };
@@ -1048,6 +1048,43 @@ function rdSquadSum(info, hist, picks){
     <div class="xs t3c"><span class="t2c w7">GW count:</span> ${gwh.length} gameweeks</div>`;
 }
 
+// Map FPL API chip names to internal keys
+// Each chip has two halves: first (GW1-19) and second (GW20+)
+// API chip names: wildcard, freehit, bboost, 3xc
+function syncChipsFromAPI(histChips){
+  // Reset all to available first
+  Object.keys(S.chips).forEach(k=>S.chips[k]='available');
+
+  // Map: API name -> [firstHalfKey, secondHalfKey]
+  const MAP={
+    'wildcard': ['wc1','wc2'],
+    'freehit':  ['fh1','fh2'],
+    'bboost':   ['bb1','bb2'],
+    '3xc':      ['tc1','tc2']
+  };
+  const HALF_CUTOFF=19; // GW19 = end of first half
+
+  // Count how many times each chip has been used to assign to correct slot
+  const usedCount={wildcard:0,freehit:0,bboost:0,'3xc':0};
+
+  // Sort plays by event so first-half uses are always counted first
+  const sorted=[...(histChips||[])].sort((a,b)=>a.event-b.event);
+
+  sorted.forEach(chip=>{
+    const keys=MAP[chip.name];
+    if(!keys) return;
+    const count=usedCount[chip.name]||0;
+    // First use = first half key, second use = second half key
+    const key=keys[count]||keys[keys.length-1];
+    S.chips[key]='used';
+    usedCount[chip.name]=(count+1);
+  });
+
+  // Persist to localStorage so manual toggles still work between sessions
+  Object.entries(S.chips).forEach(([k,v])=>localStorage.setItem('fwr_'+k,v));
+  rdChips();rdChipPage();
+}
+
 const CHIP_DEFS=[{k:'wc1',ic:'⊛',n:'Wildcard 1',h:'GW1–19',tip:'Best before a green run or 1–2 GWs before a DGW.'},{k:'wc2',ic:'⊛',n:'Wildcard 2',h:'GW20–38',tip:'Ideal GW32 — rebuild for end-of-season swing.'},{k:'fh1',ic:'⊡',n:'Free Hit 1',h:'GW1–19',tip:'Use on a BGW to cover missing players.'},{k:'fh2',ic:'⊡',n:'Free Hit 2',h:'GW20–38',tip:'Ideal GW34 BGW. Pair with WC2 for full effect.'},{k:'bb1',ic:'✦',n:'Bench Boost 1',h:'GW1–19',tip:'Max value in a DGW with 12–15 starters.'},{k:'bb2',ic:'✦',n:'Bench Boost 2',h:'GW20–38',tip:'Target GW33 DGW. Follow WC2 for quality bench.'},{k:'tc1',ic:'★',n:'Triple Captain 1',h:'GW1–19',tip:'Best in a DGW where your captain plays twice.'},{k:'tc2',ic:'★',n:'Triple Captain 2',h:'GW20–38',tip:'Target GW36 DGW. Stack with premium attacker.'}];
 function rdChips(){
   const avail=CHIP_DEFS.filter(c=>S.chips[c.k]==='available').length;
@@ -1098,6 +1135,8 @@ async function loadSquad(){
     // Render real formation pitch and season summary
     rdPitch(picks);
     rdSquadSum(info, hist, picks);
+    // Sync chip status from live API — overwrites localStorage defaults
+    syncChipsFromAPI(hist.chips||[]);
     // Auto-start live rank engine once squad is loaded
     if(S.mid && S.bs) startLiveRank();
   }catch(e){console.error(e);document.getElementById('sq-bod').innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--rd);padding:24px">Failed to load. Check Manager ID or try again.</td></tr>';}
