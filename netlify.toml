@@ -1,4 +1,4 @@
-toml[build]
+[build]
   publish = "."
   command = "echo 'No build step'"
 
