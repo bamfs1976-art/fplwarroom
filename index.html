@@ -964,6 +964,90 @@ function rdDemoSquadSum(){
   document.getElementById('sq-sum').innerHTML=`<div class="g2 gap-8">${[{l:'GW Points',v:'58',c:'ca'},{l:'Total Points',v:'1,642',c:'cbl'},{l:'Overall Rank',v:'142,301',c:'cy'},{l:'Team Value',v:'£101.2m',c:'cpu'}].map(k=>`<div style="background:var(--c3);border-radius:var(--r2);padding:12px;text-align:center"><div class="xs t3c w7 mb-4" style="text-transform:uppercase;letter-spacing:.08em">${k.l}</div><div class="sm w9 ${k.c}">${k.v}</div></div>`).join('')}</div><div class="xs t3c mt-12">Enter Manager ID above to load your real squad.</div>`;
 }
 
+// Render real pitch from live picks + bootstrap data
+function rdPitch(picks){
+  if(!S.bs||!picks)return;
+  const bsMap={};S.bs.elements.forEach(e=>bsMap[e.id]=e);
+  const tm={};S.bs.teams.forEach(t=>tm[t.id]=t);
+
+  // Split starters (position 1-11) by FPL element type
+  const starters=picks.picks.filter(p=>p.position<=11);
+  const byPos={1:[],2:[],3:[],4:[]};
+  starters.forEach(pick=>{
+    const el=bsMap[pick.element]||{};
+    const pos=el.element_type||4;
+    byPos[pos].push({
+      name:el.web_name||'?',
+      club:(tm[el.team]||{}).short_name||'?',
+      pts:el.event_points||0,
+      isCap:pick.is_captain,
+      isVc:pick.is_vice_captain
+    });
+  });
+
+  const tok=p=>`<div class="pt">
+    <div class="pa">
+      ${p.isCap?'<div class="cap-b">C</div>':''}
+      ${p.isVc?'<div class="cap-b vc-b">V</div>':''}
+      ${p.club}
+    </div>
+    <div class="ptn">${p.name}</div>
+    <div class="ptp">${p.pts}pts</div>
+  </div>`;
+
+  const rows=[];
+  if(byPos[1].length) rows.push(`<div class="pr2">${byPos[1].map(tok).join('')}</div>`);
+  if(byPos[2].length) rows.push(`<div class="pr2">${byPos[2].map(tok).join('')}</div>`);
+  if(byPos[3].length) rows.push(`<div class="pr2">${byPos[3].map(tok).join('')}</div>`);
+  if(byPos[4].length) rows.push(`<div class="pr2">${byPos[4].map(tok).join('')}</div>`);
+
+  // Add bench row
+  const bench=picks.picks.filter(p=>p.position>11).sort((a,b)=>a.position-b.position);
+  if(bench.length){
+    const benchToks=bench.map(pick=>{
+      const el=bsMap[pick.element]||{};
+      return `<div class="pt" style="opacity:.6">
+        <div class="pa" style="border-style:dashed">${(tm[el.team]||{}).short_name||'?'}</div>
+        <div class="ptn">${el.web_name||'?'}</div>
+        <div class="ptp" style="color:var(--t3)">${el.event_points||0}pts</div>
+      </div>`;
+    });
+    rows.push(`<div style="border-top:1px dashed rgba(255,255,255,.08);margin:8px 0 4px;padding-top:8px"><div class="xs t3c" style="text-align:center;margin-bottom:6px;letter-spacing:.06em">BENCH</div><div class="pr2" style="opacity:1">${benchToks.join('')}</div></div>`);
+  }
+
+  document.getElementById('pitch').innerHTML=rows.join('');
+}
+
+// Render real season summary sidebar
+function rdSquadSum(info, hist, picks){
+  const gwh=hist.current;
+  const lat=gwh[gwh.length-1]||{};
+  const chips=hist.chips||[];
+  const usedChips=chips.map(c=>c.name).join(', ')||'None used';
+  const gwPts=lat.points||0;
+  const totalPts=lat.total_points||0;
+  const rank=(lat.overall_rank||0).toLocaleString();
+  const tv=info.last_deadline_value?`£${(info.last_deadline_value/10).toFixed(1)}m`:'—';
+  const itb=info.last_deadline_bank?`£${(info.last_deadline_bank/10).toFixed(1)}m`:'—';
+  const fts=picks.transfers?.bank!==undefined?`£${(picks.transfers.bank/10).toFixed(1)}m`:'—';
+
+  document.getElementById('sq-sum').innerHTML=`
+    <div class="g2 gap-8 mb-12">
+      ${[
+        {l:'GW Points',  v:gwPts,    c:'ca'},
+        {l:'Total Pts',  v:totalPts, c:'cbl'},
+        {l:'Overall Rank',v:rank,    c:'cy'},
+        {l:'Team Value', v:tv,       c:'cpu'}
+      ].map(k=>`<div style="background:var(--c3);border-radius:var(--r2);padding:12px;text-align:center">
+        <div class="xs t3c w7 mb-4" style="text-transform:uppercase;letter-spacing:.08em">${k.l}</div>
+        <div class="sm w9 ${k.c}">${k.v}</div>
+      </div>`).join('')}
+    </div>
+    <div class="xs t3c mb-4"><span class="t2c w7">In the bank:</span> ${itb}</div>
+    <div class="xs t3c mb-4"><span class="t2c w7">Chips used:</span> ${usedChips}</div>
+    <div class="xs t3c"><span class="t2c w7">GW count:</span> ${gwh.length} gameweeks</div>`;
+}
+
 const CHIP_DEFS=[{k:'wc1',ic:'⊛',n:'Wildcard 1',h:'GW1–19',tip:'Best before a green run or 1–2 GWs before a DGW.'},{k:'wc2',ic:'⊛',n:'Wildcard 2',h:'GW20–38',tip:'Ideal GW32 — rebuild for end-of-season swing.'},{k:'fh1',ic:'⊡',n:'Free Hit 1',h:'GW1–19',tip:'Use on a BGW to cover missing players.'},{k:'fh2',ic:'⊡',n:'Free Hit 2',h:'GW20–38',tip:'Ideal GW34 BGW. Pair with WC2 for full effect.'},{k:'bb1',ic:'✦',n:'Bench Boost 1',h:'GW1–19',tip:'Max value in a DGW with 12–15 starters.'},{k:'bb2',ic:'✦',n:'Bench Boost 2',h:'GW20–38',tip:'Target GW33 DGW. Follow WC2 for quality bench.'},{k:'tc1',ic:'★',n:'Triple Captain 1',h:'GW1–19',tip:'Best in a DGW where your captain plays twice.'},{k:'tc2',ic:'★',n:'Triple Captain 2',h:'GW20–38',tip:'Target GW36 DGW. Stack with premium attacker.'}];
 function rdChips(){
   const avail=CHIP_DEFS.filter(c=>S.chips[c.k]==='available').length;
@@ -1011,6 +1095,9 @@ async function loadSquad(){
       }).join('');
       rdSmTgts(S.bs);
     }
+    // Render real formation pitch and season summary
+    rdPitch(picks);
+    rdSquadSum(info, hist, picks);
     // Auto-start live rank engine once squad is loaded
     if(S.mid && S.bs) startLiveRank();
   }catch(e){console.error(e);document.getElementById('sq-bod').innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--rd);padding:24px">Failed to load. Check Manager ID or try again.</td></tr>';}
