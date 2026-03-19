@@ -23,10 +23,13 @@ exports.handler = async (event) => {
     };
   }
 
-  const FPL_BASE = 'https://fantasy.premierleague.com/api/';
-  const ALLOWED = /^(bootstrap-static|fixtures|event-status|dream-team\/\d+|team\/set-piece-notes|event\/\d+\/live|entry\/\d+\/?(event\/\d+\/picks|history|transfers)?)\/?$/;
+  // Whitelist: only allow known FPL API paths
+  // Note: use $ (not \$) for end-of-string anchor in JS regex literals
+  const ALLOWED = /^(bootstrap-static|fixtures|event-status|dream-team\/\d+|team\/set-piece-notes|event\/\d+\/live|entry\/\d+\/?|entry\/\d+\/event\/\d+\/picks|entry\/\d+\/history|entry\/\d+\/transfers)\/?$/;
 
-  if (!ALLOWED.test(path.replace(/\/$/, ''))) {
+  const cleanPath = path.replace(/\/$/, '');
+
+  if (!ALLOWED.test(cleanPath)) {
     return {
       statusCode: 403,
       headers: CORS,
@@ -34,7 +37,7 @@ exports.handler = async (event) => {
     };
   }
 
-  const url = FPL_BASE + path;
+  const url = 'https://fantasy.premierleague.com/api/' + path;
 
   try {
     const res = await fetch(url, {
