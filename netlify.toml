@@ -1,7 +1,17 @@
-[build]
-  functions = "netlify/functions"
+toml[build]
+  publish = "."
+  command = "echo 'No build step'"
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/fpl-proxy"
-  status = 200
+[build.environment]
+  NODE_VERSION = "18"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
