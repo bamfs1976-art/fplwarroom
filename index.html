@@ -757,8 +757,15 @@ async function loadBoot(){
   try{
     const d=await fplGet('bootstrap-static/');S.bs=d;
     showApiStatus('live');
-    const lv=d.events.find(e=>e.is_current)||d.events.find(e=>e.is_next);
-    if(lv){S.gw=lv.id;S.deadline=new Date(lv.deadline_time);
+    // For the GW number/points display, use current GW
+    const current=d.events.find(e=>e.is_current);
+    // For the countdown, always use the NEXT deadline (is_next) — is_current deadline has already passed
+    const next=d.events.find(e=>e.is_next);
+    const lv=current||next;
+    if(lv){S.gw=lv.id;
+    // Countdown targets the next deadline, not the current GW's (already past) deadline
+    const cdTarget=next||current;
+    S.deadline=cdTarget?new Date(cdTarget.deadline_time):null;
       document.getElementById('sb-gwn').textContent=lv.id;
       document.getElementById('sb-gwb').textContent=lv.id;
       document.getElementById('sb-dl').textContent=S.deadline.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
@@ -792,8 +799,9 @@ const DM={
 
 function loadDemo(){
   S.gw=29;document.getElementById('sb-gwn').textContent=29;document.getElementById('sb-gwb').textContent=29;
-  const tmp=new Date();tmp.setDate(tmp.getDate()+3);tmp.setHours(11,0,0,0);S.deadline=tmp;
-  document.getElementById('sb-dl').textContent='Sat 5 Apr 11:00';
+  // Only set demo deadline if we don't have a real one from the API
+  if(!S.deadline){const tmp=new Date();tmp.setDate(tmp.getDate()+3);tmp.setHours(11,0,0,0);S.deadline=tmp;}
+  document.getElementById('sb-dl').textContent=S.deadline?S.deadline.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'Loading...';
   setKPI('k-pts','1,642');setKPI('k-gw','58','up');setKPI('k-rank','142,301');
   document.getElementById('k-rdel').innerHTML='<span class="up">▲ 48,211</span>';
   setKPI('k-tv','£101.2m');setKPI('k-itb','£1.3m');setKPI('k-ft','2');
@@ -1296,8 +1304,21 @@ function clearAlerts(){
 function refreshAll(){loadBoot();}
 
 function tickCD(){
-  if(!S.deadline)return;const diff=S.deadline-new Date();
-  if(diff<=0){['cd-d','cd-h','cd-m','cd-s'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00';});return;}
+  if(!S.deadline){
+    // No deadline set yet — keep showing placeholder dashes
+    return;
+  }
+  const diff=S.deadline-new Date();
+  if(diff<=0){
+    // Deadline passed — show GW LIVE state instead of 00:00:00
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.textContent='--';
+    });
+    const dlEl=document.getElementById('sb-dl');
+    if(dlEl&&!dlEl.textContent.includes('GW Live'))dlEl.textContent='⚡ GW Live';
+    return;
+  }
   const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s2=Math.floor((diff%60000)/1000);
   [['cd-d',d],['cd-h',h],['cd-m',m],['cd-s',s2]].forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=String(v).padStart(2,'0');});
 }
@@ -1818,7 +1839,7 @@ function renderCapScenarios(){
 
 // INIT
 (async function init(){
-  const tmp=new Date();tmp.setDate(tmp.getDate()+3);tmp.setHours(11,0,0,0);S.deadline=tmp;
+  // S.deadline stays null until loadBoot sets it from the real FPL API
   setInterval(tickCD,1000);tickCD();
   rdChips();rdChipPage();rdWatch();rdRivals();
   await loadBoot();
