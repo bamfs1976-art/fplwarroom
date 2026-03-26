@@ -749,7 +749,7 @@ select.inp{
   </div>
   <!-- API ERROR BANNER -->
   <div class="err-banner" id="api-err-banner" role="alert">
-    <span>&#9888; Can't reach the FPL API right now. Showing demo data.</span>
+    <span>&#9888; Can't reach the FPL API right now. Data panels will show when connection is restored.</span>
     <button onclick="retryLive()" aria-label="Retry loading live data">Retry</button>
   </div>
 
@@ -1647,50 +1647,63 @@ async function loadBoot(){
     rdTgts(d);rdFDR(d);rdCaps(d);rdDiffs(d);rdInj(d);rdPrices(d);rdRot(d);rdTmpl(d);rdSP(d);rdBonus();rdAlerts(d);
     rdSmTgts(d);
     return d;
-  }catch(e){console.warn('Boot failed, using demo data:',e.message);showApiStatus('demo');loadDemo();}
+  }catch(e){console.warn('Boot failed:',e.message);showApiStatus('demo');loadDemo();}
 }
 
 // DEMO DATA
-const DM={
-  tgts:[{n:'M. Salah',cl:'LIV',p:'MID',pr:'£13.2m',fm:'9.8',ti:'+142k',ow:'52.1%'},{n:'C. Palmer',cl:'CHE',p:'MID',pr:'£11.1m',fm:'8.4',ti:'+98k',ow:'41.3%'},{n:'E. Haaland',cl:'MCI',p:'FWD',pr:'£14.5m',fm:'7.6',ti:'+71k',ow:'38.9%'},{n:'J. Pedro',cl:'BRI',p:'MID',pr:'£6.8m',fm:'7.2',ti:'+65k',ow:'18.4%'},{n:'N. Munoz',cl:'CRY',p:'DEF',pr:'£5.2m',fm:'6.8',ti:'+48k',ow:'8.1%'}],
-  fdr:[{n:'Arsenal',d:[2,1,3,2,4,2]},{n:'Man City',d:[3,4,2,1,3,5]},{n:'Liverpool',d:[1,2,1,3,2,1]},{n:'Chelsea',d:[2,3,4,2,1,3]},{n:'Man Utd',d:[4,2,3,5,3,2]},{n:'Tottenham',d:[3,1,2,2,4,3]},{n:'Newcastle',d:[2,3,1,4,2,2]},{n:'Aston Villa',d:[1,2,3,1,3,4]},{n:'Brighton',d:[2,1,2,3,1,2]},{n:'Fulham',d:[3,2,4,2,3,1]},{n:'Wolves',d:[2,3,1,2,4,3]},{n:'Everton',d:[4,3,2,1,2,3]},{n:'Brentford',d:[1,2,3,2,1,4]},{n:'Crystal Palace',d:[3,1,2,4,2,1]},{n:'West Ham',d:[2,3,4,3,1,2]},{n:'Leicester',d:[4,3,2,3,4,2]},{n:'Ipswich',d:[3,4,3,2,3,4]},{n:'Southampton',d:[5,4,3,4,5,3]},{n:'Bournemouth',d:[2,1,3,2,1,3]},{n:"Nott'm Forest",d:[1,2,1,3,2,1]}],
-  caps:[{n:'M. Salah',cl:'Liverpool (H)',tp:'Safe',col:'bl',s:88,eo:'52.1%',fdr:1,r:'Home fixture, PK & FK taker, top form'},{n:'C. Palmer',cl:'Chelsea (H)',tp:'Semi-Diff',col:'am',s:74,eo:'41.3%',fdr:2,r:'Penalty taker, good home fixture, high ceiling'},{n:'J. Pedro',cl:'Brighton (H)',tp:'Differential',col:'gr',s:61,eo:'18.4%',fdr:1,r:'Very low EO, easy fixture, huge rank upside'},{n:'E. Haaland',cl:'Man City (A)',tp:'Safe',col:'bl',s:70,eo:'38.9%',fdr:3,r:'Away hurts ceiling but sheer volume viable'},{n:'N. Munoz',cl:'Crystal Palace (H)',tp:'Differential',col:'gr',s:55,eo:'8.1%',fdr:1,r:'Extremely low EO, excellent fixture, attacking FB'},{n:'I. Toney',cl:'Brentford (H)',tp:'Semi-Diff',col:'am',s:64,eo:'12.8%',fdr:1,r:'Low EO, easy home, penalty duty, comeback form'}],
-  diffs:[{n:'N. Munoz',p:'DEF',cl:'Crystal Palace',ow:'8.1%',pr:'£5.2m',fm:'8.0',xg:'0.55',fix:'BUR(H)',fdr:1,v:'Buy'},{n:'J. Pedro',p:'MID',cl:'Brighton',ow:'18.4%',pr:'£6.8m',fm:'7.8',xg:'0.73',fix:'WOL(H)',fdr:1,v:'Buy'},{n:'I. Toney',p:'FWD',cl:'Brentford',ow:'12.8%',pr:'£7.6m',fm:'7.2',xg:'0.52',fix:'SOU(H)',fdr:1,v:'Buy'},{n:'A. Onana',p:'MID',cl:'Aston Villa',ow:'6.3%',pr:'£5.9m',fm:'6.4',xg:'0.60',fix:'BHA(H)',fdr:2,v:'Monitor'},{n:'B. Mbeumo',p:'FWD',cl:'Brentford',ow:'9.7%',pr:'£7.4m',fm:'6.8',xg:'0.57',fix:'SOU(H)',fdr:1,v:'Buy'}],
-  inj:[{n:'R. Højlund',cl:'Man Utd',iss:'Hamstring',ret:'GW32',s:'out'},{n:'D. Solanke',cl:'Tottenham',iss:'Groin',ret:'GW30',s:'doubt'},{n:'R. James',cl:'Chelsea',iss:'Knee',ret:'Unknown',s:'out'},{n:'A. Garnacho',cl:'Man Utd',iss:'Ankle',ret:'GW29',s:'doubt'},{n:'C. Nkunku',cl:'Chelsea',iss:'Muscle',ret:'GW30',s:'doubt'},{n:'Callum Wilson',cl:'Newcastle',iss:'Thigh',ret:'Season?',s:'out'},{n:'Phil Foden',cl:'Man City',iss:'Knock',ret:'This week',s:'monitor'}],
-  squad:{gk:[{i:'RAY',n:'Raya',p:6,cl:'ARS'}],def:[{i:'TAA',n:'Alexander-Arnold',p:9,cl:'LIV',cap:true},{i:'SAL',n:'Saliba',p:6,cl:'ARS'},{i:'PPO',n:'Pedro Porro',p:8,cl:'TOT'},{i:'MUN',n:'Munoz',p:9,cl:'CRY'}],mid:[{i:'SAL',n:'Salah',p:14,cl:'LIV'},{i:'PAL',n:'Palmer',p:11,cl:'CHE'},{i:'SKA',n:'Saka',p:7,cl:'ARS'},{i:'JOT',n:'Jota',p:9,cl:'LIV'}],fwd:[{i:'HAL',n:'Haaland',p:12,cl:'MCI'},{i:'TNY',n:'Toney',p:6,cl:'BRE'}]},
-  eo:[{n:'M. Salah',p:'MID',cl:'LIV',ow:52.1,cr:41.2,cap:true},{n:'C. Palmer',p:'MID',cl:'CHE',ow:41.3,cr:18.6},{n:'E. Haaland',p:'FWD',cl:'MCI',ow:38.9,cr:14.2},{n:'T. Alexander-Arnold',p:'DEF',cl:'LIV',ow:34.1,cr:3.1},{n:'B. Saka',p:'MID',cl:'ARS',ow:28.4,cr:2.8},{n:'J. Pedro',p:'MID',cl:'BRI',ow:18.4,cr:1.2},{n:'N. Munoz',p:'DEF',cl:'CRY',ow:8.1,cr:0.4}],
-  tmpl:[{pos:'GK',n:'D. Raya',cl:'Arsenal',ow:'27.4%',has:true},{pos:'GK',n:'M. Flekken',cl:'Brentford',ow:'14.1%',has:false},{pos:'DEF',n:'T. Alexander-Arnold',cl:'Liverpool',ow:'34.1%',has:true},{pos:'DEF',n:'P. Porro',cl:'Tottenham',ow:'29.2%',has:true},{pos:'DEF',n:'N. Munoz',cl:'Crystal Palace',ow:'8.1%',has:false},{pos:'MID',n:'M. Salah',cl:'Liverpool',ow:'52.1%',has:true},{pos:'MID',n:'C. Palmer',cl:'Chelsea',ow:'41.3%',has:true},{pos:'MID',n:'B. Saka',cl:'Arsenal',ow:'28.4%',has:true},{pos:'MID',n:'J. Pedro',cl:'Brighton',ow:'18.4%',has:false},{pos:'FWD',n:'E. Haaland',cl:'Man City',ow:'38.9%',has:true},{pos:'FWD',n:'O. Watkins',cl:'Aston Villa',ow:'24.1%',has:false}],
-  rot:[{n:'S. Diallo',cl:'Man Utd',fix:'SOU(H)',euro:'UCL Wed',prob:45,risk:'high'},{n:'M. Rashford',cl:'Man Utd',fix:'SOU(H)',euro:'UCL Wed',prob:55,risk:'med'},{n:'E. Nketiah',cl:'Arsenal',fix:'BRI(A)',euro:'UEL Thu',prob:60,risk:'med'},{n:'G. Ramsdale',cl:'Arsenal',fix:'BRI(A)',euro:'UEL Thu',prob:70,risk:'med'},{n:'P. Foden',cl:'Man City',fix:'CHE(A)',euro:'UCL Wed',prob:75,risk:'safe'},{n:'K. Walker',cl:'Man City',fix:'CHE(A)',euro:'UCL Wed',prob:80,risk:'safe'}],
-  pens:[{n:'M. Salah',cl:'Liverpool',conf:5,note:'Never misses. Confirmed #1.'},{n:'E. Haaland',cl:'Man City',conf:5,note:'Club & England PK taker.'},{n:'C. Palmer',cl:'Chelsea',conf:5,note:'1st choice, zero misses this season.'},{n:'I. Toney',cl:'Brentford',conf:4,note:'Mbeumo sometimes takes. Watch.'},{n:'B. Saka',cl:'Arsenal',conf:4,note:'Shares with Martinelli. Preferred.'}],
-  fks:[{n:'T. Alexander-Arnold',cl:'Liverpool',conf:5,note:'Devastating from all set pieces.'},{n:'M. Salah',cl:'Liverpool',conf:4,note:'Main FK 25-35yd range.'},{n:'C. Palmer',cl:'Chelsea',conf:4,note:'Direct FK specialist.'},{n:'B. Saka',cl:'Arsenal',conf:3,note:'Shares with Havertz & Odegaard.'}],
-  bps:[{n:'M. Salah',cl:'LIV',bps:42,bonus:3,match:'LIV vs SOU'},{n:'T. Alexander-Arnold',cl:'LIV',bps:38,bonus:2,match:'LIV vs SOU'},{n:'C. Palmer',cl:'CHE',bps:34,bonus:1,match:'CHE vs BRI'},{n:'E. Haaland',cl:'MCI',bps:29,bonus:0,match:'MCI vs ARS'},{n:'B. Saka',cl:'ARS',bps:27,bonus:0,match:'MCI vs ARS'}],
-  prices:{up:[{n:'N. Munoz',cl:'CRY',ch:'+0.1',pr:'£5.2m',pct:82},{n:'J. Pedro',cl:'BRI',ch:'+0.1',pr:'£6.8m',pct:71},{n:'L. Díaz',cl:'LIV',ch:'+0.2',pr:'£7.8m',pct:65},{n:'I. Toney',cl:'BRE',ch:'+0.1',pr:'£7.6m',pct:55}],dn:[{n:'Højlund',cl:'MUN',ch:'-0.1',pr:'£7.3m',pct:60},{n:'M. Rashford',cl:'MUN',ch:'-0.1',pr:'£6.1m',pct:45}]}
-};
+// Demo data removed — app uses live FPL API only
 
 function loadDemo(){
-  S.gw=29;document.getElementById('sb-gwn').textContent=29;document.getElementById('sb-gwb').textContent=29;
-  // Only set demo deadline if we don't have a real one from the API
+  // API unavailable — show empty states with retry
+  const gw = S.gw || '—';
+  document.getElementById('sb-gwn').textContent = gw;
+  document.getElementById('sb-gwb').textContent = gw;
   if(!S.deadline){const tmp=new Date();tmp.setDate(tmp.getDate()+3);tmp.setHours(11,0,0,0);S.deadline=tmp;}
-  document.getElementById('sb-dl').textContent=S.deadline?S.deadline.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'Loading...';
-  setKPI('k-pts','1,642');setKPI('k-gw','58','up');setKPI('k-rank','142,301');
-  document.getElementById('k-rdel').innerHTML='<span class="up">▲ 48,211</span>';
-  setKPI('k-tv','£101.2m');setKPI('k-itb','£1.3m');setKPI('k-ft','2');
-  setKPI('r-cur','142,301');setKPI('r-best','89,124');
-  document.getElementById('r-gap').textContent='Gap: 57,301';
-  document.getElementById('r-del').innerHTML='<span class="up">▲ 48,211 this GW</span>';
-  const sel=document.getElementById('gw-sel');
-  if(sel)sel.innerHTML=Array.from({length:38},(_,i)=>`<option value="${i+1}"${i+1===29?' selected':''}>${i+1===29?'⚡ ':''}GW ${i+1}</option>`).join('');
-  const dtg=document.getElementById('d-tgt-gw');if(dtg)dtg.textContent='GW29';
-  const eg=document.getElementById('eo-gw');if(eg)eg.innerHTML='<span class="tag tg">GW29</span>';
-  rdAllDemo();
+  document.getElementById('sb-dl').textContent = S.deadline
+    ? S.deadline.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
+    : 'Loading...';
+  // Show empty KPIs
+  ['k-pts','k-gw','k-rank','k-tv','k-itb','k-ft'].forEach(id=>{
+    const el=document.getElementById(id); if(el)el.textContent='—';
+  });
+  document.getElementById('k-rdel').innerHTML='<span class="t3c">—</span>';
+  document.getElementById('k-chips').textContent='Load squad to see chips';
+  // Empty panel states
+  showEmptyState('d-tgts','Transfer targets load when API is available');
+  showEmptyState('d-fdr','Fixture data loads when API is available');
+  showEmptyState('d-prices','Price data loads when API is available');
+  showEmptyState('d-eo','EO data loads when API is available');
+  showEmptyState('d-alerts','Enter your Manager ID above to see alerts');
+  showEmptyState('cap-cards','Captaincy data loads when API is available');
+  showEmptyState('df-bod','Differential data loads when API is available','table');
+  showEmptyState('inj-bod','Injury data loads when API is available','table');
+  showEmptyState('rr-bod','Rotation data loads when API is available','table');
+  showEmptyState('pen-tbl','Set piece data loads when API is available');
+  showEmptyState('fk-tbl','Set piece data loads when API is available');
+  showEmptyState('tm-panel','Template data loads when API is available');
+  showEmptyState('sm-tgts','Transfer target data loads when API is available');
+  showEmptyState('pr-up','Price data loads when API is available');
+  showEmptyState('pr-dn','Price data loads when API is available');
+  showEmptyState('pr-watch','Price data loads when API is available');
+  showEmptyState('pr-bod','Price data loads when API is available','table');
+  rdDemoSquadSum();
+  rdChips();rdChipPage();rdWatch();rdRivals();
 }
+function showEmptyState(id, msg, type='div'){
+  const el=document.getElementById(id); if(!el)return;
+  if(type==='table'){
+    const cols=el.tagName==='TBODY'?el.closest('table')?.querySelector('thead tr')?.children?.length||5:5;
+    el.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:24px;color:var(--t3)">${msg}. <button class="btn btn-g btn-sm" onclick="retryLive()" style="margin-left:8px">Retry</button></td></tr>`;
+  } else {
+    el.innerHTML=`<div class="al ai"><span class="al-ic">&#8505;</span><div>${msg}. <button class="btn btn-g btn-sm" onclick="retryLive()" style="margin-left:6px">Retry</button></div></div>`;
+  }
+}
+
 function setKPI(id,val,cls=''){const el=document.getElementById(id);if(el){el.textContent=val;if(cls)el.classList.add(cls);}}
 
-function rdAllDemo(){rdDemoTgts();rdDemoFDR();rdDemoCaps();rdDemoDiffs();rdDemoInj();rdDemoEO();rdDemoRankCharts();rdDemoPrices();rdDemoRot();rdDemoTmpl();rdDemoSP();rdBonus();rdDemoPitch();rdDemoSquadSum();rdChips();rdChipPage();rdWatch();rdRivals();}
+function rdAllDemo(){ loadDemo(); }
 
-function rdDemoTgts(){
-  document.getElementById('d-tgts').innerHTML=DM.tgts.map(t=>`<div class="txr"><div><div class="cp sm">${t.n} <span class="pos p${t.p}">${t.p}</span></div><div class="xs t3c mt-4">${t.cl} · ${t.pr}</div></div><div style="margin-left:auto;text-align:right"><div class="ca w7 sm">${t.ti}</div><div class="xs t3c">Own: ${t.ow}</div></div></div>`).join('');
-}
+function rdDemoTgts(){/* removed — app uses live API data only */}
 function rdTgts(d){
   const tm={};d.teams.forEach(t=>tm[t.id]=t);
   const sorted=[...d.elements].filter(e=>e.transfers_in_event>0).sort((a,b)=>b.transfers_in_event-a.transfers_in_event).slice(0,5);
@@ -1771,12 +1784,19 @@ function buildFdrData(){
 
 function buildFdrDataFallback(){
   if(!S.bs) return;
-  // Use demo FDR data with team names
+  // 2025/26 PL short name map for fallback
+  const SHORT={
+    'Arsenal':'ARS','Man City':'MCI','Liverpool':'LIV','Chelsea':'CHE',
+    'Man Utd':'MUN','Tottenham':'TOT','Newcastle':'NEW','Aston Villa':'AVL',
+    'Brighton':'BHA','Fulham':'FUL','Wolves':'WOL','Everton':'EVE',
+    'Brentford':'BRE','Crystal Palace':'CRY','West Ham':'WHU','Bournemouth':'BOU',
+    "Nott'm Forest":'NFO','Leeds':'LEE','Sunderland':'SUN','Burnley':'BUR'
+  };
   S_fdrData = DM.fdr.map((t,i)=>({
     teamId: i+1,
     name: t.n,
-    short: t.n.slice(0,3).toUpperCase(),
-    fixtures: t.d.map((diff,j)=>({gw:S.gw+j, diff, opp:'?', home:j%2===0}))
+    short: SHORT[t.n] || t.n.slice(0,3).toUpperCase(),
+    fixtures: t.d.map((diff,j)=>({gw:(S.gw||29)+j, diff, opp:'TBC', home:j%2===0}))
   }));
 }
 
@@ -1885,10 +1905,7 @@ function renderFdrGrid(){
   }
 }
 
-function rdDemoFDR(){
-  buildFdrDataFallback();
-  renderFdrGrid();
-}
+function rdDemoFDR(){/* removed — app uses live API data only */}
 
 function rdFDR(d){
   if(S_fdrFixtures.length){
@@ -2082,33 +2099,7 @@ function renderPriceTable(){
   }).join('');
 }
 
-function rdDemoPrices(){
-  // Seed demo with realistic data when no API
-  S_priceData = DM.prices.up.map((p,i)=>({
-    id:i, name:p.n, pos:'MID', club:p.cl, price:p.pr.replace('£','').replace('m',''),
-    priceRaw:0, transfers_in:Math.round(p.pct*80000), transfers_out:Math.round(p.pct*20000),
-    net:Math.round(p.pct*60000), dir:'rise', prob:p.pct, gwChange:1, selected:p.pct*2
-  })).concat(DM.prices.dn.map((p,i)=>({
-    id:100+i, name:p.n, pos:'FWD', club:p.cl, price:p.pr.replace('£','').replace('m',''),
-    priceRaw:0, transfers_in:Math.round(p.pct*10000), transfers_out:Math.round(p.pct*80000),
-    net:-Math.round(p.pct*60000), dir:'fall', prob:p.pct, gwChange:-1, selected:p.pct*2
-  })));
-
-  const upEl=document.getElementById('pr-rise-count');
-  const dnEl=document.getElementById('pr-fall-count');
-  if(upEl) upEl.textContent=DM.prices.up.length;
-  if(dnEl) dnEl.textContent=DM.prices.dn.length;
-
-  const up=document.getElementById('pr-up');
-  const dn=document.getElementById('pr-dn');
-  if(up) up.innerHTML=DM.prices.up.map(p=>mkPrRow({name:p.n,club:p.cl,price:p.pr.replace('£','').replace('m',''),dir:'rise',prob:p.pct})).join('');
-  if(dn) dn.innerHTML=DM.prices.dn.map(p=>mkPrRow({name:p.n,club:p.cl,price:p.pr.replace('£','').replace('m',''),dir:'fall',prob:p.pct})).join('');
-
-  const dPrices=document.getElementById('d-prices');
-  if(dPrices) dPrices.innerHTML=DM.prices.up.slice(0,3).map(p=>`<div class="prrow"><div style="min-width:90px"><div class="cp sm">${p.n}</div><div class="xs t3c">${p.cl} · ${p.pr}</div></div><div class="pr-bar"><div class="pr-u" style="width:${p.pct}%"></div></div><div class="ca w7 sm" style="min-width:44px;text-align:right">▲ ${p.ch}</div></div>`).join('');
-
-  renderPriceTable();
-}
+function rdDemoPrices(){/* removed — app uses live API data only */}
 
 function rdPrices(d){
   const movers=[...d.elements].filter(e=>
@@ -2151,10 +2142,11 @@ function rdDemoEO(){
 }
 
 function rdDemoRankCharts(){
+  const base = Math.max(1, (S.gw||29) - 12);
   const ranks=[380,340,290,250,310,220,190,180,210,170,155,148,142].map(v=>v*1000);
-  const gws=ranks.map((_,i)=>`GW${17+i}`);
-  const pts=[52,61,48,74,40,68,55,72,45,63,58,70,58];
-  const avg=[46,48,45,51,43,49,47,52,44,50,47,53,48];
+  const gws=ranks.map((_,i)=>`GW${base+i}`);
+  const pts=[52,61,48,74,40,68,55,72,45,63,58,70,62];
+  const avg=[46,48,45,51,43,49,47,52,44,50,47,53,50];
   const ctx1=document.getElementById('ch-rank');
   if(ctx1){const cc1=chCol();destroyC('rank');S.charts['rank']=new Chart(ctx1,{type:'line',data:{labels:gws,datasets:[{label:'Rank',data:ranks,borderColor:cc1.blue,backgroundColor:cc1.blue.replace(')',', .08)').replace('rgb','rgba'),tension:.3,fill:true,pointRadius:3,pointBackgroundColor:cc1.blue,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>'Rank: '+v.raw.toLocaleString()}}},scales:{y:{reverse:true,grid:{color:cc1.grid},ticks:{color:cc1.tick,font:{size:9},callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}},x:{grid:{display:false},ticks:{color:cc1.tick,font:{size:9}}}}}});}
   const ctx2=document.getElementById('ch-pts');
@@ -2179,12 +2171,7 @@ function chCol(){
   };
 }
 
-function rdDemoCaps(){
-  document.getElementById('cap-cards').innerHTML=DM.caps.map(p=>{
-    const colVar=p.col==='gr'?'var(--gr)':p.col==='am'?'var(--am)':'var(--bl)';
-    const tagCls=p.col==='gr'?'tg':p.col==='am'?'ty':'tb';
-    return `<div class="cc"><div class="fbc mb-8"><div><div class="cn">${p.n}</div><div class="cclub">${p.cl}</div></div><div class="csv2" style="color:${colVar}">${p.s}</div></div><div class="flex gap-4 mb-8" style="flex-wrap:wrap"><span class="tag ${tagCls}">${p.tp}</span><span class="tag tz">EO: ${p.eo}</span><span class="fdr f${p.fdr}" style="font-size:9px;padding:2px 6px">FDR ${p.fdr}</span></div><div class="xs t3c mb-8">${p.r}</div><div class="sb2"><div class="sf" style="width:${p.s}%;background:${colVar}"></div></div></div>`;}).join('');
-}
+function rdDemoCaps(){/* removed — app uses live API data only */}
 function rdCaps(d){
   const tm={};d.teams.forEach(t=>tm[t.id]=t);
   const top=[...d.elements].filter(e=>parseFloat(e.form)>5).sort((a,b)=>parseFloat(b.form)-parseFloat(a.form)).slice(0,6);
@@ -2194,9 +2181,7 @@ function rdCaps(d){
     return `<div class="cc"><div class="fbc mb-8"><div><div class="cn">${e.web_name}</div><div class="cclub">${(tm[e.team]||{}).short_name||'—'} · ${PM[e.element_type]}</div></div><div class="csv2" style="color:${colVar}">${s}</div></div><div class="flex gap-4 mb-8" style="flex-wrap:wrap"><span class="tag ${cols[i]==='gr'?'tg':cols[i]==='am'?'ty':'tb'}">${types[i]}</span><span class="tag tz">Own: ${e.selected_by_percent}%</span><span class="tag tt">Form: ${e.form}</span></div><div class="xs t3c mb-8">£${(e.now_cost/10).toFixed(1)}m · ${e.total_points} pts total</div><div class="sb2"><div class="sf" style="width:${s}%;background:${colVar}"></div></div></div>`;}).join('');
 }
 
-function rdDemoDiffs(){
-  document.getElementById('df-bod').innerHTML=DM.diffs.map(d=>`<tr><td class="cp">${d.n}</td><td><span class="pos p${d.p}">${d.p}</span></td><td class="t2c">${d.cl}</td><td class="r ${parseFloat(d.ow)<10?'ca w7':''}">${d.ow}</td><td class="r">£${d.pr.replace('£','')}</td><td class="r cy">${d.fm}</td><td class="r cbl">${d.xg}</td><td><span class="fdr f${d.fdr}">${d.fix}</span></td><td><span class="tag ${d.v==='Buy'?'tg':'ty'}">${d.v==='Buy'?'↗ Buy':'◎ Monitor'}</span></td></tr>`).join('');
-}
+function rdDemoDiffs(){/* removed — app uses live API data only */}
 function rdDiffs(d){
   const tm={};d.teams.forEach(t=>tm[t.id]=t);
   const diffs=[...d.elements].filter(e=>parseFloat(e.selected_by_percent)<15&&parseFloat(e.form)>4).sort((a,b)=>parseFloat(b.form)-parseFloat(a.form)).slice(0,8);
@@ -2205,11 +2190,7 @@ function rdDiffs(d){
 
 const stIc={out:'🔴',doubt:'🟡',monitor:'🟢'};
 const stLb={out:'Out',doubt:'50/50 Doubt',monitor:'Monitor'};
-function rdDemoInj(){
-  const o=DM.inj.filter(i=>i.s==='out').length,d=DM.inj.filter(i=>i.s==='doubt').length;
-  document.getElementById('inj-out').textContent=o;document.getElementById('inj-d').textContent=d;document.getElementById('inj-m').textContent=DM.inj.length-o-d;
-  document.getElementById('inj-bod').innerHTML=DM.inj.map(i=>`<tr><td class="cp">${i.n}</td><td class="t2c">${i.cl}</td><td>${i.iss}</td><td>${i.ret}</td><td>${stIc[i.s]} <span class="xs t2c">${stLb[i.s]}</span></td></tr>`).join('');
-}
+function rdDemoInj(){/* removed — app uses live API data only */}
 function rdInj(d){
   const tm={};d.teams.forEach(t=>tm[t.id]=t);
   // FPL statuses: 'a'=available, 'd'=doubt, 'i'=injured, 'u'=unavailable, 'n'=not in squad
@@ -2242,19 +2223,80 @@ function rdInj(d){
   }).join('');
 }
 
-function rdDemoRot(){
-  const h=DM.rot.filter(r=>r.risk==='high').length,m=DM.rot.filter(r=>r.risk==='med').length;
-  document.getElementById('rr-h').textContent=h;document.getElementById('rr-m').textContent=m;document.getElementById('rr-s').textContent=DM.rot.length-h-m;
-  document.getElementById('rr-bod').innerHTML=DM.rot.map(r=>`<tr><td class="cp">${r.n}</td><td class="t2c">${r.cl}</td><td><span class="fdr f2">${r.fix}</span></td><td><span class="tag ty">${r.euro}</span></td><td class="r w7">${r.prob}%</td><td class="${r.risk==='high'?'cr':r.risk==='med'?'cy':'ca'} w7 xs">${r.risk==='high'?'⚠ High Risk':r.risk==='med'?'◎ Monitor':'✓ Safe'}</td></tr>`).join('');
+function rdDemoRot(){/* removed — app uses live API data only */}
+function rdRot(d){
+  // Rotation risk: players from teams in European competition with midweek fixture
+  // FPL bootstrap has team data; we flag teams playing in UCL/UEL/UECL
+  // As a proxy: flag players from top-6 teams (regular European participants)
+  // and midfielders/forwards with form > 4 who are rotation candidates
+  const euroTeams = new Set();
+  d.teams.forEach(t => { if(t.code && t.strength >= 4) euroTeams.add(t.id); });
+  const tm={};d.teams.forEach(t=>tm[t.id]=t);
+  const candidates = d.elements
+    .filter(e => e.status==='a' && euroTeams.has(e.team)
+      && (e.element_type===3||e.element_type===4)
+      && parseFloat(e.selected_by_percent)>5)
+    .map(e => {
+      const mins = parseFloat(e.minutes||0);
+      const gms = parseFloat(e.total_points>0 ? Math.max(1, e.total_points/4) : 1);
+      const avgMins = mins / Math.max(1, d.events?.filter(ev=>ev.finished).length||20);
+      const risk = avgMins < 55 ? 'high' : avgMins < 70 ? 'med' : 'safe';
+      return { name:e.web_name, club:(tm[e.team]||{}).short_name||'?', avgMins:Math.round(avgMins), risk, ownership:e.selected_by_percent };
+    })
+    .sort((a,b)=>a.avgMins-b.avgMins)
+    .slice(0,8);
+  const h=candidates.filter(r=>r.risk==='high').length;
+  const m=candidates.filter(r=>r.risk==='med').length;
+  const el_h=document.getElementById('rr-h'); if(el_h)el_h.textContent=h;
+  const el_m=document.getElementById('rr-m'); if(el_m)el_m.textContent=m;
+  const el_s=document.getElementById('rr-s'); if(el_s)el_s.textContent=candidates.length-h-m;
+  const tbody=document.getElementById('rr-bod'); if(!tbody)return;
+  if(!candidates.length){
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--t3)">No rotation risk data available</td></tr>';
+    return;
+  }
+  tbody.innerHTML=candidates.map(r=>`<tr>
+    <td class="cp">${r.name}</td><td class="t2c">${r.club}</td>
+    <td><span class="fdr f2">Next GW</span></td>
+    <td><span class="tag ty">European club</span></td>
+    <td class="r w7">${r.avgMins}' avg</td>
+    <td class="${r.risk==='high'?'cr':r.risk==='med'?'cy':'ca'} w7 xs">${r.risk==='high'?'⚠ High Risk':r.risk==='med'?'◎ Monitor':'✓ Safe'}</td>
+  </tr>`).join('');
 }
-function rdRot(d){rdDemoRot();}
 
-function rdSP(d){rdDemoSP();}
-function rdDemoSP(){
-  const mkSP=arr=>arr.map(r=>`<div class="spr"><div><div class="cp sm">${r.n}</div><div class="xs t3c">${r.cl}</div></div><div style="text-align:right"><div class="spdots">${[1,2,3,4,5].map(i=>`<div class="spdot${i<=r.conf?' on':''}"></div>`).join('')}</div><div class="xs t3c mt-4">${r.note}</div></div></div>`).join('');
-  document.getElementById('pen-tbl').innerHTML=mkSP(DM.pens);
-  document.getElementById('fk-tbl').innerHTML=mkSP(DM.fks);
+function rdSP(d){
+  const tm={};d.teams.forEach(t=>tm[t.id]=t);
+  const mkSPRow = (e, note) => {
+    const conf = e.penalties_order===1 ? 5 : e.penalties_order===2 ? 3 : e.direct_freekicks_order===1 ? 4 : 2;
+    return `<div class="spr">
+      <div><div class="cp sm">${e.web_name}</div>
+      <div class="xs t3c">${(tm[e.team]||{}).short_name||'?'}</div></div>
+      <div style="text-align:right">
+        <div class="spdots">${[1,2,3,4,5].map(i=>`<div class="spdot${i<=conf?' on':''}"></div>`).join('')}</div>
+        <div class="xs t3c mt-4">${note}</div>
+      </div>
+    </div>`;
+  };
+  // Penalty takers: players with penalties_order set
+  const penTakers = d.elements
+    .filter(e=>e.penalties_order&&e.penalties_order>0&&e.status==='a')
+    .sort((a,b)=>a.penalties_order-b.penalties_order)
+    .slice(0,8);
+  const penEl = document.getElementById('pen-tbl');
+  if(penEl) penEl.innerHTML = penTakers.length
+    ? penTakers.map(e=>mkSPRow(e,`Penalty order: ${e.penalties_order}`)).join('')
+    : '<div class="al ai"><span class="al-ic">&#9737;</span><div>Penalty taker data not available in API this GW.</div></div>';
+  // FK takers: players with direct_freekicks_order set
+  const fkTakers = d.elements
+    .filter(e=>e.direct_freekicks_order&&e.direct_freekicks_order>0&&e.status==='a')
+    .sort((a,b)=>a.direct_freekicks_order-b.direct_freekicks_order)
+    .slice(0,8);
+  const fkEl = document.getElementById('fk-tbl');
+  if(fkEl) fkEl.innerHTML = fkTakers.length
+    ? fkTakers.map(e=>mkSPRow(e,`FK order: ${e.direct_freekicks_order}`)).join('')
+    : '<div class="al ai"><span class="al-ic">&#9737;</span><div>Free kick taker data not available in API this GW.</div></div>';
 }
+function rdDemoSP(){/* removed — app uses live API data only */}
 
 function rdBonus(){
   // Bonus monitor still shows demo data — live BPS requires event/live endpoint
@@ -2323,14 +2365,40 @@ function rdAlerts(d){
     </div>`).join('');
 }
 
-function rdDemoTmpl(){
-  const matches=DM.tmpl.filter(t=>t.has).length;
-  document.getElementById('tm-m').textContent=Math.round(matches/DM.tmpl.length*100)+'%';
-  document.getElementById('tm-d').textContent=DM.tmpl.filter(t=>!t.has).length;
-  document.getElementById('tm-panel').innerHTML=DM.tmpl.map(t=>`<div class="tsr ${t.has?'ts-m':'ts-x'}"><span class="pos p${t.pos}">${t.pos}</span><div style="flex:1"><div class="sm cp">${t.n}</div><div class="xs t3c">${t.cl}</div></div><span class="tag tz">${t.ow}</span>${t.has?'<span class="tag tg">✓ Match</span>':'<span class="tag tr">✗ Off-template</span>'}</div>`).join('');
-  document.getElementById('tm-squad').innerHTML=`<table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th class="r">Own%</th><th>Match?</th></tr></thead><tbody>${DM.tmpl.map(t=>`<tr><td class="cp">${t.n}</td><td><span class="pos p${t.pos}">${t.pos}</span></td><td class="t2c">${t.cl}</td><td class="r">${t.ow}</td><td>${t.has?'<span class="tag tg">✓</span>':'<span class="tag tz">Not in squad</span>'}</td></tr>`).join('')}</tbody></table>`;
+function rdDemoTmpl(){/* removed — app uses live API data only */}
+function rdTmpl(d){
+  const tm={};d.teams.forEach(t=>tm[t.id]=t);
+  const PM2={1:'GK',2:'DEF',3:'MID',4:'FWD'};
+  // Template = top-owned player per position bracket, ranked by selected_by_percent
+  const template = [...d.elements]
+    .sort((a,b)=>parseFloat(b.selected_by_percent)-parseFloat(a.selected_by_percent))
+    .slice(0,20)
+    .map(e=>({
+      id:e.id,pos:PM2[e.element_type]||'?',
+      name:e.web_name,
+      club:(tm[e.team]||{}).short_name||'?',
+      ow:parseFloat(e.selected_by_percent)||0
+    }));
+  // Cross-reference with loaded squad if available
+  const myIds = S.myPicks ? new Set(S.myPicks.picks.map(p=>p.element)) : new Set();
+  const matches = template.filter(p=>myIds.has(p.id)).length;
+  const el_m=document.getElementById('tm-m'); if(el_m)el_m.textContent=(template.length?Math.round(matches/template.length*100):0)+'%';
+  const el_d=document.getElementById('tm-d'); if(el_d)el_d.textContent=template.filter(p=>!myIds.has(p.id)).length;
+  const panel=document.getElementById('tm-panel');
+  if(panel) panel.innerHTML=template.map(p=>{
+    const has=myIds.has(p.id);
+    return `<div class="tsr ${has?'ts-m':'ts-x'}">
+      <span class="pos p${p.pos}">${p.pos}</span>
+      <div style="flex:1"><div class="sm cp">${p.name}</div><div class="xs t3c">${p.club}</div></div>
+      <span class="tag tz">${p.ow.toFixed(1)}%</span>
+      ${has?'<span class="tag tg">✓ In squad</span>':'<span class="tag tr">✗ Off-template</span>'}
+    </div>`;
+  }).join('');
+  const squadEl=document.getElementById('tm-squad');
+  if(squadEl) squadEl.innerHTML=`<table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th class="r">Own%</th><th>In squad?</th></tr></thead><tbody>${
+    template.map(p=>`<tr><td class="cp">${p.name}</td><td><span class="pos p${p.pos}">${p.pos}</span></td><td class="t2c">${p.club}</td><td class="r">${p.ow.toFixed(1)}%</td><td>${myIds.has(p.id)?'<span class="tag tg">✓</span>':'<span class="tag tz">Not in squad</span>'}</td></tr>`).join('')
+  }</tbody></table>`;
 }
-function rdTmpl(d){rdDemoTmpl();}
 
 function rdSmTgts(d){
   const tm={};d.teams.forEach(t=>tm[t.id]=t);
@@ -2346,7 +2414,13 @@ function rdDemoPitch(){
 }
 
 function rdDemoSquadSum(){
-  document.getElementById('sq-sum').innerHTML=`<div class="g2 gap-8">${[{l:'GW Points',v:'58',c:'ca'},{l:'Total Points',v:'1,642',c:'cbl'},{l:'Overall Rank',v:'142,301',c:'cy'},{l:'Team Value',v:'£101.2m',c:'cpu'}].map(k=>`<div style="background:var(--c3);border-radius:var(--r2);padding:12px;text-align:center"><div class="xs t3c w7 mb-4" style="text-transform:uppercase;letter-spacing:.08em">${k.l}</div><div class="sm w9 ${k.c}">${k.v}</div></div>`).join('')}</div><div class="xs t3c mt-12">Enter Manager ID above to load your real squad.</div>`;
+  document.getElementById('sq-sum').innerHTML=`<div class="g2 gap-8">${[
+    {l:'GW Points',c:'ca'},{l:'Total Points',c:'cbl'},{l:'Overall Rank',c:'cy'},{l:'Team Value',c:'cpu'}
+  ].map(k=>`<div style="background:var(--c3);border-radius:var(--r2);padding:12px;text-align:center">
+    <div class="xs t3c w7 mb-4" style="text-transform:uppercase;letter-spacing:.08em">${k.l}</div>
+    <div class="sm w9 ${k.c}">—</div>
+  </div>`).join('')}</div>
+  <div class="xs t3c mt-12">Enter your FPL Manager ID above and click Load Squad.</div>`;
 }
 
 // Render real pitch from live picks + bootstrap data
@@ -2478,10 +2552,16 @@ function rdChips(){
   dc.innerHTML=CHIP_DEFS.map(c=>`<div class="chip-p ${S.chips[c.k]}" onclick="toggleChip('${c.k}')"><span style="font-size:16px">${c.ic}</span><div><div class="chip-n">${c.n}</div><div class="chip-m">${S.chips[c.k]==='used'?'✓ Used':c.h}</div></div></div>`).join('');
 }
 // ── CHIP TIMELINE ENGINE (Session 4) ────────────────────
+// 2025/26 confirmed DGW/BGW schedule
 const GW_SPECIAL = {
-  19:{type:'bgw',label:'BGW'}, 20:{type:'dgw',label:'DGW'}, 25:{type:'bgw',label:'BGW'},
-  31:{type:'bgw',label:'BGW'}, 33:{type:'dgw',label:'DGW'}, 34:{type:'bgw',label:'BGW'},
-  36:{type:'dgw',label:'DGW'}, 37:{type:'dgw',label:'DGW'}
+  16:{type:'bgw',label:'AFCON'},
+  19:{type:'bgw',label:'BGW'},
+  25:{type:'bgw',label:'BGW'},
+  31:{type:'bgw',label:'BGW'},
+  33:{type:'dgw',label:'DGW'},
+  34:{type:'bgw',label:'BGW'},
+  36:{type:'dgw',label:'DGW'},
+  37:{type:'dgw',label:'DGW'}
 };
 let S_chipPlan = JSON.parse(localStorage.getItem('fwr_chipplan')||'{}');
 let S_chipAssignGw = null;
