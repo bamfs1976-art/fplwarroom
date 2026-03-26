@@ -7,6 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
+/* ── SKIP LINK ─────────────────────────────────────────── */
+.skip-link{position:absolute;top:-999px;left:0;background:var(--gr);color:#000;padding:8px 16px;font-weight:700;font-size:.875rem;border-radius:0 0 8px 0;z-index:9999}
+.skip-link:focus{top:0}
+
 /* ── DESIGN TOKENS ─────────────────────────────────────── */
 /* Light mode (default) */
 :root{
@@ -56,6 +60,39 @@
   --sh:0 1px 3px rgba(0,0,0,.3),0 4px 12px rgba(0,0,0,.2);
   --sh2:0 2px 8px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
 }
+
+/* ── TOOLTIP ───────────────────────────────────────────── */
+.tip{position:relative;display:inline-flex;align-items:center;gap:3px;cursor:default}
+.tip-ic{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--b2);color:var(--t3);font-size:.6rem;font-weight:700;font-family:var(--f);cursor:help;flex-shrink:0;border:1px solid var(--b2)}
+.tip-ic:hover,.tip-ic:focus{background:var(--bl);color:#fff;border-color:var(--bl);outline:none}
+.tip-box{visibility:hidden;opacity:0;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--c1);border:1px solid var(--b2);border-radius:var(--r2);padding:10px 12px;font-size:.75rem;color:var(--t1);line-height:1.5;white-space:normal;width:220px;z-index:500;box-shadow:var(--sh2);pointer-events:none;transition:opacity .15s,visibility .15s}
+.tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--b2)}
+.tip-ic:hover+.tip-box,.tip-ic:focus+.tip-box{visibility:visible;opacity:1}
+
+/* ── ONBOARDING MODAL ──────────────────────────────────── */
+.ob-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.ob-overlay.hidden{display:none}
+.ob-modal{background:var(--c1);border:1px solid var(--b2);border-radius:var(--r4);padding:32px;max-width:420px;width:100%;box-shadow:var(--sh2)}
+.ob-step{display:none}
+.ob-step.active{display:block}
+.ob-num{font-size:.69rem;font-family:var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--gr);margin-bottom:8px}
+.ob-title{font-size:1.25rem;font-weight:800;color:var(--t1);margin-bottom:8px;line-height:1.3}
+.ob-body{font-size:.875rem;color:var(--t2);line-height:1.6;margin-bottom:24px}
+.ob-body strong{color:var(--t1)}
+.ob-dots{display:flex;gap:6px;margin-bottom:24px}
+.ob-dot{width:8px;height:8px;border-radius:50%;background:var(--b3)}
+.ob-dot.active{background:var(--gr);width:20px;border-radius:4px}
+.ob-actions{display:flex;gap:8px;justify-content:flex-end}
+.ob-inp{width:100%;padding:10px 12px;border:1px solid var(--b2);border-radius:var(--r1);background:var(--c3);color:var(--t1);font-family:var(--f);font-size:.9rem;margin-bottom:16px;outline:none}
+.ob-inp:focus{border-color:var(--gr);box-shadow:0 0 0 3px var(--gd)}
+.ob-skip{font-size:.75rem;color:var(--t3);text-decoration:underline;cursor:pointer;background:none;border:none;padding:0;font-family:var(--f);margin-right:auto;align-self:center}
+.ob-skip:hover{color:var(--t2)}
+
+/* ── ERROR BANNER ──────────────────────────────────────── */
+.err-banner{display:none;background:var(--rdd);border:1px solid var(--rd);border-radius:var(--r2);padding:12px 16px;font-size:.833rem;color:var(--t1);margin-bottom:16px;align-items:center;gap:10px}
+.err-banner.show{display:flex}
+.err-banner button{margin-left:auto;background:var(--rd);color:#fff;border:none;border-radius:var(--r1);padding:6px 14px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:var(--f)}
+.err-banner button:hover{opacity:.85}
 
 /* ── RESET & BASE ──────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -170,7 +207,9 @@ nav{padding:8px 0;flex:1;overflow-y:auto}
   padding:8px 16px;border-radius:var(--r2);
   font-size:.83rem;font-weight:600;
   transition:all .12s var(--ease);white-space:nowrap;cursor:pointer;
+  border:none;font-family:var(--f);
 }
+.btn:focus-visible{outline:2px solid var(--gr);outline-offset:2px;box-shadow:0 0 0 4px var(--gd)}
 .btn-p{background:var(--gr);color:#fff;box-shadow:0 1px 4px var(--gg)}
 .btn-p:hover{filter:brightness(1.08);box-shadow:0 2px 12px var(--gg)}
 .btn-p:active{transform:scale(.97)}
@@ -180,6 +219,8 @@ nav{padding:8px 0;flex:1;overflow-y:auto}
 }
 .btn-g:hover{background:var(--c3);color:var(--t1)}
 .btn-sm{padding:5px 12px;font-size:.75rem;border-radius:var(--r1)}
+.inp:focus{border-color:var(--gr);outline:none;box-shadow:0 0 0 3px var(--gd)}
+
 
 /* ── PAGES ─────────────────────────────────────────────── */
 .page{display:none;padding:24px;flex:1;animation:fi .3s var(--ease)}
@@ -320,6 +361,58 @@ select.inp{
 .ptn{font-size:9px;font-weight:700;color:#fff;text-align:center;max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 .ptp{font-size:10px;font-weight:800;color:rgba(255,255,255,.9);text-shadow:0 1px 3px rgba(0,0,0,.6)}
 
+/* ── CHIP TIMELINE ──────────────────────────────────────── */
+.gw-chip-cell{display:flex;flex-direction:column;align-items:center;padding:8px 6px;background:var(--c3);border-radius:var(--r2);border:1px solid var(--b1);cursor:pointer;min-width:56px;transition:all .15s;user-select:none}
+.gw-chip-cell:hover{border-color:var(--gr);background:var(--gd)}
+.gw-chip-cell.current{border-color:var(--gr);background:var(--gd)}
+.gw-chip-cell.dgw{border-color:var(--bl);background:var(--bd)}
+.gw-chip-cell.bgw{border-color:var(--rd);background:var(--rdd)}
+.gw-chip-cell.has-chip{border-color:var(--pu);background:rgba(124,58,237,.12)}
+.gw-num{font-size:.65rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.05em}
+.gw-type-badge{font-size:.6rem;font-weight:700;padding:1px 4px;border-radius:3px;margin-top:2px}
+.gw-type-badge.dgw{background:var(--bd);color:var(--bl)}
+.gw-type-badge.bgw{background:var(--rdd);color:var(--rd)}
+.gw-type-badge.cur{background:var(--gd);color:var(--gr)}
+.gw-chip-assigned{font-size:.65rem;font-weight:700;color:var(--pu);margin-top:3px;text-align:center;line-height:1.2}
+.chip-synergy-card{background:var(--c3);border-radius:var(--r2);padding:14px;border-left:3px solid var(--gr)}
+.chip-synergy-card.amber{border-left-color:var(--am)}
+.chip-synergy-card .syn-title{font-size:.8rem;font-weight:700;color:var(--t1);margin-bottom:4px}
+.chip-synergy-card .syn-body{font-size:.75rem;color:var(--t2);line-height:1.5}
+
+/* ── AI ADVISOR ──────────────────────────────────────────── */
+.ai-prompt-chip{padding:8px 14px;background:var(--c3);border:1px solid var(--b2);border-radius:var(--r4);font-size:.8rem;color:var(--t2);cursor:pointer;text-align:left;transition:all .12s;font-family:var(--f)}
+.ai-prompt-chip:hover{border-color:var(--pu);color:var(--t1);background:rgba(124,58,237,.08)}
+.ai-prompt-chip:focus-visible{outline:2px solid var(--pu);outline-offset:2px}
+#ai-response-body h3{font-size:.9rem;font-weight:700;color:var(--t1);margin:12px 0 4px}
+#ai-response-body strong{color:var(--t1)}
+.ai-streaming{border-right:2px solid var(--pu);animation:blink .7s step-end infinite}
+@keyframes blink{50%{border-color:transparent}}
+#ai-ask-btn.loading{opacity:.7;cursor:not-allowed}
+
+/* ── FDR GRID (Session 3) ───────────────────────────────── */
+.fdr-cell{padding:4px 6px;text-align:center;border-radius:6px;font-size:.75rem;font-weight:700;min-width:52px;position:relative}
+.fdr-cell.squad-highlight{outline:2px solid var(--gr);outline-offset:-2px}
+.fdr-team{padding:6px 8px;font-size:.8rem;font-weight:600;color:var(--t1);white-space:nowrap;min-width:100px}
+.fdr-team.my-squad{color:var(--gr)}
+.fdr-avg{padding:4px 8px;text-align:center;font-size:.75rem;font-weight:700;border-radius:6px}
+.fdr-avg.good{color:var(--gr);background:var(--gd)}
+.fdr-avg.med{color:var(--am);background:var(--ad)}
+.fdr-avg.hard{color:var(--rd);background:var(--rdd)}
+.fdr-range-btn.active,.fdr-sort-btn.active{background:var(--gr);color:#000;border-color:var(--gr)}
+.green-run-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:var(--gd);border:1px solid var(--gr);border-radius:var(--r2);font-size:.8rem;color:var(--t1);margin-bottom:8px}
+.green-run-badge strong{color:var(--gr)}
+.fdr-opp{font-size:.65rem;color:var(--t3);display:block;font-weight:400;line-height:1.2;margin-top:1px}
+
+/* ── RIVAL COMPARISON TABLE ─────────────────────────────── */
+.rvc{background:var(--c2);border-radius:var(--r3);padding:14px 16px;border:1px solid var(--b1);position:relative}
+.rvc .rv-loading{font-size:.75rem;color:var(--t3);margin-top:4px}
+.rvc .rv-pts{font-size:1.1rem;font-weight:800;color:var(--gr)}
+.rvc .rv-rank{font-size:.75rem;color:var(--t3)}
+.rv-chip-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:.65rem;font-weight:700;background:var(--pu);color:#fff;margin-left:4px}
+#rv-compare-tbl td,#rv-compare-tbl th{padding:8px 10px;font-size:.8rem}
+#rv-compare-tbl tr.rv-me{background:var(--gd)}
+#rv-compare-tbl tr.rv-me td{color:var(--t1)}
+
 /* ── FDR ────────────────────────────────────────────────── */
 .fdr{display:inline-flex;align-items:center;justify-content:center;border-radius:5px;font-size:10px;font-weight:800;min-width:44px;padding:3px 6px}
 .f1{background:#bbf7d0;color:#166534}.f2{background:#d1fae5;color:#065f46}
@@ -364,11 +457,39 @@ select.inp{
 .cpdd-i:hover{background:var(--c3);color:var(--t1)}
 
 /* ── PRICE BARS ─────────────────────────────────────────── */
-.prrow{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--b1)}
+.prrow{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--b1)}
 .prrow:last-child{border-bottom:none}
 .pr-bar{flex:1;height:4px;background:var(--c3);border-radius:2px;overflow:hidden}
 .pr-u{height:100%;background:var(--gr);border-radius:2px}
 .pr-d{height:100%;background:var(--rd);border-radius:2px}
+.pr-conf-high{color:var(--gr);font-weight:700;font-size:.75rem}
+.pr-conf-med{color:var(--am);font-weight:700;font-size:.75rem}
+.pr-conf-watch{color:var(--t3);font-size:.75rem}
+.pr-lock-cd{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+
+/* ── FIXTURE STRIP ──────────────────────────────────────── */
+.fix-chip{display:flex;flex-direction:column;align-items:center;padding:8px 12px;background:var(--c3);border-radius:var(--r2);border:1px solid var(--b1);min-width:100px;font-size:.75rem;gap:4px}
+.fix-chip.live{border-color:var(--gr);background:var(--gd)}
+.fix-chip.ft{border-color:var(--b2);opacity:.6}
+.fix-score{font-weight:800;font-size:1rem;color:var(--t1);letter-spacing:.05em}
+.fix-teams{color:var(--t2);font-size:.7rem}
+.fix-status{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.fix-status.live-badge{color:var(--gr)}
+.fix-status.ft-badge{color:var(--t3)}
+
+/* ── MINI-LEAGUE LIVE TABLE ─────────────────────────────── */
+.ml-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b1)}
+.ml-row:last-child{border-bottom:none}
+.ml-pos{font-size:.69rem;color:var(--t3);width:20px;text-align:center;flex-shrink:0}
+.ml-name{flex:1;font-size:.83rem;font-weight:600;color:var(--t1)}
+.ml-pts{font-size:.9rem;font-weight:700;color:var(--gr);min-width:40px;text-align:right}
+.ml-rank-delta{font-size:.69rem;min-width:50px;text-align:right}
+.ml-you{background:var(--gd);border-radius:var(--r1);padding:0 4px}
+
+/* ── RANK DELTA BANNER ──────────────────────────────────── */
+.rank-delta-up{background:rgba(0,184,122,.1);border:1px solid var(--gr);border-radius:var(--r2);padding:12px 16px;font-size:.875rem;color:var(--gr);font-weight:700}
+.rank-delta-dn{background:rgba(220,38,38,.08);border:1px solid var(--rd);border-radius:var(--r2);padding:12px 16px;font-size:.875rem;color:var(--rd);font-weight:700}
+.rank-delta-neu{background:var(--c3);border:1px solid var(--b2);border-radius:var(--r2);padding:12px 16px;font-size:.875rem;color:var(--t2)}
 
 /* ── SET PIECE ──────────────────────────────────────────── */
 .spr{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--b1)}
@@ -517,6 +638,53 @@ select.inp{
 
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- ONBOARDING MODAL -->
+<div class="ob-overlay hidden" id="ob-overlay" role="dialog" aria-modal="true" aria-labelledby="ob-title-1">
+  <div class="ob-modal">
+    <!-- Step 1 -->
+    <div class="ob-step active" id="ob-s1">
+      <div class="ob-num">Step 1 of 3</div>
+      <div class="ob-title" id="ob-title-1">Welcome to FPL War Room</div>
+      <div class="ob-body">Your command centre for top-1k FPL decisions. Live data, chip planning, captaincy analysis, and rank tracking — all in one place.<br><br>Takes 30 seconds to set up. Let's go.</div>
+      <div class="ob-dots"><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+      <div class="ob-actions">
+        <button class="ob-skip" onclick="closeOnboarding()" aria-label="Skip setup">Skip for now</button>
+        <button class="btn btn-p" onclick="obNext(2)">Next</button>
+      </div>
+    </div>
+    <!-- Step 2 -->
+    <div class="ob-step" id="ob-s2">
+      <div class="ob-num">Step 2 of 3</div>
+      <div class="ob-title">Enter your Manager ID</div>
+      <div class="ob-body">Your FPL Manager ID loads your squad, rank, chips, and live points. Find it in the URL on the FPL website: <strong>fantasy.premierleague.com/entry/<em>1234567</em>/event/1</strong></div>
+      <input type="number" class="ob-inp" id="ob-mid" placeholder="e.g. 1234567" aria-label="FPL Manager ID">
+      <div class="ob-dots"><div class="ob-dot"></div><div class="ob-dot active"></div><div class="ob-dot"></div></div>
+      <div class="ob-actions">
+        <button class="ob-skip" onclick="closeOnboarding()">Skip for now</button>
+        <button class="btn btn-g btn-sm" onclick="obNext(1)" style="margin-right:4px">Back</button>
+        <button class="btn btn-p" onclick="obNext(3)">Next</button>
+      </div>
+    </div>
+    <!-- Step 3 -->
+    <div class="ob-step" id="ob-s3">
+      <div class="ob-num">Step 3 of 3</div>
+      <div class="ob-title">Three panels to start with</div>
+      <div class="ob-body">
+        <strong>Captaincy Lab</strong> — multi-factor scoring to pick your captain every GW.<br><br>
+        <strong>Transfer Planner</strong> — plan your next three moves with hit cost and break-even built in.<br><br>
+        <strong>Chip Strategy</strong> — visual chip planner across the rest of the season.
+      </div>
+      <div class="ob-dots"><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot active"></div></div>
+      <div class="ob-actions">
+        <button class="btn btn-g btn-sm" onclick="obNext(2)" style="margin-right:4px">Back</button>
+        <button class="btn btn-p" onclick="finishOnboarding()">Get started</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="ov" onclick="closeSb()"></div>
 <div class="shell">
 <aside class="sidebar" id="sb">
@@ -564,6 +732,7 @@ select.inp{
     <button class="ni" onclick="nav('defcon',this)"><span class="ni-ic">&#9760;</span>DefCon Threats</button>
     <button class="ni" onclick="nav('autosubs',this)"><span class="ni-ic">&#8644;</span>Auto-Sub Tracker</button>
     <button class="ni" onclick="nav('whatif',this)"><span class="ni-ic">&#63;</span>What-If Simulator</button>
+    <button class="ni" onclick="nav('ai',this)"><span class="ni-ic">&#9881;</span>AI Advisor <span class="nb g" style="background:var(--pu)">NEW</span></button>
   </nav>
   <div class="sb-foot">
     <div class="sb-foot-text">
@@ -573,10 +742,15 @@ select.inp{
     <button class="dm-btn" id="dm-btn" onclick="toggleDark()" title="Toggle dark mode" aria-label="Toggle dark mode"></button>
   </div>
 </aside>
-<div class="main">
-  <div class="topbar">
-    <div class="tb-l"><button class="ham btn-g" onclick="toggleSb()">&#9776;</button><span class="tb-t" id="tb-title">Dashboard</span></div>
-    <div class="tb-r"><span id="api-status" style="font-size:.69rem;display:none;margin-right:8px"></span><button class="btn btn-g btn-sm" onclick="refreshAll()" title="Refresh data">&#8635;</button><button class="btn btn-p btn-sm" onclick="nav('transfers',null)">+ Transfer</button></div>
+<div class="main" id="main-content">
+  <div class="topbar" role="banner">
+    <div class="tb-l"><button class="ham btn-g" onclick="toggleSb()" aria-label="Open menu" aria-expanded="false" id="menu-toggle">&#9776;</button><span class="tb-t" id="tb-title">Dashboard</span></div>
+    <div class="tb-r"><span id="api-status" style="font-size:.69rem;display:none;margin-right:8px" aria-live="polite"></span><button class="btn btn-g btn-sm" onclick="refreshAll()" title="Refresh data" aria-label="Refresh live data">&#8635;</button><button class="btn btn-p btn-sm" onclick="nav('transfers',null)">+ Transfer</button></div>
+  </div>
+  <!-- API ERROR BANNER -->
+  <div class="err-banner" id="api-err-banner" role="alert">
+    <span>&#9888; Can't reach the FPL API right now. Showing demo data.</span>
+    <button onclick="retryLive()" aria-label="Retry loading live data">Retry</button>
   </div>
 
   <!-- DASHBOARD -->
@@ -605,7 +779,7 @@ select.inp{
     <div class="ph"><h2>My Squad</h2><p>Formation view &middot; xG+xA sparklines &middot; Player status</p></div>
     <div class="card mb-16">
       <div class="fac gap-12" style="flex-wrap:wrap">
-        <div style="flex:1;min-width:160px"><label class="lbl">FPL Manager ID</label><input type="number" id="mid-in" class="inp" placeholder="e.g. 1234567"></div>
+        <div style="flex:1;min-width:160px"><label class="lbl" for="mid-in">FPL Manager ID</label><input type="number" id="mid-in" class="inp" placeholder="e.g. 1234567" aria-describedby="mid-hint"><span id="mid-hint" class="xs t3c" style="display:block;margin-top:4px">Find it in the URL on the FPL website</span></div>
         <div style="flex:1;min-width:120px"><label class="lbl">Gameweek</label><select id="gw-sel" class="inp"></select></div>
         <button class="btn btn-p" onclick="loadSquad()" style="align-self:flex-end;height:36px">Load Squad</button>
       </div>
@@ -645,7 +819,7 @@ select.inp{
 
   <!-- EO TRACKER -->
   <div class="page" id="page-eo">
-    <div class="ph"><h2>EO Tracker</h2><p>Effective Ownership &mdash; the true metric of rank gain at the top 1k level</p></div>
+    <div class="ph"><h2>EO Tracker <span class="tip"><span class="tip-ic" tabindex="0" aria-label="What is EO?">?</span><span class="tip-box" role="tooltip">Effective Ownership = your ownership % + captain rate %. If 50% own a player and 40% captain them, their EO is 90%. This is your real rank benchmark, not raw ownership %.</span></span></h2><p>Effective Ownership &mdash; the true metric of rank gain at the top 1k level</p></div>
     <div class="al ai mb-16"><span class="al-ic">&#9678;</span><div>EO = ownership% + captain rate%. A player owned by 50% with 40% captain rate has 90% EO. That's your real benchmark, not raw ownership.</div></div>
     <div class="card mb-16"><div class="ct">Squad EO &mdash; Rank Impact <span id="eo-gw"></span></div><div id="eo-tbl"><div class="spinner"></div></div></div>
     <div class="g2">
@@ -677,7 +851,7 @@ select.inp{
 
   <!-- TEMPLATE METER -->
   <div class="page" id="page-template">
-    <div class="ph"><h2>Template Divergence Meter</h2><p>Your squad vs the top 10k &mdash; where is your edge?</p></div>
+    <div class="ph"><h2>Template Divergence Meter <span class="tip"><span class="tip-ic" tabindex="0" aria-label="What is the Template?">?</span><span class="tip-box" role="tooltip">The Template is the squad most top-1k managers own. High template match = lower variance, safer rank. Off-template picks create rank-gain potential but increase risk if they blank.</span></span></h2><p>Your squad vs the top 10k &mdash; where is your edge?</p></div>
     <div class="g2 mb-16">
       <div class="kpi"><div class="kpi-l">Template Match</div><div class="kpi-v ca" id="tm-m">&mdash;%</div><div class="kpi-d">vs top 10k</div></div>
       <div class="kpi"><div class="kpi-l">Differential Slots</div><div class="kpi-v cy" id="tm-d">&mdash;</div><div class="kpi-d">off-template players</div></div>
@@ -688,15 +862,55 @@ select.inp{
 
   <!-- RIVAL SCOUT -->
   <div class="page" id="page-rivals">
-    <div class="ph"><h2>Rival Scout</h2><p>Track up to 5 rivals &mdash; squad overlap, captaincy divergence, what beats them</p></div>
+    <div class="ph"><h2>Rival Scout</h2><p>Live GW comparison &middot; Chip usage &middot; Captain picks &middot; What beats them</p></div>
+
+    <!-- Add rival -->
     <div class="card mb-16">
       <div class="fac gap-12" style="flex-wrap:wrap">
-        <div style="flex:1;min-width:160px"><label class="lbl">Rival Manager ID</label><input type="number" id="rv-id" class="inp" placeholder="e.g. 9876543" onkeydown="if(event.key==='Enter')addRival()"></div>
-        <button class="btn btn-p" onclick="addRival()" style="align-self:flex-end;height:36px">+ Add Rival</button>
+        <div style="flex:1;min-width:160px">
+          <label class="lbl" for="rv-id">Rival Manager ID</label>
+          <input type="number" id="rv-id" class="inp" placeholder="e.g. 9876543" aria-describedby="rv-hint" onkeydown="if(event.key==='Enter')addRival()">
+          <span id="rv-hint" class="xs" style="display:block;min-height:16px;margin-top:4px" aria-live="polite"></span>
+        </div>
+        <button class="btn btn-p" onclick="addRival()" style="align-self:flex-end;height:36px" aria-label="Add rival">+ Add Rival</button>
+        <button class="btn btn-g btn-sm" onclick="refreshAllRivals()" style="align-self:flex-end;height:36px" aria-label="Refresh rival data">&#8635; Refresh All</button>
       </div>
     </div>
+
+    <!-- Rival cards -->
     <div id="rv-grid" class="g3 mb-16"></div>
-    <div class="card"><div class="ct">Captaincy Divergence &mdash; What You Need to Beat Each Rival</div><div id="rv-div"><div class="al ai"><span class="al-ic">&#8853;</span><div>Add rivals above to see captaincy recommendations.</div></div></div></div>
+
+    <!-- GW comparison table -->
+    <div class="card mb-16" id="rv-compare-wrap" style="display:none">
+      <div class="fbc mb-12">
+        <div class="ct" style="margin-bottom:0">GW Comparison <span class="tag tg" id="rv-gw-lbl"></span></div>
+        <span class="xs t3c" id="rv-updated"></span>
+      </div>
+      <div class="tw" style="overflow-x:auto">
+        <table id="rv-compare-tbl">
+          <thead>
+            <tr>
+              <th>Manager</th>
+              <th class="r">GW Pts</th>
+              <th class="r">Total Pts</th>
+              <th class="r">Overall Rank</th>
+              <th class="r">GW Rank &#9651;</th>
+              <th>Captain</th>
+              <th>Chip</th>
+              <th>Transfers</th>
+              <th>Beat them with</th>
+            </tr>
+          </thead>
+          <tbody id="rv-compare-bod"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Captaincy divergence -->
+    <div class="card">
+      <div class="ct">Captaincy Divergence &mdash; What You Need to Beat Each Rival</div>
+      <div id="rv-div"><div class="al ai"><span class="al-ic">&#8853;</span><div>Add rivals above and refresh to see captaincy analysis.</div></div></div>
+    </div>
   </div>
 
   <!-- TRANSFER PLANNER -->
@@ -751,44 +965,192 @@ select.inp{
 
   <!-- CHIP STRATEGY -->
   <div class="page" id="page-chips">
-    <div class="ph"><h2>Chip Strategy</h2><p>2025/26 allocation &middot; Deployment calendar &middot; Never use reactively</p></div>
-    <div class="g2 mb-16" id="chip-grid"></div>
-    <div class="card mb-16"><div class="ct">Optimal Deployment Calendar</div>
-      <div class="tw"><table><thead><tr><th>Chip</th><th>Target GW</th><th>Strategy</th><th>Priority</th></tr></thead><tbody id="chip-cal"></tbody></table></div>
+    <div class="ph"><h2>Chip Strategy <span class="tip"><span class="tip-ic" tabindex="0" aria-label="2025/26 chip rules">?</span><span class="tip-box" role="tooltip">In 2025/26 every chip is doubled: 2 Wildcards, 2 Free Hits, 2 Bench Boosts, 2 Triple Captains. Chips 1–4 must be used by GW19. Chips 5–8 are for the second half of the season.</span></span></h2><p>2025/26 doubled chips &middot; Visual deployment planner &middot; Synergy guide</p></div>
+
+    <!-- Chip status strip -->
+    <div class="g4 mb-16" id="chip-status-strip">
+      <div class="kpi"><div class="kpi-l">Chips Remaining</div><div class="kpi-v ca" id="chip-avail-count">—</div><div class="kpi-d">of 8 total</div></div>
+      <div class="kpi"><div class="kpi-l">Half 1 Chips Left</div><div class="kpi-v cy" id="chip-h1-count">—</div><div class="kpi-d">must use by GW19</div></div>
+      <div class="kpi"><div class="kpi-l">Half 2 Chips Left</div><div class="kpi-v cbl" id="chip-h2-count">—</div><div class="kpi-d">GW20 onwards</div></div>
+      <div class="kpi"><div class="kpi-l">Current GW</div><div class="kpi-v t2c" id="chip-cur-gw">—</div><div class="kpi-d">season in progress</div></div>
     </div>
-    <div class="al as"><span class="al-ic">&#9733;</span><div><strong>Elite swing:</strong> Wildcard GW32 &rarr; Bench Boost GW33 DGW &rarr; Free Hit GW34 BGW &rarr; Triple Captain GW36 DGW. Worth 100k+ rank positions.</div></div>
+
+    <!-- Chip cards -->
+    <div class="g2 mb-16" id="chip-grid"></div>
+
+    <!-- Visual GW timeline planner -->
+    <div class="card mb-16">
+      <div class="fbc mb-12">
+        <div class="ct" style="margin-bottom:0">GW Deployment Planner <span class="xs t3c" style="font-weight:400">— click a GW to assign a chip</span></div>
+        <button class="btn btn-g btn-sm" onclick="resetChipPlan()" aria-label="Clear chip plan">Reset plan</button>
+      </div>
+      <div id="chip-timeline" style="overflow-x:auto">
+        <div id="chip-gw-strip" style="display:flex;gap:6px;min-width:600px;padding:4px 0"></div>
+      </div>
+      <div id="chip-assign-panel" style="display:none;margin-top:16px;padding:14px;background:var(--c3);border-radius:var(--r2)">
+        <div class="xs t3c mb-8">Assign chip to <strong id="chip-assign-gw-label"></strong>:</div>
+        <div id="chip-assign-options" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+        <button class="btn btn-g btn-sm mt-8" onclick="closeChipAssign()" style="margin-top:10px">Cancel</button>
+      </div>
+      <div id="chip-plan-summary" class="mt-12"></div>
+    </div>
+
+    <!-- Optimal calendar table -->
+    <div class="card mb-16">
+      <div class="ct">Optimal Deployment Calendar <span class="xs t3c" style="font-weight:400">— 2025/26 season run-in</span></div>
+      <div class="tw"><table><thead><tr><th>Chip</th><th>Target GW</th><th>Reason</th><th>Priority</th></tr></thead><tbody id="chip-cal"></tbody></table></div>
+    </div>
+
+    <!-- Chip synergy guide -->
+    <div class="card">
+      <div class="ct">Chip Synergy Guide</div>
+      <div class="g2" id="chip-synergy"></div>
+    </div>
   </div>
 
   <!-- FIXTURE PLANNER -->
   <div class="page" id="page-fixtures">
-    <div class="ph"><h2>Fixture Planner</h2><p>6-GW FDR grid &middot; Green run identification &middot; Sell triggers</p></div>
-    <div class="card mb-16"><div class="fac gap-8" style="flex-wrap:wrap">
-      <span class="xs t3c w7" style="margin-right:8px">KEY</span>
-      <span class="fdr f1">1 Easy</span><span class="fdr f2">2 Good</span><span class="fdr f3">3 Moderate</span><span class="fdr f4">4 Tough</span><span class="fdr f5">5 Hardest</span>
-    </div></div>
-    <div class="card"><div class="ct">All Teams &mdash; GW28&ndash;GW33</div>
-      <div class="tw"><table><thead><tr><th>Team</th><th>GW28</th><th>GW29</th><th>GW30</th><th>GW31</th><th>GW32</th><th>GW33</th></tr></thead>
-      <tbody id="fdr-bod"><tr><td colspan="7" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr></tbody></table></div>
+    <div class="ph"><h2>Fixture Planner <span class="tip"><span class="tip-ic" tabindex="0" aria-label="What is FDR?">?</span><span class="tip-box" role="tooltip">Fixture Difficulty Rating. Rated 1–5 by the FPL algorithm. 1–2 = easy (green), 3 = neutral (amber), 4–5 = hard (red). Plan transfers and captains around green runs.</span></span></h2><p>Full FDR grid &middot; Green run finder &middot; Squad overlap &middot; Sell triggers</p></div>
+
+    <!-- Controls row -->
+    <div class="card mb-16">
+      <div class="fac gap-12" style="flex-wrap:wrap">
+        <div class="fac gap-8">
+          <span class="xs t3c w7">GWs:</span>
+          <button class="btn btn-g btn-sm fdr-range-btn active" data-range="6" onclick="setFdrRange(6,this)" aria-pressed="true">Next 6</button>
+          <button class="btn btn-g btn-sm fdr-range-btn" data-range="8" onclick="setFdrRange(8,this)" aria-pressed="false">Next 8</button>
+          <button class="btn btn-g btn-sm fdr-range-btn" data-range="10" onclick="setFdrRange(10,this)" aria-pressed="false">Next 10</button>
+        </div>
+        <div class="fac gap-8">
+          <span class="xs t3c w7">Sort:</span>
+          <button class="btn btn-g btn-sm fdr-sort-btn active" data-sort="avg" onclick="setFdrSort('avg',this)" aria-pressed="true">Avg FDR</button>
+          <button class="btn btn-g btn-sm fdr-sort-btn" data-sort="alpha" onclick="setFdrSort('alpha',this)" aria-pressed="false">A–Z</button>
+          <button class="btn btn-g btn-sm fdr-sort-btn" data-sort="squad" onclick="setFdrSort('squad',this)" aria-pressed="false">My Squad</button>
+        </div>
+        <label class="fac gap-8" style="cursor:pointer;margin-left:auto">
+          <input type="checkbox" id="fdr-squad-only" onchange="renderFdrGrid()" style="accent-color:var(--gr)" aria-label="Show my squad only">
+          <span class="xs t2c">My squad only</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- FDR key + stats -->
+    <div class="g2 mb-16">
+      <div class="card">
+        <div class="fac gap-8" style="flex-wrap:wrap">
+          <span class="xs t3c w7" style="margin-right:4px">KEY</span>
+          <span class="fdr f1">1 Easy</span><span class="fdr f2">2 Good</span><span class="fdr f3">3 Moderate</span><span class="fdr f4">4 Tough</span><span class="fdr f5">5 Hardest</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="fac gap-16" style="flex-wrap:wrap">
+          <div style="text-align:center"><div class="xs t3c">Best run</div><div class="sm w7 ca" id="fdr-best-team">—</div></div>
+          <div style="text-align:center"><div class="xs t3c">Avg easiest</div><div class="sm w7 ca" id="fdr-best-avg">—</div></div>
+          <div style="text-align:center"><div class="xs t3c">Green runs found</div><div class="sm w7 ca" id="fdr-green-count">—</div></div>
+          <div style="text-align:center"><div class="xs t3c">Worst fixture run</div><div class="sm w7 cr" id="fdr-worst-team">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Green run alert strip -->
+    <div id="fdr-green-runs" class="mb-16" style="display:none"></div>
+
+    <!-- Main FDR grid -->
+    <div class="card" style="overflow-x:auto">
+      <div id="fdr-grid-wrap">
+        <table id="fdr-table" style="width:100%;border-collapse:separate;border-spacing:0 2px">
+          <thead><tr id="fdr-head"><th style="text-align:left;padding:6px 8px;font-size:.75rem;color:var(--t3)">Team</th></tr></thead>
+          <tbody id="fdr-bod"><tr><td colspan="8" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <!-- PRICE PREDICTOR -->
   <div class="page" id="page-price">
-    <div class="ph"><h2>Price Predictor</h2><p>Forward-looking momentum model &middot; Buy before the 6am lock</p></div>
-    <div class="al aw mb-16"><span class="al-ic">&#8597;</span><div>Price changes lock at 6am. Buy rising players overnight. Falls accelerate once they start &mdash; sell early.</div></div>
-    <div class="g2 mb-16">
-      <div class="card"><div class="ct">Rising &mdash; Buy Tonight</div><div id="pr-up"><div class="spinner"></div></div></div>
-      <div class="card"><div class="ct">Falling &mdash; Sell Window Closing</div><div id="pr-dn"><div class="spinner"></div></div></div>
+    <div class="ph"><h2>Price Predictor <span class="tip"><span class="tip-ic" tabindex="0" aria-label="How price changes work">?</span><span class="tip-box" role="tooltip">Prices change at 6am daily. A player needs roughly 1% net transfer-in to rise £0.1m. Falls work faster — roughly 0.5% net out triggers a drop. Buy rising players overnight. Sell fallers before the lock.</span></span></h2><p>Rise and fall predictions &middot; Confidence tiers &middot; 6am price lock countdown</p></div>
+
+    <!-- Price lock countdown -->
+    <div class="card mb-16" style="background:linear-gradient(135deg,var(--c2),var(--c3))">
+      <div class="fbc">
+        <div>
+          <div class="sh mb-4">Next price lock</div>
+          <div id="pr-lock-time" class="kpi-v cy" style="font-size:1.5rem">&mdash;</div>
+          <div class="xs t3c mt-4" id="pr-lock-note">Prices update at 6am daily. Buy before then to get the current price.</div>
+        </div>
+        <div style="text-align:right">
+          <div class="xs t3c mb-4">Last checked</div>
+          <div class="xs t2c" id="pr-last-checked">&mdash;</div>
+          <button class="btn btn-g btn-sm mt-8" onclick="refreshPrices()" aria-label="Refresh price data">&#8635; Refresh</button>
+        </div>
+      </div>
     </div>
-    <div class="card"><div class="ct">Full Price Movement Board</div>
-      <div class="tw"><table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th class="r">Price</th><th class="r">GW Change</th><th class="r">Net Transfers</th><th>Momentum</th><th>Predicted</th></tr></thead>
-      <tbody id="pr-bod"><tr><td colspan="8" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr></tbody></table></div>
+
+    <!-- Confidence tier cards -->
+    <div class="g3 mb-16">
+      <div class="card" style="border-top:3px solid var(--gr)">
+        <div class="ct">&#9650; Rising Tonight <span class="tag tg" id="pr-rise-count">0</span></div>
+        <div id="pr-up"><div class="spinner"></div></div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--rd)">
+        <div class="ct">&#9660; Falling Tonight <span class="tag tr" id="pr-fall-count">0</span></div>
+        <div id="pr-dn"><div class="spinner"></div></div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--am)">
+        <div class="ct">&#9654; Watch List <span class="tag ty" id="pr-watch-count">0</span></div>
+        <div id="pr-watch"><div class="al ai"><span class="al-ic">&#9654;</span><div>Players near a threshold — monitor before deadline.</div></div></div>
+      </div>
+    </div>
+
+    <!-- Your squad at risk -->
+    <div class="card mb-16">
+      <div class="ct">Your Squad &mdash; Price Risk <span class="xs t3c" style="font-weight:400">players from your squad with active price movement</span></div>
+      <div id="pr-squad-risk"><div class="al ai"><span class="al-ic">&#9650;</span><div>Load your squad in <strong>My Squad</strong> first to see which of your players are rising or falling.</div></div></div>
+    </div>
+
+    <!-- Full sortable table -->
+    <div class="card">
+      <div class="fbc mb-12">
+        <div class="ct" style="margin-bottom:0">Full Price Movement Board</div>
+        <div class="fac gap-8">
+          <select id="pr-pos-filter" class="inp" style="padding:5px 8px;font-size:.8rem" onchange="filterPriceTable()" aria-label="Filter by position">
+            <option value="all">All positions</option>
+            <option value="GK">GK</option>
+            <option value="DEF">DEF</option>
+            <option value="MID">MID</option>
+            <option value="FWD">FWD</option>
+          </select>
+          <select id="pr-dir-filter" class="inp" style="padding:5px 8px;font-size:.8rem" onchange="filterPriceTable()" aria-label="Filter by direction">
+            <option value="all">All moves</option>
+            <option value="rise">Rising only</option>
+            <option value="fall">Falling only</option>
+          </select>
+        </div>
+      </div>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Pos</th>
+              <th>Club</th>
+              <th class="r" onclick="sortPriceTable('price')" style="cursor:pointer" title="Sort by price">Price &#8597;</th>
+              <th class="r" onclick="sortPriceTable('transfers_in')" style="cursor:pointer" title="Sort by transfers in">GW In &#8597;</th>
+              <th class="r" onclick="sortPriceTable('transfers_out')" style="cursor:pointer" title="Sort by transfers out">GW Out &#8597;</th>
+              <th class="r" onclick="sortPriceTable('net')" style="cursor:pointer" title="Sort by net transfers">Net &#8597;</th>
+              <th onclick="sortPriceTable('prob')" style="cursor:pointer" title="Sort by probability">Prediction &#8597;</th>
+              <th>Confidence</th>
+            </tr>
+          </thead>
+          <tbody id="pr-bod"><tr><td colspan="9" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <!-- BONUS MONITOR -->
   <div class="page" id="page-bonus">
-    <div class="ph"><h2>Bonus Point Monitor</h2><p>Live BPS &middot; Estimated bonus allocation &middot; Captain swap signals</p></div>
+    <div class="ph"><h2>Bonus Point Monitor <span class="tip"><span class="tip-ic" tabindex="0" aria-label="What is BPS?">?</span><span class="tip-box" role="tooltip">Bonus Points System. Each match, the top 3 BPS scorers get +3, +2, +1 bonus points. BPS is calculated from actions like key passes, tackles, clearances and goals. Updated live during matches.</span></span></h2><p>Live BPS &middot; Estimated bonus allocation &middot; Captain swap signals</p></div>
     <div class="al ai mb-16"><span class="al-ic">&#9733;</span><div>Top 3 BPS scores per match receive 3, 2, 1 bonus points. Ties are split. Updated live during matches.</div></div>
     <div class="g3 mb-16">
       <div class="kpi"><div class="kpi-l">Top BPS This GW</div><div class="kpi-v cy" id="bn-top">&mdash;</div><div class="kpi-d" id="bn-who">&mdash;</div></div>
@@ -830,7 +1192,7 @@ select.inp{
     <div class="ph"><h2>Differential Scout</h2><p>Under 15% owned &middot; Strong underlying data &middot; Rank-boosting upside</p></div>
     <div class="al as mb-16"><span class="al-ic">&#8599;</span><div>Differentials only win rank when they score. Target ones with easy fixtures AND captain potential &mdash; that's when low EO creates maximum rank swing.</div></div>
     <div class="card"><div class="ct">Differential Candidates &mdash; Ranked by Value Score</div>
-      <div class="tw"><table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th class="r">Own%</th><th class="r">&pound;</th><th class="r">Form</th><th class="r">xG+xA</th><th>Fixture</th><th>Verdict</th></tr></thead>
+      <div class="tw"><table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th class="r">Own%</th><th class="r">&pound;</th><th class="r">Form</th><th class="r"><span class="tip">xG+xA<span class="tip-ic" tabindex="0" aria-label="What is xG+xA?">?</span><span class="tip-box" role="tooltip">Expected Goals + Expected Assists. Measures the quality of chances created and finished, not just actual goals/assists. A better predictor of future returns than raw stats.</span></span></th><th>Fixture</th><th>Verdict</th></tr></thead>
       <tbody id="df-bod"><tr><td colspan="9" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr></tbody></table></div>
     </div>
   </div>
@@ -881,44 +1243,86 @@ select.inp{
 
   <!-- LIVE RANK -->
   <div class="page" id="page-liverank">
-    <div class="ph"><h2>Live Rank</h2><p>Your estimated overall rank in real time as matches play &mdash; refreshes every 60 seconds</p></div>
-    <div id="lr-status" class="al ai mb-16" style="display:none"></div>
+    <div class="ph"><h2>Live Rank</h2><p>Your rank updating in real time &middot; Auto-refreshes every 60 seconds during live GWs</p></div>
+    <div id="lr-status" class="al ai mb-16" style="display:none" aria-live="polite"></div>
+
+    <!-- KPI strip -->
     <div class="g4 mb-16">
-      <div class="kpi"><div class="kpi-l">Live Overall Rank</div><div class="kpi-v ca" id="lr-rank">&mdash;</div><div class="kpi-d" id="lr-rank-d">Enter Manager ID in My Squad first</div></div>
-      <div class="kpi"><div class="kpi-l">Live GW Points</div><div class="kpi-v cbl" id="lr-pts">&mdash;</div><div class="kpi-d" id="lr-pts-d">incl. predicted bonus</div></div>
-      <div class="kpi"><div class="kpi-l">Safety Score</div><div class="kpi-v cy" id="lr-safe">&mdash;</div><div class="kpi-d" id="lr-safe-d">pts needed for green arrow</div></div>
-      <div class="kpi"><div class="kpi-l">GW Average</div><div class="kpi-v t2c" id="lr-avg">&mdash;</div><div class="kpi-d">current GW avg pts</div></div>
+      <div class="kpi">
+        <div class="kpi-l">Live Overall Rank</div>
+        <div class="kpi-v ca" id="lr-rank">&mdash;</div>
+        <div class="kpi-d" id="lr-rank-d">Load squad in My Squad first</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-l">Live GW Points</div>
+        <div class="kpi-v cbl" id="lr-pts">&mdash;</div>
+        <div class="kpi-d" id="lr-pts-d">incl. predicted bonus</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-l">vs GW Average</div>
+        <div class="kpi-v cy" id="lr-safe">&mdash;</div>
+        <div class="kpi-d" id="lr-safe-d">pts vs current avg</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-l">GW Average</div>
+        <div class="kpi-v t2c" id="lr-avg">&mdash;</div>
+        <div class="kpi-d">live global average</div>
+      </div>
     </div>
+
+    <!-- Rank delta banner -->
+    <div id="lr-delta-banner" class="al ai mb-16" style="display:none" aria-live="polite"></div>
+
+    <!-- Matchday fixtures strip -->
+    <div class="card mb-16">
+      <div class="fbc mb-12">
+        <div class="ct" style="margin-bottom:0">Matchday <span id="lr-gw-lbl"></span></div>
+        <button class="btn btn-p btn-sm" onclick="startLiveRank()" aria-label="Refresh live data">&#8635; Refresh</button>
+      </div>
+      <div id="lr-fixtures-strip" style="display:flex;flex-wrap:wrap;gap:8px">
+        <div class="al ai" style="width:100%"><span class="al-ic">&#9638;</span><div>Fixture data loads when live data refreshes.</div></div>
+      </div>
+    </div>
+
+    <!-- Rank chart + squad table -->
     <div class="g2 mb-16">
       <div class="card">
-        <div class="ct">Live Squad Points <span id="lr-gw-lbl"></span></div>
-        <div id="lr-squad"><div class="al ai"><span class="al-ic">&#9650;</span><div>Load your squad in <strong>My Squad</strong> tab first, then return here. Auto-refreshes every 60s during live GWs.</div></div></div>
+        <div class="ct">GW Rank History <span class="xs t3c" style="font-weight:400">(this GW, each refresh)</span></div>
+        <div class="chw h200"><canvas id="ch-liverank" aria-label="Live rank chart"></canvas></div>
+        <div id="lr-rank-history-note" class="xs t3c mt-8" style="text-align:center">Chart populates as data refreshes during the GW</div>
       </div>
       <div class="card">
-        <div class="ct">Rank Estimate Explained</div>
-        <div style="font-size:.833rem;color:var(--t2);line-height:1.7">
-          <p class="mb-8"><strong class="t1c">How it works</strong><br>Your projected score (including predicted bonus from live BPS) is compared against the global scoring distribution, estimated from player ownership percentages.</p>
-          <p class="mb-8"><strong class="t1c">Accuracy</strong><br>Very close to final rank once most matches are played. Early in a GW (few matches played) the estimate is wider. Bonus predictions may shift slightly until FPL confirms them.</p>
-          <p><strong class="t1c">Safety score</strong><br>The points you need to be above the current GW average. If you exceed it, you get a green arrow. Below it, a red arrow.</p>
-        </div>
+        <div class="ct">Points vs Average</div>
+        <div class="chw h200"><canvas id="ch-livepts" aria-label="Points vs average chart"></canvas></div>
       </div>
     </div>
+
+    <!-- Live squad table -->
+    <div class="card mb-16">
+      <div class="ct">Your Squad &mdash; Live Points</div>
+      <div id="lr-squad"><div class="al ai"><span class="al-ic">&#9650;</span><div>Load your squad in <strong>My Squad</strong> first, then refresh here.</div></div></div>
+      <div class="tw" id="lr-squad-tbl-wrap" style="display:none">
+        <table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th class="r">Mins</th><th class="r">G</th><th class="r">A</th><th class="r">CS</th><th class="r">BPS</th><th class="r">Bonus</th><th class="r">Pts</th></tr></thead>
+        <tbody id="lr-live-tbl"></tbody></table>
+      </div>
+    </div>
+
+    <!-- Mini-league live -->
     <div class="card">
-      <div class="fbc mb-16">
-        <div class="ct" style="margin-bottom:0">Live Player Stats &mdash; Current GW</div>
-        <button class="btn btn-p btn-sm" onclick="startLiveRank()">&#8635; Refresh Now</button>
+      <div class="fbc mb-12">
+        <div class="ct" style="margin-bottom:0">Mini-League Live <span class="xs t3c" style="font-weight:400">— your rivals this GW</span></div>
+        <div class="fac gap-8">
+          <input type="number" id="lr-league-id" class="inp" placeholder="League code" style="width:130px;padding:6px 10px;font-size:.8rem" aria-label="Mini-league code">
+          <button class="btn btn-g btn-sm" onclick="loadMiniLeagueLive()" aria-label="Load mini-league">Load</button>
+        </div>
       </div>
-      <div class="tw">
-        <table><thead><tr><th>Player</th><th>Club</th><th class="r">Mins</th><th class="r">G</th><th class="r">A</th><th class="r">CS</th><th class="r">BPS</th><th class="r">Bonus</th><th class="r">Pts</th></tr></thead>
-        <tbody id="lr-live-tbl"><tr><td colspan="9" style="text-align:center;padding:32px;color:var(--t3)">No live data yet &mdash; load squad first</td></tr></tbody>
-        </table>
-      </div>
+      <div id="lr-minileague"><div class="al ai"><span class="al-ic">&#8853;</span><div>Enter your mini-league code above. You can find it on the FPL website under Leagues.</div></div></div>
     </div>
   </div>
 
   <!-- DEFCON -->
   <div class="page" id="page-defcon">
-    <div class="ph"><h2>DefCon Threats</h2><p>Players not in your squad who are scoring right now &mdash; ranked by rank damage they&apos;re causing you</p></div>
+    <div class="ph"><h2>DefCon Threats <span class="tip"><span class="tip-ic" tabindex="0" aria-label="What is DefCon?">?</span><span class="tip-box" role="tooltip">DefCon = Defence Condition. Players you don't own who are currently scoring rank-damaging points. The higher their ownership and live score, the more rank you're losing right now.</span></span></h2><p>Players not in your squad who are scoring right now &mdash; ranked by rank damage they&apos;re causing you</p></div>
     <div class="g3 mb-16">
       <div class="kpi"><div class="kpi-l">Major Threats</div><div class="kpi-v cr" id="dc-major">&mdash;</div><div class="kpi-d">&gt;50% EO, &gt;3 eff. pts</div></div>
       <div class="kpi"><div class="kpi-l">Medium Threats</div><div class="kpi-v cy" id="dc-med">&mdash;</div><div class="kpi-d">&gt;30% EO, &gt;2 eff. pts</div></div>
@@ -1005,28 +1409,87 @@ select.inp{
     </div>
   </div>
 
+  <!-- AI TRANSFER ADVISOR -->
+  <div class="page" id="page-ai">
+    <div class="ph"><h2>AI Transfer Advisor <span class="tip"><span class="tip-ic" tabindex="0" aria-label="How this works">?</span><span class="tip-box" role="tooltip">Powered by Claude AI. Reads your squad, budget, free transfers, chips, and upcoming fixtures, then gives you a plain-English transfer recommendation. Load your squad first for best results.</span></span></h2><p>Squad-aware recommendations &middot; Fixture context &middot; Chip timing advice</p></div>
+
+    <!-- Input panel -->
+    <div class="card mb-16">
+      <div class="ct">Your situation</div>
+      <div class="g2 mb-16">
+        <div>
+          <label class="lbl" for="ai-ft">Free Transfers</label>
+          <select id="ai-ft" class="inp" aria-label="Free transfers available">
+            <option value="1">1 FT</option>
+            <option value="2">2 FTs</option>
+            <option value="3">3+ FTs</option>
+          </select>
+        </div>
+        <div>
+          <label class="lbl" for="ai-itb">In The Bank (£m)</label>
+          <input type="number" id="ai-itb" class="inp" placeholder="e.g. 1.5" step="0.1" min="0" aria-label="Budget in the bank">
+        </div>
+      </div>
+      <div class="mb-12">
+        <label class="lbl" for="ai-context">Anything specific on your mind? <span class="xs t3c">(optional)</span></label>
+        <textarea id="ai-context" class="inp" rows="3" placeholder="e.g. I want to get Salah in. Thinking about wildcarding GW32. Should I take a hit for Haaland?" style="resize:vertical;font-family:var(--f);font-size:.875rem;line-height:1.5"></textarea>
+      </div>
+      <button class="btn btn-p" id="ai-ask-btn" onclick="askAiAdvisor()" aria-label="Get AI transfer advice">
+        <span id="ai-btn-label">&#9881; Get Transfer Advice</span>
+      </button>
+    </div>
+
+    <!-- Response panel -->
+    <div class="card" id="ai-response-card" style="display:none">
+      <div class="fbc mb-12">
+        <div class="ct" style="margin-bottom:0">Advice <span class="tag tg" id="ai-gw-tag"></span></div>
+        <span class="xs t3c" id="ai-timestamp"></span>
+      </div>
+      <div id="ai-response-body" style="font-size:.875rem;color:var(--t1);line-height:1.7;white-space:pre-wrap"></div>
+    </div>
+
+    <!-- Error state -->
+    <div id="ai-error" class="al aw" style="display:none">
+      <span class="al-ic">&#9888;</span>
+      <div id="ai-error-msg">Could not reach the AI. Check your connection and try again.</div>
+    </div>
+
+    <!-- Tips when no response yet -->
+    <div id="ai-tips-panel" class="card">
+      <div class="ct">What to ask</div>
+      <div class="g2">
+        <button class="ai-prompt-chip" onclick="setAiContext('Should I take a -4 hit to bring in a DGW asset?')">Should I take a hit for a DGW asset?</button>
+        <button class="ai-prompt-chip" onclick="setAiContext('Who should I captain this gameweek based on my squad?')">Who should I captain?</button>
+        <button class="ai-prompt-chip" onclick="setAiContext('Is now a good time to use my Wildcard?')">Is now a good time to Wildcard?</button>
+        <button class="ai-prompt-chip" onclick="setAiContext('Which of my players should I sell first?')">Who should I sell?</button>
+        <button class="ai-prompt-chip" onclick="setAiContext('Plan my chip strategy for the rest of the season.')">Plan my chip strategy</button>
+        <button class="ai-prompt-chip" onclick="setAiContext('Suggest a differential pick under 10% ownership with good fixtures.')">Find me a differential</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 </div>
 
 <!-- BOTTOM NAV (mobile only) -->
-<nav class="bottom-nav" id="bottom-nav">
-  <div class="bn-item active" id="bn-0" onclick="navMobile('dashboard',0)">
+<nav class="bottom-nav" id="bottom-nav" aria-label="Primary navigation">
+  <div class="bn-item active" id="bn-0" onclick="navMobile('dashboard',0)" role="button" tabindex="0" aria-label="Dashboard">
     <div class="bn-ic">&#8962;</div>
     <span>Home</span>
   </div>
-  <div class="bn-item" id="bn-1" onclick="navMobile('squad',1)">
-    <div class="bn-ic">&#9641;</div>
-    <span>Squad</span>
+  <div class="bn-item" id="bn-1" onclick="navMobile('captain',1)" role="button" tabindex="0" aria-label="Captaincy Lab">
+    <div class="bn-ic">&#9733;</div>
+    <span>Captain</span>
   </div>
-  <div class="bn-item" id="bn-2" onclick="navMobile('liverank',2)">
-    <div class="bn-ic">&#9650;</div>
-    <span>Live</span>
-  </div>
-  <div class="bn-item" id="bn-3" onclick="navMobile('transfers',3)">
+  <div class="bn-item" id="bn-2" onclick="navMobile('transfers',2)" role="button" tabindex="0" aria-label="Transfer Planner">
     <div class="bn-ic">&#8644;</div>
     <span>Transfers</span>
   </div>
-  <div class="bn-item" id="bn-4" onclick="toggleSb()">
+  <div class="bn-item" id="bn-3" onclick="navMobile('liverank',3)" role="button" tabindex="0" aria-label="Live Rank">
+    <div class="bn-ic">&#9650;</div>
+    <span>Live</span>
+  </div>
+  <div class="bn-item" id="bn-4" onclick="toggleSb()" role="button" tabindex="0" aria-label="More navigation options">
     <div class="bn-ic">&#9776;</div>
     <span>More</span>
   </div>
@@ -1053,7 +1516,21 @@ const PROXIES=[
   url=>`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
   url=>`https://thingproxy.freeboard.io/fetch/${url}`
 ];
-if(S.mid){const el=document.getElementById('mid-in');if(el)el.value=S.mid;}
+
+// ── TEAM ID PERSISTENCE ────────────────────────────────────
+function prefillMid(){
+  if(!S.mid)return;
+  const inputs=['mid-in','ob-mid'];
+  inputs.forEach(id=>{const el=document.getElementById(id);if(el)el.value=S.mid;});
+}
+function saveMid(val){
+  if(!val)return;
+  S.mid=val;
+  localStorage.setItem('fwr_mid',val);
+  prefillMid();
+}
+prefillMid();
+
 
 // ── DARK MODE ──────────────────────────────────────────────
 function toggleDark(){
@@ -1073,8 +1550,13 @@ function nav(n,b){
   const pg=document.getElementById('page-'+n);if(pg)pg.classList.add('active');
   if(b)b.classList.add('active');
   else document.querySelectorAll('.ni').forEach(x=>{if(x.getAttribute('onclick')?.includes("'"+n+"'"))x.classList.add('active');});
-  const T={dashboard:'Dashboard',squad:'My Squad',rank:'Rank Tracker',eo:'EO Tracker',compare:'Player Compare',template:'Template Meter',rivals:'Rival Scout',transfers:'Transfer Planner',captain:'Captaincy Lab',chips:'Chip Strategy',fixtures:'Fixture Planner',price:'Price Predictor',bonus:'Bonus Monitor',rotation:'Rotation Risk',setpiece:'Set Piece Register',diffs:'Differentials',injuries:'Injury Monitor',watchlist:'Watchlist',alerts:'Alerts',liverank:'Live Rank',defcon:'DefCon Threats',autosubs:'Auto-Sub Tracker',whatif:'What-If Simulator'};
+  const T={dashboard:'Dashboard',squad:'My Squad',rank:'Rank Tracker',eo:'EO Tracker',compare:'Player Compare',template:'Template Meter',rivals:'Rival Scout',transfers:'Transfer Planner',captain:'Captaincy Lab',chips:'Chip Strategy',fixtures:'Fixture Planner',price:'Price Predictor',bonus:'Bonus Monitor',rotation:'Rotation Risk',setpiece:'Set Piece Register',diffs:'Differentials',injuries:'Injury Monitor',watchlist:'Watchlist',alerts:'Alerts',liverank:'Live Rank',defcon:'DefCon Threats',autosubs:'Auto-Sub Tracker',whatif:'What-If Simulator',ai:'AI Transfer Advisor'};
   document.getElementById('tb-title').textContent=T[n]||n;
+  // Lazy-load fixture data on first visit to Fixture Planner
+  if(n==='fixtures' && S.bs && !S_fdrFixtures.length) loadFdrFixtures();
+  else if(n==='fixtures' && S_fdrData.length) renderFdrGrid();
+  // Re-render rival grid when navigating to Rival Scout
+  if(n==='rivals') rdRivals();
   closeSb();
 }
 
@@ -1084,8 +1566,6 @@ function navMobile(page, idx){
   document.querySelectorAll('.bn-item').forEach((el,i)=>el.classList.toggle('active',i===idx));
   closeSb();
 }
-function toggleSb(){document.getElementById('sb').classList.toggle('open');document.getElementById('ov').classList.toggle('on')}
-function closeSb(){document.getElementById('sb').classList.remove('open');document.getElementById('ov').classList.remove('on')}
 
 // Fetch with 8s timeout
 // Timeout via Promise.race — no AbortController, no iframe cloning issues
@@ -1120,12 +1600,28 @@ async function fplGet(path){
 // API status indicator helpers
 function showApiStatus(state){
   const el=document.getElementById('api-status');
+  const banner=document.getElementById('api-err-banner');
   if(!el)return;
-  if(state==='loading'){el.innerHTML='<span style="color:var(--am)">&#9679; Fetching live data...</span>';el.style.display='block';}
-  else if(state==='live'){el.innerHTML='<span style="color:var(--gr)">&#9679; Live FPL data</span>';setTimeout(()=>{el.style.display='none';},3000);}
-  else if(state==='demo'){el.innerHTML='<span style="color:var(--rd)">&#9679; Demo data &mdash; <button onclick="retryLive()" style="background:none;border:none;color:var(--bl);cursor:pointer;font-size:inherit;text-decoration:underline">retry live</button></span>';el.style.display='block';}
+  if(state==='loading'){
+    el.innerHTML='<span style="color:var(--am)">&#9679; Fetching...</span>';
+    el.style.display='block';
+    if(banner)banner.classList.remove('show');
+  }else if(state==='live'){
+    el.innerHTML='<span style="color:var(--gr)">&#9679; Live</span>';
+    el.style.display='block';
+    if(banner)banner.classList.remove('show');
+    setTimeout(()=>{el.style.display='none';},3000);
+  }else if(state==='demo'){
+    el.innerHTML='<span style="color:var(--rd)">&#9679; Demo</span>';
+    el.style.display='block';
+    if(banner)banner.classList.add('show');
+  }
 }
-function retryLive(){loadBoot();}
+function retryLive(){
+  const banner=document.getElementById('api-err-banner');
+  if(banner)banner.classList.remove('show');
+  loadBoot();
+}
 async function loadBoot(){
   showApiStatus('loading');
   try{
@@ -1201,31 +1697,446 @@ function rdTgts(d){
   document.getElementById('d-tgts').innerHTML=sorted.map(e=>`<div class="txr"><div><div class="cp sm">${e.web_name} <span class="pos p${PM[e.element_type]}">${PM[e.element_type]}</span></div><div class="xs t3c mt-4">${(tm[e.team]||{}).short_name||'—'} · £${(e.now_cost/10).toFixed(1)}m</div></div><div style="margin-left:auto;text-align:right"><div class="ca w7 sm">+${e.transfers_in_event.toLocaleString()}</div><div class="xs t3c">Own: ${e.selected_by_percent}%</div></div></div>`).join('');
 }
 
-function rdDemoFDR(){
-  document.getElementById('fdr-bod').innerHTML=DM.fdr.map(t=>`<tr><td class="cp">${t.n}</td>${t.d.map(v=>`<td><span class="fdr f${v}">${v}</span></td>`).join('')}</tr>`).join('');
-  document.getElementById('d-fdr').innerHTML=`<table style="width:100%;font-size:.694rem"><thead><tr><th>Team</th>${DM.fdr[0].d.slice(0,5).map((_,i)=>`<th>GW${28+i}</th>`).join('')}</tr></thead><tbody>${DM.fdr.slice(0,8).map(t=>`<tr><td class="cp">${t.n}</td>${t.d.slice(0,5).map(v=>`<td><span class="fdr f${v}">${v}</span></td>`).join('')}</tr>`).join('')}</tbody></table>`;
+// ── FDR ENGINE (Session 3) ───────────────────────────────
+let S_fdrData = []; // {teamId, name, short, fixtures:[{gw,diff,opp,home}]}
+let S_fdrRange = 6;
+let S_fdrSort = 'avg';
+let S_fdrFixtures = []; // raw fixture list from API
+
+function setFdrRange(n, btn){
+  S_fdrRange = n;
+  document.querySelectorAll('.fdr-range-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});
+  if(btn){btn.classList.add('active');btn.setAttribute('aria-pressed','true');}
+  renderFdrGrid();
 }
+function setFdrSort(s, btn){
+  S_fdrSort = s;
+  document.querySelectorAll('.fdr-sort-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});
+  if(btn){btn.classList.add('active');btn.setAttribute('aria-pressed','true');}
+  renderFdrGrid();
+}
+
+async function loadFdrFixtures(){
+  if(!S.bs) return;
+  try {
+    const data = await fplGet('fixtures/?future=1');
+    S_fdrFixtures = data;
+    buildFdrData();
+    renderFdrGrid();
+  } catch(e){
+    // Fallback to bootstrap team data only with estimated FDR
+    buildFdrDataFallback();
+    renderFdrGrid();
+  }
+}
+
+function buildFdrData(){
+  if(!S.bs || !S_fdrFixtures.length) return buildFdrDataFallback();
+  const teamMap = {};
+  S.bs.teams.forEach(t => teamMap[t.id] = t);
+  const currentGw = S.gw;
+
+  // Build per-team fixture list
+  const teamFixtures = {};
+  S.bs.teams.forEach(t => { teamFixtures[t.id] = []; });
+
+  S_fdrFixtures
+    .filter(f => f.event >= currentGw && !f.finished)
+    .forEach(f => {
+      if(teamFixtures[f.team_h] !== undefined){
+        teamFixtures[f.team_h].push({
+          gw: f.event,
+          diff: f.team_h_difficulty,
+          opp: (teamMap[f.team_a]||{}).short_name || '?',
+          home: true
+        });
+      }
+      if(teamFixtures[f.team_a] !== undefined){
+        teamFixtures[f.team_a].push({
+          gw: f.event,
+          diff: f.team_a_difficulty,
+          opp: (teamMap[f.team_h]||{}).short_name || '?',
+          home: false
+        });
+      }
+    });
+
+  S_fdrData = S.bs.teams.map(t => ({
+    teamId: t.id,
+    name: t.name,
+    short: t.short_name,
+    fixtures: (teamFixtures[t.id]||[]).sort((a,b)=>a.gw-b.gw).slice(0, 12)
+  })).filter(t => t.fixtures.length > 0);
+}
+
+function buildFdrDataFallback(){
+  if(!S.bs) return;
+  // Use demo FDR data with team names
+  S_fdrData = DM.fdr.map((t,i)=>({
+    teamId: i+1,
+    name: t.n,
+    short: t.n.slice(0,3).toUpperCase(),
+    fixtures: t.d.map((diff,j)=>({gw:S.gw+j, diff, opp:'?', home:j%2===0}))
+  }));
+}
+
+function getMySquadTeams(){
+  if(!S.myPicks || !S.bs) return new Set();
+  const teamIds = new Set();
+  S.myPicks.picks.forEach(p => {
+    const el = S.bs.elements.find(e => e.id === p.element);
+    if(el) teamIds.add(el.team);
+  });
+  return teamIds;
+}
+
+function renderFdrGrid(){
+  const head = document.getElementById('fdr-head');
+  const tbody = document.getElementById('fdr-bod');
+  const greenRunsEl = document.getElementById('fdr-green-runs');
+  if(!head || !tbody || !S_fdrData.length) return;
+
+  const myTeams = getMySquadTeams();
+  const squadOnly = document.getElementById('fdr-squad-only')?.checked;
+  const startGw = S.gw;
+
+  // Filter and sort
+  let rows = [...S_fdrData];
+  if(squadOnly && myTeams.size) rows = rows.filter(t => myTeams.has(t.teamId));
+
+  rows.forEach(t => {
+    const slice = t.fixtures.slice(0, S_fdrRange);
+    t.avgDiff = slice.length ? slice.reduce((s,f)=>s+f.diff,0)/slice.length : 3;
+    // Green run = 3+ consecutive fixtures with diff ≤ 2
+    let maxRun = 0, cur = 0;
+    slice.forEach(f => { if(f.diff<=2){cur++;maxRun=Math.max(maxRun,cur);}else cur=0; });
+    t.greenRun = maxRun;
+  });
+
+  if(S_fdrSort === 'avg') rows.sort((a,b) => a.avgDiff - b.avgDiff);
+  else if(S_fdrSort === 'alpha') rows.sort((a,b) => a.name.localeCompare(b.name));
+  else if(S_fdrSort === 'squad') rows.sort((a,b) => {
+    const aM = myTeams.has(a.teamId) ? 0 : 1;
+    const bM = myTeams.has(b.teamId) ? 0 : 1;
+    return aM !== bM ? aM - bM : a.avgDiff - b.avgDiff;
+  });
+
+  // Build GW header
+  const gwSlice = rows[0]?.fixtures.slice(0, S_fdrRange) || [];
+  head.innerHTML = `<th style="text-align:left;padding:6px 8px;font-size:.75rem;color:var(--t3);min-width:110px">Team</th>` +
+    gwSlice.map(f=>`<th style="text-align:center;padding:4px 6px;font-size:.7rem;color:var(--t3)">GW${f.gw}</th>`).join('') +
+    `<th style="text-align:center;padding:4px 8px;font-size:.7rem;color:var(--t3)">Avg</th>`;
+
+  // Build rows
+  tbody.innerHTML = rows.map(t => {
+    const isMySquad = myTeams.has(t.teamId);
+    const slice = t.fixtures.slice(0, S_fdrRange);
+    const avgCls = t.avgDiff <= 2.2 ? 'good' : t.avgDiff >= 3.5 ? 'hard' : 'med';
+    const cells = slice.map(f => {
+      const haStyle = f.home ? '' : 'opacity:.85';
+      const haLabel = f.home ? 'H' : 'A';
+      return `<td style="padding:2px 4px">
+        <div class="fdr-cell f${f.diff} ${isMySquad?'squad-highlight':''}" style="${haStyle}" title="GW${f.gw} vs ${f.opp} (${haLabel})">
+          ${f.diff}
+          <span class="fdr-opp">${f.opp} ${haLabel}</span>
+        </div>
+      </td>`;
+    }).join('');
+    return `<tr>
+      <td class="fdr-team ${isMySquad?'my-squad':''}" style="padding:4px 8px">${isMySquad?'★ ':''}${t.short}</td>
+      ${cells}
+      <td style="padding:2px 8px"><div class="fdr-avg ${avgCls}">${t.avgDiff.toFixed(1)}</div></td>
+    </tr>`;
+  }).join('');
+
+  // Stats strip
+  const best = rows[0];
+  const worst = rows[rows.length-1];
+  const greenTeams = rows.filter(t=>t.greenRun>=3);
+  const bestEl=document.getElementById('fdr-best-team');
+  const bestAvgEl=document.getElementById('fdr-best-avg');
+  const greenCountEl=document.getElementById('fdr-green-count');
+  const worstEl=document.getElementById('fdr-worst-team');
+  if(bestEl) bestEl.textContent = best?.short||'—';
+  if(bestAvgEl) bestAvgEl.textContent = best ? best.avgDiff.toFixed(1) : '—';
+  if(greenCountEl) greenCountEl.textContent = greenTeams.length;
+  if(worstEl) worstEl.textContent = worst?.short||'—';
+
+  // Green run alert strip
+  if(greenRunsEl){
+    if(greenTeams.length){
+      greenRunsEl.style.display='block';
+      greenRunsEl.innerHTML = `<div class="xs t3c w7 mb-8">&#9650; Teams with 3+ easy fixtures in a row:</div>` +
+        greenTeams.map(t=>{
+          const run = t.fixtures.slice(0,S_fdrRange).filter(f=>f.diff<=2);
+          return `<div class="green-run-badge"><strong>${t.short}</strong> — ${t.greenRun} consecutive easy fixtures &middot; avg <strong>${t.avgDiff.toFixed(1)}</strong>${myTeams.has(t.teamId)?' <span class="tag tg" style="font-size:.6rem">Your squad</span>':''}</div>`;
+        }).join('');
+    } else {
+      greenRunsEl.style.display='none';
+    }
+  }
+
+  // Also update dashboard FDR mini-table
+  const dFdr = document.getElementById('d-fdr');
+  if(dFdr){
+    const top8 = rows.slice(0,8);
+    const gwCols = top8[0]?.fixtures.slice(0,5)||[];
+    dFdr.innerHTML=`<table style="width:100%;font-size:.694rem"><thead><tr><th>Team</th>${gwCols.map(f=>`<th>GW${f.gw}</th>`).join('')}</tr></thead><tbody>${top8.map(t=>`<tr><td class="${myTeams.has(t.teamId)?'ca':''} cp">${t.short}</td>${t.fixtures.slice(0,5).map(f=>`<td style="text-align:center"><span class="fdr f${f.diff}">${f.diff}</span></td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  }
+}
+
+function rdDemoFDR(){
+  buildFdrDataFallback();
+  renderFdrGrid();
+}
+
 function rdFDR(d){
-  const fx=d.teams.map(t=>({n:t.short_name,d:[1,2,3,4,5,6].map(()=>Math.min(5,Math.max(1,Math.round(3+(Math.random()-.5)*2.5))))}));
-  document.getElementById('fdr-bod').innerHTML=fx.map(t=>`<tr><td class="cp">${t.n}</td>${t.d.map(v=>`<td><span class="fdr f${v}">${v}</span></td>`).join('')}</tr>`).join('');
-  document.getElementById('d-fdr').innerHTML=`<table style="width:100%;font-size:.694rem"><thead><tr><th>Team</th>${fx[0].d.slice(0,5).map((_,i)=>`<th>GW+${i}</th>`).join('')}</tr></thead><tbody>${fx.slice(0,8).map(t=>`<tr><td class="cp">${t.n}</td>${t.d.slice(0,5).map(v=>`<td><span class="fdr f${v}">${v}</span></td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  if(S_fdrFixtures.length){
+    buildFdrData();
+    renderFdrGrid();
+  } else {
+    // Trigger fixture fetch on first FDR load
+    loadFdrFixtures();
+  }
+}
+
+
+
+// ── PRICE PREDICTION ENGINE ──────────────────────────────
+// Model: net transfer % relative to selected_by_percent → probability score
+// Rise threshold: ~1% net in needed per £0.1m increase
+// Fall threshold: ~0.5% net out from base
+let S_priceData = []; // cached for sorting/filtering
+
+function priceProb(el){
+  const net = (el.transfers_in_event - el.transfers_out_event);
+  const owned = parseFloat(el.selected_by_percent)||1;
+  // Net as % of total players selected
+  const netPct = (net / 7e6) * 100; // ~7m total managers
+  // Rise: positive net transfers relative to owned base
+  const riseScore = Math.min(100, Math.max(0, (netPct / (owned * 0.012)) * 100));
+  // Fall: negative net
+  const fallScore = Math.min(100, Math.max(0, ((-netPct) / (owned * 0.006)) * 100));
+  if(net > 0) return { dir:'rise', prob: Math.round(riseScore), net };
+  if(net < 0) return { dir:'fall', prob: Math.round(fallScore), net };
+  return { dir:'none', prob: 0, net: 0 };
+}
+
+function confLabel(prob, dir){
+  if(dir==='none') return {cls:'pr-conf-watch', label:'Stable'};
+  if(prob >= 70) return {cls:'pr-conf-high', label: dir==='rise'? '↑ Rise likely':'↓ Fall likely'};
+  if(prob >= 40) return {cls:'pr-conf-med', label: dir==='rise'? '↑ Possible rise':'↓ Possible fall'};
+  return {cls:'pr-conf-watch', label:'Watch'};
+}
+
+function mkPrRow(p, showDir=null){
+  const up = p.dir==='rise';
+  const pct = Math.min(100, p.prob);
+  return `<div class="prrow">
+    <div style="min-width:100px"><div class="cp sm">${p.name}</div><div class="xs t3c">${p.club} · £${p.price}m</div></div>
+    <div class="pr-bar"><div class="${up?'pr-u':'pr-d'}" style="width:${pct}%"></div></div>
+    <div class="${up?'ca':'cr'} w7 sm" style="min-width:48px;text-align:right">${up?'▲':'▼'} £0.1m</div>
+    <div class="xs" style="min-width:40px;text-align:right;color:var(--t3)">${p.prob}%</div>
+  </div>`;
+}
+
+function refreshPrices(){
+  if(S.bs) renderPrices(S.bs);
+  // Update last-checked timestamp
+  const el=document.getElementById('pr-last-checked');
+  if(el) el.textContent = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+
+function renderPrices(d){
+  const tm={};d.teams.forEach(t=>tm[t.id]=t);
+  const PM2={1:'GK',2:'DEF',3:'MID',4:'FWD'};
+
+  // Build dataset — players with significant net movement
+  S_priceData = d.elements
+    .filter(e => Math.abs(e.transfers_in_event - e.transfers_out_event) > 5000 || e.cost_change_event !== 0)
+    .map(e => {
+      const pred = priceProb(e);
+      return {
+        id: e.id,
+        name: e.web_name,
+        pos: PM2[e.element_type]||'?',
+        club: (tm[e.team]||{}).short_name||'?',
+        price: (e.now_cost/10).toFixed(1),
+        priceRaw: e.now_cost,
+        transfers_in: e.transfers_in_event,
+        transfers_out: e.transfers_out_event,
+        net: pred.net,
+        dir: pred.dir,
+        prob: pred.prob,
+        gwChange: e.cost_change_event,
+        selected: parseFloat(e.selected_by_percent)||0
+      };
+    })
+    .sort((a,b) => b.prob - a.prob);
+
+  const rising = S_priceData.filter(p=>p.dir==='rise').slice(0,5);
+  const falling = S_priceData.filter(p=>p.dir==='fall').slice(0,5);
+  const watching = S_priceData.filter(p=>p.dir==='none' && Math.abs(p.net)>2000).slice(0,4);
+
+  // Count badges
+  const upEl=document.getElementById('pr-rise-count');
+  const dnEl=document.getElementById('pr-fall-count');
+  const wEl=document.getElementById('pr-watch-count');
+  if(upEl) upEl.textContent=rising.length;
+  if(dnEl) dnEl.textContent=falling.length;
+  if(wEl) wEl.textContent=watching.length;
+
+  const upDiv=document.getElementById('pr-up');
+  const dnDiv=document.getElementById('pr-dn');
+  const watchDiv=document.getElementById('pr-watch');
+
+  if(upDiv) upDiv.innerHTML = rising.length
+    ? rising.map(p=>mkPrRow(p)).join('')
+    : '<div class="al ai"><span class="al-ic">&#9650;</span><div>No significant rises predicted tonight.</div></div>';
+
+  if(dnDiv) dnDiv.innerHTML = falling.length
+    ? falling.map(p=>mkPrRow(p)).join('')
+    : '<div class="al ai"><span class="al-ic">&#9660;</span><div>No significant falls predicted tonight.</div></div>';
+
+  if(watchDiv) watchDiv.innerHTML = watching.length
+    ? watching.map(p=>`<div class="prrow"><div style="min-width:100px"><div class="cp sm">${p.name}</div><div class="xs t3c">${p.club} · £${p.price}m</div></div><div class="xs t3c" style="flex:1">Net: ${p.net>0?'+':''}${p.net.toLocaleString()}</div><div class="pr-conf-watch">Watch</div></div>`).join('')
+    : '<div class="al ai"><span class="al-ic">&#9654;</span><div>No players near a threshold right now.</div></div>';
+
+  // Squad impact panel
+  renderSquadPriceRisk();
+
+  // Dashboard quick view
+  const dPrices=document.getElementById('d-prices');
+  if(dPrices) dPrices.innerHTML=[...rising.slice(0,3),...falling.slice(0,2)].map(p=>mkPrRow(p)).join('');
+
+  // Full table
+  renderPriceTable();
+
+  // Last checked time
+  const lastEl=document.getElementById('pr-last-checked');
+  if(lastEl) lastEl.textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+
+function renderSquadPriceRisk(){
+  const el=document.getElementById('pr-squad-risk');
+  if(!el||!S.myPicks||!S_priceData.length) return;
+  const myIds=new Set(S.myPicks.picks.map(p=>p.element));
+  const myMovers=S_priceData.filter(p=>myIds.has(p.id)&&p.dir!=='none');
+  if(!myMovers.length){
+    el.innerHTML='<div class="al ai"><span class="al-ic">&#9650;</span><div>None of your squad have significant price movement predicted tonight.</div></div>';
+    return;
+  }
+  el.innerHTML=myMovers.map(p=>{
+    const up=p.dir==='rise';
+    const conf=confLabel(p.prob,p.dir);
+    return `<div class="prrow">
+      <div style="min-width:110px"><div class="cp sm">${p.name} <span class="tag ${up?'tg':'tr'}">${up?'↑':'↓'}</span></div><div class="xs t3c">${p.pos} · £${p.price}m</div></div>
+      <div class="pr-bar" style="flex:1"><div class="${up?'pr-u':'pr-d'}" style="width:${p.prob}%"></div></div>
+      <div class="${conf.cls}" style="min-width:100px;text-align:right">${conf.label} (${p.prob}%)</div>
+    </div>`;
+  }).join('');
+}
+
+let prSortKey='prob', prSortDir=-1;
+function sortPriceTable(key){
+  if(prSortKey===key) prSortDir*=-1; else {prSortKey=key;prSortDir=-1;}
+  renderPriceTable();
+}
+function filterPriceTable(){ renderPriceTable(); }
+function renderPriceTable(){
+  const tbody=document.getElementById('pr-bod');
+  if(!tbody||!S_priceData.length) return;
+  const posF=document.getElementById('pr-pos-filter')?.value||'all';
+  const dirF=document.getElementById('pr-dir-filter')?.value||'all';
+  const PM2={GK:1,DEF:2,MID:3,FWD:4};
+
+  let rows=[...S_priceData];
+  if(posF!=='all') rows=rows.filter(p=>p.pos===posF);
+  if(dirF==='rise') rows=rows.filter(p=>p.dir==='rise');
+  if(dirF==='fall') rows=rows.filter(p=>p.dir==='fall');
+  rows.sort((a,b)=>{
+    const va=a[prSortKey]??0, vb=b[prSortKey]??0;
+    return (va<vb?-1:va>vb?1:0)*prSortDir;
+  });
+
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--t3)">No players match this filter.</td></tr>';return;}
+
+  tbody.innerHTML=rows.slice(0,50).map(p=>{
+    const up=p.dir==='rise', dn=p.dir==='fall';
+    const conf=confLabel(p.prob,p.dir);
+    const netFmt=p.net>0?`<span class="ca">+${p.net.toLocaleString()}</span>`:p.net<0?`<span class="cr">${p.net.toLocaleString()}</span>`:'<span class="t3c">—</span>';
+    const inFmt=p.transfers_in>0?`<span class="ca">+${p.transfers_in.toLocaleString()}</span>`:'<span class="t3c">0</span>';
+    const outFmt=p.transfers_out>0?`<span class="cr">${p.transfers_out.toLocaleString()}</span>`:'<span class="t3c">0</span>';
+    const predCell=up?`<span class="ca w7">↑ Rise</span>`:dn?`<span class="cr w7">↓ Fall</span>`:'<span class="t3c">—</span>';
+    return `<tr>
+      <td class="cp">${p.name}</td>
+      <td><span class="pos p${p.pos}">${p.pos}</span></td>
+      <td class="t2c">${p.club}</td>
+      <td class="r">£${p.price}m</td>
+      <td class="r">${inFmt}</td>
+      <td class="r">${outFmt}</td>
+      <td class="r">${netFmt}</td>
+      <td>${predCell}</td>
+      <td><span class="${conf.cls}">${conf.label}${p.dir!=='none'?' ('+p.prob+'%)':''}</span></td>
+    </tr>`;
+  }).join('');
 }
 
 function rdDemoPrices(){
-  const mkR=(arr,up)=>arr.map(p=>`<div class="prrow"><div style="min-width:90px"><div class="cp sm">${p.n}</div><div class="xs t3c">${p.cl} · ${p.pr}</div></div><div class="pr-bar"><div class="${up?'pr-u':'pr-d'}" style="width:${p.pct}%"></div></div><div class="${up?'ca':'cr'} w7 sm" style="min-width:44px;text-align:right">${up?'▲':'▼'} ${p.ch}</div></div>`).join('');
-  document.getElementById('pr-up').innerHTML=mkR(DM.prices.up,true);
-  document.getElementById('pr-dn').innerHTML=mkR(DM.prices.dn,false);
-  document.getElementById('d-prices').innerHTML=mkR([...DM.prices.up,...DM.prices.dn].slice(0,5),true);
-  document.getElementById('pr-bod').innerHTML=[...DM.prices.up,...DM.prices.dn].map((p,i)=>`<tr><td class="cp">${p.n}</td><td><span class="pos pMID">MID</span></td><td class="t2c">${p.cl}</td><td class="r">${p.pr}</td><td class="r ${i<DM.prices.up.length?'ca':'cr'} w7">${i<DM.prices.up.length?'▲ '+p.ch:'▼ '+p.ch}</td><td class="r">${Math.round(p.pct*1200).toLocaleString()}</td><td><div class="spk"><div class="spk-t"><div class="spk-f" style="width:${p.pct}%;background:${i<DM.prices.up.length?'var(--gr)':'var(--rd)'}"></div></div></div></td><td><span class="tag ${i<DM.prices.up.length?'tg':'tr'}">${i<DM.prices.up.length?'↑ Rise tonight':'↓ Fall tonight'}</span></td></tr>`).join('');
+  // Seed demo with realistic data when no API
+  S_priceData = DM.prices.up.map((p,i)=>({
+    id:i, name:p.n, pos:'MID', club:p.cl, price:p.pr.replace('£','').replace('m',''),
+    priceRaw:0, transfers_in:Math.round(p.pct*80000), transfers_out:Math.round(p.pct*20000),
+    net:Math.round(p.pct*60000), dir:'rise', prob:p.pct, gwChange:1, selected:p.pct*2
+  })).concat(DM.prices.dn.map((p,i)=>({
+    id:100+i, name:p.n, pos:'FWD', club:p.cl, price:p.pr.replace('£','').replace('m',''),
+    priceRaw:0, transfers_in:Math.round(p.pct*10000), transfers_out:Math.round(p.pct*80000),
+    net:-Math.round(p.pct*60000), dir:'fall', prob:p.pct, gwChange:-1, selected:p.pct*2
+  })));
+
+  const upEl=document.getElementById('pr-rise-count');
+  const dnEl=document.getElementById('pr-fall-count');
+  if(upEl) upEl.textContent=DM.prices.up.length;
+  if(dnEl) dnEl.textContent=DM.prices.dn.length;
+
+  const up=document.getElementById('pr-up');
+  const dn=document.getElementById('pr-dn');
+  if(up) up.innerHTML=DM.prices.up.map(p=>mkPrRow({name:p.n,club:p.cl,price:p.pr.replace('£','').replace('m',''),dir:'rise',prob:p.pct})).join('');
+  if(dn) dn.innerHTML=DM.prices.dn.map(p=>mkPrRow({name:p.n,club:p.cl,price:p.pr.replace('£','').replace('m',''),dir:'fall',prob:p.pct})).join('');
+
+  const dPrices=document.getElementById('d-prices');
+  if(dPrices) dPrices.innerHTML=DM.prices.up.slice(0,3).map(p=>`<div class="prrow"><div style="min-width:90px"><div class="cp sm">${p.n}</div><div class="xs t3c">${p.cl} · ${p.pr}</div></div><div class="pr-bar"><div class="pr-u" style="width:${p.pct}%"></div></div><div class="ca w7 sm" style="min-width:44px;text-align:right">▲ ${p.ch}</div></div>`).join('');
+
+  renderPriceTable();
 }
+
 function rdPrices(d){
-  const movers=[...d.elements].filter(e=>e.cost_change_event!==0).sort((a,b)=>Math.abs(b.cost_change_event)-Math.abs(a.cost_change_event)).slice(0,6);
-  const tm={};d.teams.forEach(t=>tm[t.id]=t);
+  const movers=[...d.elements].filter(e=>
+    Math.abs(e.transfers_in_event-e.transfers_out_event)>3000 || e.cost_change_event!==0
+  );
   if(!movers.length){rdDemoPrices();return;}
-  document.getElementById('d-prices').innerHTML=movers.map(m=>{const up=m.cost_change_event>0;return`<div class="prrow"><div style="min-width:90px"><div class="cp sm">${m.web_name}</div><div class="xs t3c">${(tm[m.team]||{}).short_name||'—'}</div></div><div class="pr-bar"><div class="${up?'pr-u':'pr-d'}" style="width:60%"></div></div><div class="${up?'ca':'cr'} w7 sm" style="min-width:44px;text-align:right">${up?'▲':'▼'} ${(Math.abs(m.cost_change_event)/10).toFixed(1)}</div></div>`;}).join('');
-  document.getElementById('pr-up').innerHTML=movers.filter(m=>m.cost_change_event>0).map(m=>`<div class="prrow"><div style="min-width:90px"><div class="cp sm">${m.web_name}</div><div class="xs t3c">${(tm[m.team]||{}).short_name||'—'} · £${(m.now_cost/10).toFixed(1)}m</div></div><div class="pr-bar"><div class="pr-u" style="width:70%"></div></div><div class="ca w7 sm" style="min-width:44px;text-align:right">▲ ${(m.cost_change_event/10).toFixed(1)}</div></div>`).join('');
-  document.getElementById('pr-dn').innerHTML=movers.filter(m=>m.cost_change_event<0).map(m=>`<div class="prrow"><div style="min-width:90px"><div class="cp sm">${m.web_name}</div><div class="xs t3c">${(tm[m.team]||{}).short_name||'—'} · £${(m.now_cost/10).toFixed(1)}m</div></div><div class="pr-bar"><div class="pr-d" style="width:70%"></div></div><div class="cr w7 sm" style="min-width:44px;text-align:right">▼ ${(Math.abs(m.cost_change_event)/10).toFixed(1)}</div></div>`).join('');
+  renderPrices(d);
 }
+
+// ── PRICE LOCK COUNTDOWN ─────────────────────────────────
+function tickPriceLock(){
+  const el=document.getElementById('pr-lock-time');
+  if(!el) return;
+  const now=new Date();
+  const lock=new Date();
+  lock.setHours(6,0,0,0);
+  if(now>=lock) lock.setDate(lock.getDate()+1);
+  const diff=lock-now;
+  const h=Math.floor(diff/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className=`kpi-v pr-lock-cd ${h<2?'cr':h<6?'cy':'ca'}`;
+}
+setInterval(tickPriceLock,1000);
+tickPriceLock();
+
+
 
 function rdDemoEO(){
   document.getElementById('eo-tbl').innerHTML=DM.eo.map(p=>{
@@ -1566,19 +2477,112 @@ function rdChips(){
   const dc=document.getElementById('d-chips');if(!dc)return;
   dc.innerHTML=CHIP_DEFS.map(c=>`<div class="chip-p ${S.chips[c.k]}" onclick="toggleChip('${c.k}')"><span style="font-size:16px">${c.ic}</span><div><div class="chip-n">${c.n}</div><div class="chip-m">${S.chips[c.k]==='used'?'✓ Used':c.h}</div></div></div>`).join('');
 }
+// ── CHIP TIMELINE ENGINE (Session 4) ────────────────────
+const GW_SPECIAL = {
+  19:{type:'bgw',label:'BGW'}, 20:{type:'dgw',label:'DGW'}, 25:{type:'bgw',label:'BGW'},
+  31:{type:'bgw',label:'BGW'}, 33:{type:'dgw',label:'DGW'}, 34:{type:'bgw',label:'BGW'},
+  36:{type:'dgw',label:'DGW'}, 37:{type:'dgw',label:'DGW'}
+};
+let S_chipPlan = JSON.parse(localStorage.getItem('fwr_chipplan')||'{}');
+let S_chipAssignGw = null;
+function saveChipPlan(){ localStorage.setItem('fwr_chipplan', JSON.stringify(S_chipPlan)); }
+function resetChipPlan(){ S_chipPlan={}; saveChipPlan(); S_chipAssignGw=null; renderChipTimeline(); document.getElementById('chip-assign-panel').style.display='none'; }
+function openChipAssign(gw){
+  S_chipAssignGw=gw;
+  const panel=document.getElementById('chip-assign-panel');
+  const label=document.getElementById('chip-assign-gw-label');
+  const opts=document.getElementById('chip-assign-options');
+  if(!panel||!label||!opts)return;
+  label.textContent='GW'+gw;
+  const assigned=new Set(Object.values(S_chipPlan));
+  const avail=CHIP_DEFS.filter(c=>S.chips[c.k]==='available'&&!assigned.has(c.k));
+  opts.innerHTML=avail.length?avail.map(c=>`<button class="btn btn-g btn-sm" onclick="assignChip('${c.k}')">${c.ic} ${c.n}</button>`).join(''):'<span class="xs t3c">No chips available.</span>';
+  if(S_chipPlan[gw])opts.innerHTML+=`<button class="btn btn-g btn-sm" style="color:var(--rd)" onclick="unassignChip(${gw})">Remove</button>`;
+  panel.style.display='block';
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function assignChip(k){
+  if(S_chipAssignGw===null)return;
+  Object.keys(S_chipPlan).forEach(gw=>{if(S_chipPlan[gw]===k)delete S_chipPlan[gw];});
+  S_chipPlan[S_chipAssignGw]=k; saveChipPlan(); closeChipAssign(); renderChipTimeline();
+}
+function unassignChip(gw){ delete S_chipPlan[gw]; saveChipPlan(); closeChipAssign(); renderChipTimeline(); }
+function closeChipAssign(){ S_chipAssignGw=null; document.getElementById('chip-assign-panel').style.display='none'; }
+function renderChipTimeline(){
+  const strip=document.getElementById('chip-gw-strip'); if(!strip)return;
+  const cur=S.gw||29;
+  const gwRange=Array.from({length:Math.min(14,38-cur+2)},(_,i)=>cur+i).filter(g=>g<=38);
+  strip.innerHTML=gwRange.map(gw=>{
+    const sp=GW_SPECIAL[gw]; const isCur=gw===cur; const assigned=S_chipPlan[gw];
+    const chipDef=assigned?CHIP_DEFS.find(c=>c.k===assigned):null;
+    let cls='gw-chip-cell';
+    if(isCur)cls+=' current'; else if(sp?.type==='dgw')cls+=' dgw'; else if(sp?.type==='bgw')cls+=' bgw';
+    if(assigned)cls+=' has-chip';
+    return `<div class="${cls}" onclick="openChipAssign(${gw})" role="button" tabindex="0" aria-label="GW${gw}${sp?' '+sp.label:''}">
+      <div class="gw-num">GW${gw}</div>
+      ${isCur?'<div class="gw-type-badge cur">NOW</div>':sp?`<div class="gw-type-badge ${sp.type}">${sp.label}</div>`:'<div style="height:16px"></div>'}
+      <div class="gw-chip-assigned">${chipDef?chipDef.ic+' '+chipDef.n.split(' ')[0]:'<span style="color:var(--t4);font-size:.6rem">+</span>'}</div>
+    </div>`;
+  }).join('');
+  strip.querySelectorAll('.gw-chip-cell').forEach(el=>{el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}};});
+  renderChipPlanSummary();
+}
+function renderChipPlanSummary(){
+  const el=document.getElementById('chip-plan-summary'); if(!el)return;
+  const plan=Object.entries(S_chipPlan).sort((a,b)=>parseInt(a[0])-parseInt(b[0]));
+  if(!plan.length){el.innerHTML='';return;}
+  el.innerHTML='<div class="fac gap-8" style="flex-wrap:wrap"><span class="xs t3c w7">Your plan:</span>'+
+    plan.map(([gw,k])=>{const d=CHIP_DEFS.find(c=>c.k===k);const sp=GW_SPECIAL[parseInt(gw)];return`<span class="tag tb">${d?.ic||''} ${d?.n||k} → GW${gw}${sp?' ('+sp.label+')':''}</span>`;}).join('')+'</div>';
+}
 function rdChipPage(){
-  const cg=document.getElementById('chip-grid');if(!cg)return;
-  cg.innerHTML=CHIP_DEFS.map(c=>`<div class="card" style="padding:16px"><div class="fbc mb-8"><div class="fac gap-12"><span style="font-size:20px">${c.ic}</span><div><div class="sm w7 ${S.chips[c.k]==='used'?'t3c':''}">${c.n}</div><div class="xs t3c">${c.h}</div></div></div><span class="tag ${S.chips[c.k]==='used'?'tr':'tg'}">${S.chips[c.k]==='used'?'✓ Used':'Available'}</span></div><div class="xs t3c mb-12">${c.tip}</div><button class="btn btn-g btn-sm" data-k="${c.k}" onclick="toggleChip(this.dataset.k)">${S.chips[c.k]==='used'?'Mark Available':'Mark as Used'}</button></div>`).join('');
-  const cal=[{ch:'Wildcard 2',gw:'GW32',r:'Rebuild squad for end-of-season chip window',p:'🔴'},{ch:'Bench Boost 2',gw:'GW33 (DGW)',r:'Stack after WC2 — max points with quality bench',p:'🔴'},{ch:'Free Hit 2',gw:'GW34 (BGW)',r:'Navigate blank GW — cover missing players',p:'🟡'},{ch:'Triple Captain 2',gw:'GW36 (DGW)',r:'Captain plays twice — premium attacker',p:'🔴'},{ch:'Free Hit 1',gw:'GW19 (BGW)',r:'If blank confirmed before halftime cut-off',p:'🟡'}];
-  const cc=document.getElementById('chip-cal');if(cc)cc.innerHTML=cal.map(r=>`<tr><td class="cp">${r.ch}</td><td><span class="tag tb">${r.gw}</span></td><td class="xs t2c">${r.r}</td><td>${r.p} ${r.p==='🔴'?'Critical':'High'}</td></tr>`).join('');
+  const cg=document.getElementById('chip-grid'); if(!cg)return;
+  const avail=CHIP_DEFS.filter(c=>S.chips[c.k]==='available');
+  const h1=avail.filter(c=>c.k.endsWith('1')).length;
+  const h2=avail.filter(c=>c.k.endsWith('2')).length;
+  const setV=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setV('chip-avail-count',avail.length); setV('chip-h1-count',h1); setV('chip-h2-count',h2); setV('chip-cur-gw','GW'+(S.gw||'—'));
+  cg.innerHTML=CHIP_DEFS.map(c=>`
+    <div class="card" style="padding:16px;border-top:2px solid ${S.chips[c.k]==='used'?'var(--b2)':'var(--pu)'}">
+      <div class="fbc mb-8"><div class="fac gap-12"><span style="font-size:20px">${c.ic}</span><div>
+        <div class="sm w7 ${S.chips[c.k]==='used'?'t3c':''}">${c.n}</div><div class="xs t3c">${c.h}</div>
+      </div></div><span class="tag ${S.chips[c.k]==='used'?'tr':'tg'}">${S.chips[c.k]==='used'?'✓ Used':'Available'}</span></div>
+      <div class="xs t3c mb-12">${c.tip}</div>
+      <button class="btn btn-g btn-sm" data-k="${c.k}" onclick="toggleChip(this.dataset.k)">${S.chips[c.k]==='used'?'Mark Available':'Mark as Used'}</button>
+    </div>`).join('');
+  const cal=[
+    {ch:'Wildcard 1',gw:'GW19 or earlier',r:'Before a green run or BGW. Use all FTs first.',p:'🔴'},
+    {ch:'Bench Boost 1',gw:'GW1 or first DGW',r:'Use early — strong bench pre-season.',p:'🟡'},
+    {ch:'Triple Captain 1',gw:'DGW in GW1–19',r:'Stack with premium playing twice.',p:'🔴'},
+    {ch:'Free Hit 1',gw:'GW19 (BGW)',r:'Cover AFCON absences.',p:'🔴'},
+    {ch:'Wildcard 2',gw:'GW32',r:'Rebuild for end-of-season chip window.',p:'🔴'},
+    {ch:'Bench Boost 2',gw:'GW33 (DGW)',r:'Stack after WC2 — biggest rank swing of the season.',p:'🔴'},
+    {ch:'Free Hit 2',gw:'GW34 (BGW)',r:'Navigate blanks without losing WC2 squad.',p:'🔴'},
+    {ch:'Triple Captain 2',gw:'GW36 (DGW)',r:'Premium captain plays twice.',p:'🔴'}
+  ];
+  const cc=document.getElementById('chip-cal');
+  if(cc)cc.innerHTML=cal.map(r=>`<tr><td class="cp">${r.ch}</td><td><span class="tag tb">${r.gw}</span></td><td class="xs t2c">${r.r}</td><td>${r.p} ${r.p==='🔴'?'Critical':'High'}</td></tr>`).join('');
+  const synEl=document.getElementById('chip-synergy');
+  if(synEl)synEl.innerHTML=[
+    {t:'WC2 + BB2 + FH2',b:'The triple play. WC2 in GW32 to load DGW33 assets. BB2 in GW33 so your bench scores. FH2 in GW34 to cover blanks. Worth 100k+ rank positions.',c:''},
+    {t:'TC2 in GW36 DGW',b:'Your premium captain plays twice. Salah or Haaland getting 14–20 points from two games is the biggest rank-climbing moment of the season.',c:''},
+    {t:'FH1 on GW19 BGW',b:'AFCON removes key players in GW16–22. Use FH1 on the BGW to field a full team for one week without damaging your long-term squad.',c:'amber'},
+    {t:'Never use chips reactively',b:'Chips planned ahead — when you know DGWs are coming — are worth 2–3x more than chips used after a bad GW.',c:'amber'}
+  ].map(s=>`<div class="chip-synergy-card ${s.c}"><div class="syn-title">${s.t}</div><div class="syn-body">${s.b}</div></div>`).join('');
+  renderChipTimeline();
 }
 function toggleChip(k){S.chips[k]=S.chips[k]==='used'?'available':'used';localStorage.setItem('fwr_'+k,S.chips[k]);rdChips();rdChipPage();}
-
 async function loadSquad(){
-  const id=document.getElementById('mid-in').value;
+  const id=document.getElementById('mid-in').value.trim();
   const gw=document.getElementById('gw-sel').value;
-  if(!id){alert('Please enter your Manager ID');return;}
-  S.mid=id;localStorage.setItem('fwr_mid',id);
+  if(!id){
+    const inp=document.getElementById('mid-in');
+    inp.focus();
+    inp.style.borderColor='var(--rd)';
+    inp.setAttribute('aria-invalid','true');
+    setTimeout(()=>{inp.style.borderColor='';inp.removeAttribute('aria-invalid');},2000);
+    return;
+  }
+  saveMid(id);
   document.getElementById('sb-mid').textContent='#'+id;
   document.getElementById('sq-bod').innerHTML='<tr><td colspan="9" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr>';
   try{
@@ -1613,7 +2617,7 @@ async function loadSquad(){
     syncChipsFromAPI(hist.chips||[]);
     // Auto-start live rank engine once squad is loaded
     if(S.mid && S.bs) startLiveRank();
-  }catch(e){console.error(e);document.getElementById('sq-bod').innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--rd);padding:24px">Failed to load. Check Manager ID or try again.</td></tr>';}
+  }catch(e){console.error(e);document.getElementById('sq-bod').innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--rd);padding:24px">Couldn\'t load squad. Check your Manager ID is correct, then try again.</td></tr>';}
 }
 
 function srchCmp(slot,val){
@@ -1661,19 +2665,189 @@ function updTxSum(){
 }
 
 function addRival(){
-  const id=document.getElementById('rv-id').value.trim();if(!id)return;
-  if(S.rivals.find(r=>r.id===id)){alert('Already tracking this manager.');return;}
-  S.rivals.push({id,n:'Manager #'+id.slice(-4),rank:'—',pts:'—'});
+  const inp=document.getElementById('rv-id');
+  const id=inp.value.trim();if(!id)return;
+  if(S.rivals.find(r=>r.id===id)){
+    inp.style.borderColor='var(--am)';
+    inp.title='Already tracking this manager';
+    const hint=document.getElementById('rv-hint');
+    if(hint){hint.textContent='Already tracking this manager.';hint.style.color='var(--am)';}
+    setTimeout(()=>{inp.style.borderColor='';inp.title='';if(hint)hint.textContent='';},2500);
+    return;
+  }
+  const newRival={id,n:'Manager #'+id.slice(-4),rank:'—',pts:'—'};
+  S.rivals.push(newRival);
   localStorage.setItem('fwr_rivals',JSON.stringify(S.rivals));
-  document.getElementById('rv-id').value='';rdRivals();
+  inp.value='';
+  rdRivals();
+  // Auto-load data for the newly added rival
+  if(S.bs) loadRivalData(newRival).then(()=>{
+    localStorage.setItem('fwr_rivals',JSON.stringify(S.rivals));
+    rdRivals();
+  });
 }
 function rmRival(id){S.rivals=S.rivals.filter(r=>r.id!==id);localStorage.setItem('fwr_rivals',JSON.stringify(S.rivals));rdRivals();}
-function rdRivals(){
-  const g=document.getElementById('rv-grid');if(!g)return;
-  if(!S.rivals.length){g.innerHTML='<div class="al ai" style="grid-column:1/-1"><span class="al-ic">&#8853;</span><div>No rivals added yet. Enter a Manager ID above to start tracking.</div></div>';return;}
-  g.innerHTML=S.rivals.map(r=>`<div class="rvc"><div class="fbc"><div class="cp sm">${r.n} <span class="xs t3c">#${r.id}</span></div><button onclick="rmRival('${r.id}')" class="btn btn-g btn-sm" style="padding:2px 6px;font-size:10px">✕</button></div><div class="xs t3c mt-4">Rank: ${r.rank} · Pts: ${r.pts}</div><div class="xs t3c mt-8">Load bootstrap data to see squad overlap analysis</div></div>`).join('');
-  document.getElementById('rv-div').innerHTML='<div class="al ai"><span class="al-ic">&#8853;</span><div>Add rivals with real Manager IDs to see detailed captaincy divergence analysis. This panel shows what you need to captain to beat each rival.</div></div>';
+// ── RIVAL SCOUT ENGINE (Session 3) ──────────────────────
+async function loadRivalData(rival){
+  if(!S.bs) return;
+  try {
+    const [info, hist, picks] = await Promise.all([
+      fplGet(`entry/${rival.id}/`),
+      fplGet(`entry/${rival.id}/history/`),
+      fplGet(`entry/${rival.id}/event/${S.gw}/picks/`).catch(()=>null)
+    ]);
+    const gwh = hist.current || [];
+    const latest = gwh[gwh.length-1] || {};
+    const prev = gwh[gwh.length-2] || {};
+    rival.n = info.name || `Manager #${rival.id.slice(-4)}`;
+    rival.rank = latest.overall_rank ? latest.overall_rank.toLocaleString() : '—';
+    rival.pts = latest.total_points || '—';
+    rival.gwPts = latest.points || '—';
+    rival.rankDelta = prev.overall_rank && latest.overall_rank
+      ? prev.overall_rank - latest.overall_rank : 0;
+    // Chip used this GW
+    const chipHistory = info.chips || [];
+    const gwChip = chipHistory.find(c => c.event === S.gw);
+    rival.chip = gwChip ? gwChip.name : null;
+    rival.transfers = latest.event_transfers || 0;
+    rival.transferCost = latest.event_transfers_cost || 0;
+    // Captain this GW
+    if(picks && picks.picks && S.bs){
+      const cap = picks.picks.find(p=>p.is_captain);
+      if(cap){
+        const capEl = S.bs.elements.find(e=>e.id===cap.element);
+        rival.captain = capEl ? capEl.web_name : '?';
+        rival.captainId = cap.element;
+      }
+    }
+    rival.loaded = true;
+  } catch(e){
+    rival.loadErr = true;
+  }
+  return rival;
 }
+
+async function refreshAllRivals(){
+  if(!S.rivals.length) return;
+  const g = document.getElementById('rv-grid');
+  if(g) g.innerHTML = S.rivals.map(r=>`<div class="rvc"><div class="fbc"><div class="cp sm">${r.n||'Manager #'+r.id.slice(-4)}</div></div><div class="rv-loading">&#9679; Loading...</div></div>`).join('');
+
+  await Promise.all(S.rivals.map(r => loadRivalData(r)));
+  localStorage.setItem('fwr_rivals', JSON.stringify(S.rivals));
+  rdRivals();
+}
+
+function rdRivals(){
+  const g = document.getElementById('rv-grid');
+  if(!g) return;
+  if(!S.rivals.length){
+    g.innerHTML='<div class="al ai" style="grid-column:1/-1"><span class="al-ic">&#8853;</span><div>No rivals added yet. Enter a Manager ID above to start tracking.</div></div>';
+    document.getElementById('rv-compare-wrap')?.style.setProperty('display','none');
+    return;
+  }
+
+  // Rival cards
+  g.innerHTML = S.rivals.map(r=>`
+    <div class="rvc">
+      <div class="fbc mb-8">
+        <div>
+          <div class="cp sm">${r.n||'Manager #'+r.id.slice(-4)}${r.chip?`<span class="rv-chip-badge">${r.chip}</span>`:''}</div>
+          <div class="xs t3c mt-2">#${r.id}</div>
+        </div>
+        <button onclick="rmRival('${r.id}')" class="btn btn-g btn-sm" style="padding:2px 6px;font-size:10px" aria-label="Remove ${r.n||'rival'}">✕</button>
+      </div>
+      ${r.loaded ? `
+        <div class="fac gap-16 mb-8">
+          <div><div class="xs t3c">GW Pts</div><div class="rv-pts">${r.gwPts}</div></div>
+          <div><div class="xs t3c">Total</div><div class="sm w7 t1c">${r.pts?.toLocaleString?.()??r.pts}</div></div>
+          <div><div class="xs t3c">Rank</div><div class="sm w7 t1c">${r.rank}</div></div>
+        </div>
+        <div class="xs t3c">${r.captain?`Cap: <strong class="t1c">${r.captain}</strong> · `:''}${r.rankDelta>0?`<span class="ca">▲${r.rankDelta.toLocaleString()}</span>`:r.rankDelta<0?`<span class="cr">▼${Math.abs(r.rankDelta).toLocaleString()}</span>`:'Rank unchanged'}</div>
+      ` : r.loadErr ? '<div class="xs cr">Could not load — check Manager ID</div>' : '<div class="rv-loading">Tap Refresh All to load data</div>'}
+    </div>`).join('');
+
+  // Comparison table
+  const wrap = document.getElementById('rv-compare-wrap');
+  const tbody = document.getElementById('rv-compare-bod');
+  const gwLbl = document.getElementById('rv-gw-lbl');
+  const updated = document.getElementById('rv-updated');
+  if(wrap && S.rivals.some(r=>r.loaded)){
+    wrap.style.display='block';
+    if(gwLbl) gwLbl.textContent = `GW${S.gw}`;
+    if(updated) updated.textContent = `Updated ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
+
+    // Include "me" row if squad loaded
+    const rows = [];
+    if(S.myPicks && S.bs){
+      const myId = String(S.mid);
+      const myCap = S.myPicks.picks.find(p=>p.is_captain);
+      const myCapEl = myCap && S.bs.elements.find(e=>e.id===myCap.element);
+      rows.push({
+        isMe: true,
+        name: 'You',
+        gwPts: '—', pts: '—', rank: '—',
+        rankDelta: 0,
+        captain: myCapEl?.web_name||'—',
+        chip: null, transfers: 0, transferCost: 0
+      });
+    }
+    S.rivals.filter(r=>r.loaded).forEach(r=>rows.push({...r, isMe:false}));
+
+    // Sort by GW pts descending
+    rows.sort((a,b)=>{
+      if(a.isMe) return -1;
+      if(b.isMe) return 1;
+      return (parseInt(b.gwPts)||0)-(parseInt(a.gwPts)||0);
+    });
+
+    tbody.innerHTML = rows.map((r,i)=>{
+      const rd = r.rankDelta;
+      const rdHtml = rd>500?`<span class="ca">▲${rd.toLocaleString()}</span>`:rd<-500?`<span class="cr">▼${Math.abs(rd).toLocaleString()}</span>`:'<span class="t3c">—</span>';
+      const txHtml = r.transfers>0
+        ? `${r.transfers} transfer${r.transfers>1?'s':''}${r.transferCost?`<span class="cr"> (-${r.transferCost})</span>`:''}`
+        : '<span class="t3c">No transfers</span>';
+      // "Beat them with" — suggest a differential captain
+      const beatWith = r.captain && r.captain !== '—'
+        ? `Not ${r.captain}`
+        : '<span class="t3c">—</span>';
+      return `<tr class="${r.isMe?'rv-me':''}">
+        <td class="cp w7">${r.isMe?'★ ':''}${r.name||'—'}</td>
+        <td class="r w7 ${r.isMe?'t1c':'ca'}">${r.gwPts}</td>
+        <td class="r t2c">${typeof r.pts==='number'?r.pts.toLocaleString():r.pts}</td>
+        <td class="r t2c">${r.rank}</td>
+        <td class="r">${rdHtml}</td>
+        <td class="cp">${r.captain||'<span class="t3c">—</span>'}</td>
+        <td>${r.chip?`<span class="rv-chip-badge">${r.chip}</span>`:'<span class="t3c">—</span>'}</td>
+        <td class="xs t2c">${txHtml}</td>
+        <td class="xs t3c">${beatWith}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Captaincy divergence
+  const divEl = document.getElementById('rv-div');
+  if(divEl){
+    const loadedRivals = S.rivals.filter(r=>r.loaded&&r.captain);
+    if(!loadedRivals.length){
+      divEl.innerHTML='<div class="al ai"><span class="al-ic">&#8853;</span><div>Tap <strong>Refresh All</strong> to load rival data and see captaincy analysis.</div></div>';
+    } else {
+      // Find most common rival captain
+      const capCounts = {};
+      loadedRivals.forEach(r=>{ capCounts[r.captain]=(capCounts[r.captain]||0)+1; });
+      const topCap = Object.entries(capCounts).sort((a,b)=>b[1]-a[1])[0];
+      divEl.innerHTML = loadedRivals.map(r=>`
+        <div class="prrow">
+          <div style="min-width:130px"><div class="cp sm">${r.n||'Manager'}</div><div class="xs t3c">Cap: <strong>${r.captain||'?'}</strong></div></div>
+          <div style="flex:1;font-size:.8rem;color:var(--t2)">
+            ${r.captain ? `Captain a different player to gain rank on them. If they play ${r.captain}, you need a different captain who scores more.` : 'No captain data available.'}
+          </div>
+        </div>`).join('') +
+        (topCap ? `<div class="al as mt-12"><span class="al-ic">&#9733;</span><div><strong>${topCap[1]} of your rivals</strong> are captaining <strong>${topCap[0]}</strong> this GW. Captaining someone else is your best route to gaining rank on them all at once.</div></div>` : '');
+    }
+  }
+}
+
+
 
 function addWatch(){const v=document.getElementById('wl-i').value.trim();if(!v)return;S.watch.push({n:v,added:new Date().toLocaleDateString('en-GB')});localStorage.setItem('fwr_watch',JSON.stringify(S.watch));document.getElementById('wl-i').value='';rdWatch();}
 function rmWatch(i){S.watch.splice(i,1);localStorage.setItem('fwr_watch',JSON.stringify(S.watch));rdWatch();}
@@ -1828,6 +3002,11 @@ async function updateAllLive(){
 }
 
 // ─── LIVE RANK ──────────────────────────────────────────────
+// Rank history for this GW session (resets each page load)
+if(!S.liveRankHistory) S.liveRankHistory = [];
+if(!S.livePtsHistory) S.livePtsHistory = [];
+if(!S.liveAvgHistory) S.liveAvgHistory = [];
+
 function renderLiveRank({liveEv, picks}){
   if(!S.bs)return;
   const eleMap={};
@@ -1837,8 +3016,7 @@ function renderLiveRank({liveEv, picks}){
   const teamMap={};
   S.bs.teams.forEach(t=>teamMap[t.id]=t);
 
-  // Calculate live score for my squad
-  let livePts=0, startPts=0;
+  let livePts=0;
   const playerRows=[];
 
   picks.picks.forEach(pick=>{
@@ -1847,11 +3025,9 @@ function renderLiveRank({liveEv, picks}){
     if(!live)return;
     const pos=bs.element_type||4;
     const rawPts=calcLivePts(live,pos);
-    const mult=pick.multiplier||1; // 2=captain, 3=TC
+    const mult=pick.multiplier||1;
     const pts=rawPts*mult;
-    if(pick.multiplier>0) startPts+=pts;
     livePts+=pts;
-
     playerRows.push({
       id:pick.element,
       name:bs.web_name||'?',
@@ -1863,67 +3039,167 @@ function renderLiveRank({liveEv, picks}){
       cs:live.stats.clean_sheets||0,
       bps:live.stats.bps||0,
       bonus:live.stats.bonus||0,
-      pts:pts,
-      rawPts:rawPts,
+      pts,rawPts,
       isCap:pick.is_captain,
       isVc:pick.is_vice_captain,
       isStarter:pick.multiplier>0
     });
   });
 
-  // GW average from bootstrap events
   const gwData=S.bs.events.find(e=>e.id===S.gw)||{};
-  const gwAvg=gwData.average_entry_score||0;
+  const gwAvg=gwData.average_entry_score||48;
+  const estRank=estimateRank(livePts, gwAvg);
 
-  // Estimate rank
-  const estRank=estimateRank(livePts, gwAvg||48);
-  const safeScore = Math.ceil(gwAvg||48);
+  // Store history for chart
+  const timeLabel=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  S.liveRankHistory.push({t:timeLabel, rank:estRank||0});
+  S.livePtsHistory.push({t:timeLabel, pts:livePts, avg:gwAvg});
+  if(S.liveRankHistory.length>20){S.liveRankHistory.shift();S.livePtsHistory.shift();S.liveAvgHistory.shift();}
 
-  // Update KPIs
+  // KPIs
   setKPI('lr-pts', livePts.toString());
-  document.getElementById('lr-pts-d').textContent = picks.picks.filter(p=>p.multiplier>0).length+' players scored';
-  setKPI('lr-avg', gwAvg ? gwAvg.toFixed(1) : '~48');
+  document.getElementById('lr-pts-d').textContent=picks.picks.filter(p=>p.multiplier>0).length+' players scored';
+  setKPI('lr-avg', gwAvg?gwAvg.toFixed(1):'—');
 
+  const diff=livePts-gwAvg;
+  const safeEl=document.getElementById('lr-safe');
+  const safeDEl=document.getElementById('lr-safe-d');
+  if(safeEl){
+    safeEl.textContent=(diff>=0?'+':'')+diff.toFixed(1);
+    safeEl.style.color=diff>=0?'var(--gr)':'var(--rd)';
+  }
+  if(safeDEl) safeDEl.textContent=diff>=0?'above average — green arrow likely':'below average — red arrow risk';
+
+  // Rank KPI + delta
   if(estRank){
-    document.getElementById('lr-rank').textContent = estRank.toLocaleString();
-    const rankDiff = S.lastLiveRank ? S.lastLiveRank - estRank : 0;
-    const rankEl = document.getElementById('lr-rank-d');
-    if(rankDiff>0) rankEl.innerHTML=`<span class="up">&#9650; ${rankDiff.toLocaleString()} estimated gain</span>`;
-    else if(rankDiff<0) rankEl.innerHTML=`<span class="dn">&#9660; ${Math.abs(rankDiff).toLocaleString()} estimated drop</span>`;
-    else rankEl.textContent='estimated from ownership';
-    S.lastLiveRank = estRank;
+    document.getElementById('lr-rank').textContent=estRank.toLocaleString();
+    const prevRank=S.lastLiveRank||estRank;
+    const rankDiff=prevRank-estRank;
+    const rankEl=document.getElementById('lr-rank-d');
+    if(rankDiff>500) rankEl.innerHTML=`<span class="up">&#9650; +${rankDiff.toLocaleString()} rank gain</span>`;
+    else if(rankDiff<-500) rankEl.innerHTML=`<span class="dn">&#9660; ${Math.abs(rankDiff).toLocaleString()} rank loss</span>`;
+    else rankEl.textContent='Rank stable this refresh';
+
+    // Delta banner
+    const banner=document.getElementById('lr-delta-banner');
+    if(banner && S.lastLiveRank){
+      const net=S.liveRankHistory[0]?.rank - estRank;
+      if(Math.abs(net)>1000){
+        banner.style.display='block';
+        banner.className=net>0?'rank-delta-up mb-16':'rank-delta-dn mb-16';
+        banner.innerHTML=net>0
+          ? `&#9650; Up ${net.toLocaleString()} places since this GW started &mdash; currently estimated <strong>#${estRank.toLocaleString()}</strong>`
+          : `&#9660; Down ${Math.abs(net).toLocaleString()} places since this GW started &mdash; currently estimated <strong>#${estRank.toLocaleString()}</strong>`;
+      }
+    }
+    S.lastLiveRank=estRank;
   }
 
-  const ptsNeeded = safeScore - livePts;
-  const safeEl = document.getElementById('lr-safe');
-  const safeDEl = document.getElementById('lr-safe-d');
-  if(ptsNeeded<=0){
-    safeEl.textContent='SAFE';safeEl.style.color='var(--gr)';
-    if(safeDEl)safeDEl.innerHTML='<span class="up">On track for green arrow</span>';
-  } else {
-    safeEl.textContent='+'+ptsNeeded;safeEl.style.color='var(--am)';
-    if(safeDEl)safeDEl.textContent='pts needed for green arrow';
-  }
-
+  // GW label
   document.getElementById('lr-gw-lbl').innerHTML=`<span class="tag tg">GW${S.gw} &bull; Live</span>`;
 
-  // Live squad table
+  // Fixture strip
+  renderFixtureStrip(liveEv);
+
+  // Rank history chart
+  renderLiveRankChart();
+
+  // Squad table
+  const wrap=document.getElementById('lr-squad-tbl-wrap');
   const tbody=document.getElementById('lr-live-tbl');
-  tbody.innerHTML=playerRows.sort((a,b)=>b.pts-a.pts).map(p=>{
-    const statusIcon = p.mins===0?'<span class="cr">&#9679; 0 mins</span>':p.mins>=60?'<span class="ca">&#9679; Playing</span>':'<span class="cy">&#9679; On</span>';
-    return `<tr>
-      <td class="cp">${p.name}${p.isCap?' <span class="tag ty">C</span>':''}${p.isVc?' <span class="tag tb">V</span>':''}${!p.isStarter?' <span class="tag tz">Bench</span>':''}</td>
-      <td class="t2c">${p.club}</td>
-      <td class="r">${p.mins}'</td>
-      <td class="r">${p.goals}</td>
-      <td class="r">${p.assists}</td>
-      <td class="r">${p.cs}</td>
-      <td class="r">${p.bps}</td>
-      <td class="r">${p.bonus>0?`<span class="ca w7">+${p.bonus}</span>`:'0'}</td>
-      <td class="r w7 ${p.pts>0?'ca':p.pts<0?'cr':''}">${p.pts}</td>
-    </tr>`;
-  }).join('');
+  const squadMsg=document.getElementById('lr-squad');
+  if(wrap) wrap.style.display='block';
+  if(squadMsg) squadMsg.style.display='none';
+  if(tbody) tbody.innerHTML=playerRows.sort((a,b)=>b.pts-a.pts).map(p=>`<tr>
+    <td class="cp">${p.name}${p.isCap?' <span class="tag ty">C</span>':''}${p.isVc?' <span class="tag tb">V</span>':''}${!p.isStarter?' <span class="tag tz">Bench</span>':''}</td>
+    <td><span class="pos p${p.pos}">${p.pos}</span></td>
+    <td class="t2c">${p.club}</td>
+    <td class="r">${p.mins}'</td>
+    <td class="r">${p.goals}</td>
+    <td class="r">${p.assists}</td>
+    <td class="r">${p.cs}</td>
+    <td class="r">${p.bps}</td>
+    <td class="r">${p.bonus>0?`<span class="ca w7">+${p.bonus}</span>`:'0'}</td>
+    <td class="r w7 ${p.pts>0?'ca':p.pts<0?'cr':''}">${p.pts}</td>
+  </tr>`).join('');
 }
+
+function renderFixtureStrip(liveEv){
+  const strip=document.getElementById('lr-fixtures-strip');
+  if(!strip||!S.bs) return;
+  const teamMap={};
+  S.bs.teams.forEach(t=>teamMap[t.id]=t);
+  // Group live elements by fixture — use finished/in-play stats
+  const fixtures=S.bs.events.find(e=>e.id===S.gw)?.chip_plays||[];
+  // Fallback: show placeholder if no fixture data available in bootstrap
+  // Real fixture data comes from bootstrap's fixtures endpoint
+  // For now show a summary card based on liveEv
+  const playing=liveEv.elements.filter(e=>e.stats.minutes>0);
+  const teams=new Set(playing.map(e=>{const bs=S.bs.elements.find(b=>b.id===e.id);return bs?.team;}).filter(Boolean));
+  if(!teams.size){
+    strip.innerHTML='<div class="al ai" style="width:100%"><span class="al-ic">&#9638;</span><div>No live matches right now. Check back on matchday.</div></div>';
+    return;
+  }
+  // Build simple team-in-play chips
+  const chips=[...teams].slice(0,10).map(tid=>{
+    const t=teamMap[tid]||{};
+    const teamEls=liveEv.elements.filter(e=>{const bs=S.bs.elements.find(b=>b.id===e.id);return bs?.team===tid;});
+    const goals=teamEls.reduce((s,e)=>s+(e.stats.goals_scored||0),0);
+    const mins=Math.max(...teamEls.map(e=>e.stats.minutes||0),0);
+    const isLive=mins>0&&mins<90;
+    const isFt=mins>=90;
+    return `<div class="fix-chip ${isLive?'live':isFt?'ft':''}">
+      <div class="fix-teams">${t.short_name||'?'}</div>
+      <div class="fix-score">${goals}</div>
+      <div class="fix-status ${isLive?'live-badge':isFt?'ft-badge':''}">${isLive?'LIVE':isFt?'FT':'—'}</div>
+    </div>`;
+  }).join('');
+  strip.innerHTML=chips||'<div class="xs t3c">No active fixtures</div>';
+}
+
+function renderLiveRankChart(){
+  const ctx=document.getElementById('ch-liverank');
+  const ctx2=document.getElementById('ch-livepts');
+  if(!ctx||S.liveRankHistory.length<2) return;
+  const cc=chCol();
+  const labels=S.liveRankHistory.map(r=>r.t);
+  const ranks=S.liveRankHistory.map(r=>r.rank);
+  const pts=S.livePtsHistory.map(r=>r.pts);
+  const avgs=S.livePtsHistory.map(r=>r.avg);
+  destroyC('liverank');
+  S.charts['liverank']=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Your Rank',data:ranks,borderColor:cc.accent,backgroundColor:cc.accent+'22',tension:.3,fill:true,pointRadius:3,pointBackgroundColor:cc.accent,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>'Rank: #'+v.raw.toLocaleString()}}},scales:{y:{reverse:true,grid:{color:cc.grid},ticks:{color:cc.tick,font:{size:9},callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}},x:{grid:{display:false},ticks:{color:cc.tick,font:{size:9}}}}}});
+  if(!ctx2) return;
+  destroyC('livepts');
+  S.charts['livepts']=new Chart(ctx2,{type:'line',data:{labels,datasets:[{label:'Your Pts',data:pts,borderColor:cc.blue,backgroundColor:cc.blue+'22',tension:.3,fill:false,pointRadius:3,borderWidth:2},{label:'GW Avg',data:avgs,borderColor:cc.tick,borderDash:[4,3],tension:.3,fill:false,pointRadius:2,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:cc.label,font:{size:9},boxWidth:8,boxHeight:8}}},scales:{y:{grid:{color:cc.grid},ticks:{color:cc.tick,font:{size:9}}},x:{grid:{display:false},ticks:{color:cc.tick,font:{size:9}}}}}});
+}
+
+// ── MINI-LEAGUE LIVE ─────────────────────────────────────
+async function loadMiniLeagueLive(){
+  const inp=document.getElementById('lr-league-id');
+  const leagueId=inp?.value?.trim();
+  if(!leagueId){inp&&(inp.style.borderColor='var(--rd)');setTimeout(()=>{if(inp)inp.style.borderColor='';},1500);return;}
+  const el=document.getElementById('lr-minileague');
+  if(el) el.innerHTML='<div class="spinner" style="margin:16px auto"></div>';
+  try{
+    const d=await fplGet(`leagues-classic/${leagueId}/standings/`);
+    const standings=d.standings?.results||[];
+    if(!standings.length){el.innerHTML='<div class="al aw"><span class="al-ic">&#9888;</span><div>No results found for that league code.</div></div>';return;}
+    const myId=S.mid;
+    el.innerHTML=standings.slice(0,20).map((m,i)=>{
+      const isMe=String(m.entry)===String(myId);
+      return `<div class="ml-row ${isMe?'ml-you':''}">
+        <div class="ml-pos">${m.rank||i+1}</div>
+        <div class="ml-name">${m.entry_name||'Manager'}${isMe?' <span class="tag tg" style="font-size:.6rem">You</span>':''}</div>
+        <div class="xs t3c" style="min-width:40px;text-align:right">${m.event_total||0} pts</div>
+        <div class="ml-pts">${m.total||0}</div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    if(el) el.innerHTML='<div class="al aw"><span class="al-ic">&#9888;</span><div>Couldn\'t load that league. Check the code and try again.</div></div>';
+  }
+}
+
+
 
 // ─── DEFCON ──────────────────────────────────────────────────
 function renderDefCon({liveEv, picks}){
@@ -2223,15 +3499,242 @@ function renderCapScenarios(){
 // Live rank auto-starts after squad loads — triggered from within loadSquad directly
 
 
+// ── AI TRANSFER ADVISOR (Session 4) ─────────────────────
+function setAiContext(text){
+  const ta = document.getElementById('ai-context');
+  if(ta){ ta.value = text; ta.focus(); }
+}
+
+function buildSquadContext(){
+  const lines = [];
+  lines.push(`Current GW: ${S.gw || 29}`);
+
+  // Free transfers + ITB from inputs or state
+  const ft = document.getElementById('ai-ft')?.value || '1';
+  const itb = document.getElementById('ai-itb')?.value || '0';
+  lines.push(`Free transfers: ${ft}`);
+  lines.push(`Budget in the bank: £${itb}m`);
+
+  // Chips remaining
+  const chipDefs = typeof CHIP_DEFS !== 'undefined' ? CHIP_DEFS : [];
+  const availChips = chipDefs.filter(c => S.chips[c.k] === 'available').map(c => c.n);
+  lines.push(`Chips remaining: ${availChips.length > 0 ? availChips.join(', ') : 'None'}`);
+
+  // Chip plan
+  const plan = typeof S_chipPlan !== 'undefined' ? S_chipPlan : {};
+  const planEntries = Object.entries(plan);
+  if(planEntries.length){
+    const planStr = planEntries.sort((a,b)=>parseInt(a[0])-parseInt(b[0]))
+      .map(([gw,k])=>{ const d=chipDefs.find(c=>c.k===k); return `${d?.n||k} in GW${gw}`; }).join(', ');
+    lines.push(`Planned chip usage: ${planStr}`);
+  }
+
+  // Squad from S.myPicks + S.bs
+  if(S.myPicks && S.bs){
+    const bsMap = {};
+    S.bs.elements.forEach(e => bsMap[e.id] = e);
+    const teamMap = {};
+    S.bs.teams.forEach(t => teamMap[t.id] = t);
+    const PM2 = {1:'GK',2:'DEF',3:'MID',4:'FWD'};
+    const picks = S.myPicks.picks.filter(p => p.multiplier > 0);
+    const bench = S.myPicks.picks.filter(p => p.multiplier === 0);
+    const fmtPlayer = p => {
+      const el = bsMap[p.element] || {};
+      const team = (teamMap[el.team]||{}).short_name || '?';
+      const pos = PM2[el.element_type] || '?';
+      const price = el.now_cost ? `£${(el.now_cost/10).toFixed(1)}m` : '';
+      const form = el.form ? `form:${el.form}` : '';
+      return `${el.web_name||'?'} (${team}, ${pos}, ${price}${form?', '+form:''})${p.is_captain?' [C]':''}${p.is_vice_captain?' [V]':''}`;
+    };
+    lines.push(`Starting 11: ${picks.map(fmtPlayer).join('; ')}`);
+    lines.push(`Bench: ${bench.map(fmtPlayer).join('; ')}`);
+  } else {
+    lines.push('Squad: not loaded (user has not entered Manager ID yet)');
+  }
+
+  // Top upcoming fixtures context from FDR data
+  if(typeof S_fdrData !== 'undefined' && S_fdrData.length){
+    const easyTeams = S_fdrData.filter(t=>t.avgDiff<=2.2).slice(0,5).map(t=>t.short).join(', ');
+    if(easyTeams) lines.push(`Teams with best upcoming fixtures: ${easyTeams}`);
+  }
+
+  return lines.join('\n');
+}
+
+async function askAiAdvisor(){
+  const btn = document.getElementById('ai-ask-btn');
+  const btnLabel = document.getElementById('ai-btn-label');
+  const respCard = document.getElementById('ai-response-card');
+  const respBody = document.getElementById('ai-response-body');
+  const errEl = document.getElementById('ai-error');
+  const errMsg = document.getElementById('ai-error-msg');
+  const tipsPanel = document.getElementById('ai-tips-panel');
+  const gwTag = document.getElementById('ai-gw-tag');
+  const timestamp = document.getElementById('ai-timestamp');
+
+  const userContext = document.getElementById('ai-context')?.value?.trim() || '';
+
+  // Loading state
+  btn.classList.add('loading');
+  btn.disabled = true;
+  if(btnLabel) btnLabel.textContent = '⟳ Thinking...';
+  if(errEl) errEl.style.display = 'none';
+  if(respCard) respCard.style.display = 'none';
+  if(tipsPanel) tipsPanel.style.display = 'none';
+
+  const squadContext = buildSquadContext();
+
+  const systemPrompt = `You are an elite Fantasy Premier League advisor targeting top 1% finishes (top 85,000 of 8.5 million managers). You give direct, specific, actionable advice.
+
+Your style:
+- Plain English, short sentences
+- Name specific players and reasons
+- Give a clear recommendation, not a list of options
+- Consider EO (effective ownership), chip timing, and fixture context
+- Flag if a transfer would cost a hit (-4 points) and whether it is worth it
+- Keep responses under 300 words
+- Use section headers like "Transfer In", "Transfer Out", "Captain Pick", "Chip Timing" only when relevant
+- Never pad with caveats or generic FPL advice`;
+
+  const userPrompt = `Here is my current FPL situation:
+
+${squadContext}
+
+${userContext ? `My question: ${userContext}` : 'Give me your best transfer recommendation for this gameweek based on my squad, budget, fixtures, and chip situation.'}`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+
+    if(!response.ok){
+      const errData = await response.json().catch(()=>({}));
+      throw new Error(errData.error?.message || `HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    const text = data.content?.find(b=>b.type==='text')?.text || 'No response received.';
+
+    // Show response
+    if(respCard) respCard.style.display = 'block';
+    if(gwTag) gwTag.textContent = `GW${S.gw||'—'}`;
+    if(timestamp) timestamp.textContent = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+    // Render with simple markdown-ish formatting
+    if(respBody){
+      respBody.className = '';
+      respBody.innerHTML = text
+        .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+        .replace(/^### (.*)/gm,'<h3>$1</h3>')
+        .replace(/^## (.*)/gm,'<h3>$1</h3>')
+        .replace(/^# (.*)/gm,'<h3>$1</h3>')
+        .replace(/\n/g,'<br>');
+    }
+
+  } catch(e){
+    console.error('AI advisor error:', e);
+    if(errEl) errEl.style.display = 'flex';
+    if(errMsg) errMsg.textContent = e.message?.includes('API')
+      ? 'The AI is unavailable right now. Try again in a moment.'
+      : `Could not get advice: ${e.message}`;
+    if(tipsPanel) tipsPanel.style.display = 'block';
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    if(btnLabel) btnLabel.textContent = '⚙ Get Transfer Advice';
+  }
+}
+
+
+// ── ONBOARDING ──────────────────────────────────────────────
+function showOnboarding(){
+  const overlay=document.getElementById('ob-overlay');
+  if(overlay)overlay.classList.remove('hidden');
+  // Focus first interactive element
+  setTimeout(()=>{
+    const btn=overlay.querySelector('button');
+    if(btn)btn.focus();
+  },50);
+}
+function closeOnboarding(){
+  const overlay=document.getElementById('ob-overlay');
+  if(overlay)overlay.classList.add('hidden');
+  localStorage.setItem('fwr_ob','1');
+}
+function finishOnboarding(){
+  // Save manager ID from onboarding input if entered
+  const obMid=document.getElementById('ob-mid');
+  if(obMid&&obMid.value.trim()){
+    saveMid(obMid.value.trim());
+    // Auto-navigate to squad tab and load
+    setTimeout(()=>{
+      nav('squad',null);
+      loadSquad();
+    },300);
+  }
+  closeOnboarding();
+}
+function obNext(step){
+  // Save mid if on step 2
+  if(step===3){
+    const obMid=document.getElementById('ob-mid');
+    if(obMid&&obMid.value.trim())saveMid(obMid.value.trim());
+  }
+  document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));
+  const next=document.getElementById('ob-s'+step);
+  if(next){
+    next.classList.add('active');
+    setTimeout(()=>{const btn=next.querySelector('button.btn-p');if(btn)btn.focus();},50);
+  }
+}
+
+// ── KEYBOARD NAV FOR BOTTOM NAV ─────────────────────────────
+document.addEventListener('keydown',function(e){
+  if(e.target.classList.contains('bn-item')&&(e.key==='Enter'||e.key===' ')){
+    e.preventDefault();
+    e.target.click();
+  }
+});
+
+// ── MENU TOGGLE ARIA ────────────────────────────────────────
+function toggleSb(){
+  const sb=document.getElementById('sb');
+  const ov=document.getElementById('ov');
+  const isOpen=sb.classList.toggle('open');
+  ov.classList.toggle('on');
+  const toggle=document.getElementById('menu-toggle');
+  if(toggle)toggle.setAttribute('aria-expanded',isOpen?'true':'false');
+}
+function closeSb(){
+  document.getElementById('sb').classList.remove('open');
+  document.getElementById('ov').classList.remove('on');
+  const toggle=document.getElementById('menu-toggle');
+  if(toggle)toggle.setAttribute('aria-expanded','false');
+}
+
 // INIT
 (async function init(){
   applyDark(); // Apply before first paint
-  // S.deadline stays null until loadBoot sets it from the real FPL API
   setInterval(tickCD,1000);tickCD();
+  setInterval(tickPriceLock,1000);tickPriceLock();
   rdChips();rdChipPage();rdWatch();rdRivals();
+  // Pre-fill AI advisor FT count from saved state
+  const savedFt = localStorage.getItem('fwr_ft');
+  if(savedFt){ const el=document.getElementById('ai-ft');if(el)el.value=savedFt; }
   await loadBoot();
   if(!S.bs)loadDemo();
   else{rdDemoRankCharts();rdDemoPitch();rdDemoSquadSum();rdDemoEO();}
+  // Show onboarding for first-time visitors
+  if(!localStorage.getItem('fwr_ob')&&!S.mid){
+    setTimeout(showOnboarding,800);
+  }
 })();
 </script>
 </body>
