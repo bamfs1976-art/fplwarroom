@@ -392,6 +392,95 @@ select.inp{
   transition:all .14s;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.25);
 }
 
+/* ── LIVE RANK (LiveFPL-inspired) ──────────────────────── */
+/* Dark summary header bar */
+.lr-summary{
+  display:flex;align-items:stretch;
+  background:linear-gradient(135deg,#1a1f3a 0%,#0f1628 100%);
+  border-radius:var(--r3);overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+.lr-s-item{
+  flex:1;padding:16px 20px;text-align:center;
+  border-right:1px solid rgba(255,255,255,.08);
+}
+.lr-s-item:last-child{border-right:none}
+.lr-s-label{
+  font-size:9px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.12em;color:rgba(255,255,255,.45);margin-bottom:6px;
+}
+.lr-s-val{
+  font-size:1.4rem;font-weight:900;color:#fff;
+  letter-spacing:-.03em;line-height:1;
+}
+.lr-s-main .lr-s-val{font-size:1.8rem;color:#4ade80}
+.lr-s-sub{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:4px}
+.lr-s-sub .up{color:#4ade80}.lr-s-sub .dn{color:#f87171}
+.lr-s-change{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:700;margin-top:6px;
+}
+.lr-s-change.green{background:rgba(74,222,128,.15);color:#4ade80}
+.lr-s-change.red{background:rgba(248,113,113,.15);color:#f87171}
+
+/* Live player card rows */
+.lr-player{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:var(--r1);
+  border:1px solid var(--b1);margin-bottom:6px;
+  background:var(--c1);transition:all .12s;
+}
+.lr-player:hover{border-color:var(--b2);box-shadow:var(--sh)}
+.lr-player:last-child{margin-bottom:0}
+.lr-player.lr-bench{opacity:.55;border-style:dashed}
+.lr-player.lr-bench:hover{opacity:.85}
+.lr-team-bar{width:4px;height:36px;border-radius:2px;flex-shrink:0}
+.lr-player-info{flex:1;min-width:0}
+.lr-player-name{font-size:.833rem;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lr-player-detail{font-size:.72rem;color:var(--t3);margin-top:2px}
+.lr-player-mins{
+  width:42px;text-align:center;font-size:.75rem;font-weight:600;color:var(--t2);flex-shrink:0;
+}
+.lr-mins-bar{width:36px;height:3px;background:var(--c4);border-radius:2px;margin:3px auto 0;overflow:hidden}
+.lr-mins-fill{height:100%;border-radius:2px}
+.lr-player-pts{
+  font-size:1.15rem;font-weight:900;min-width:32px;text-align:right;flex-shrink:0;
+}
+.lr-player-stats{
+  display:flex;gap:8px;font-size:.69rem;color:var(--t3);margin-top:2px;
+}
+.lr-player-stats span{white-space:nowrap}
+
+/* Points breakdown rows */
+.lr-bd-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--b1);font-size:.833rem;
+}
+.lr-bd-row:last-child{border-bottom:none;padding-bottom:0}
+.lr-bd-label{color:var(--t2);font-weight:500}
+.lr-bd-val{font-weight:800;font-family:var(--fm)}
+.lr-bd-row.lr-bd-total{
+  padding-top:12px;margin-top:4px;border-top:2px solid var(--b2);border-bottom:none;
+}
+.lr-bd-row.lr-bd-total .lr-bd-label{font-weight:800;color:var(--t1)}
+.lr-bd-row.lr-bd-total .lr-bd-val{font-size:1rem}
+
+/* Average comparison bars */
+.lr-cmp-row{padding:10px 0;border-bottom:1px solid var(--b1)}
+.lr-cmp-row:last-child{border-bottom:none;padding-bottom:0}
+.lr-cmp-header{display:flex;justify-content:space-between;margin-bottom:5px}
+.lr-cmp-label{font-size:.75rem;color:var(--t3);font-weight:600}
+.lr-cmp-val{font-size:.75rem;font-weight:800}
+.lr-cmp-bar{height:8px;background:var(--c4);border-radius:4px;overflow:hidden;position:relative}
+.lr-cmp-fill{height:100%;border-radius:4px;transition:width .5s var(--ease)}
+
+/* Bench separator in live squad */
+.lr-bench-sep{
+  display:flex;align-items:center;gap:10px;margin:12px 0 8px;
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--t4);
+}
+.lr-bench-sep::before,.lr-bench-sep::after{content:'';flex:1;height:1px;background:var(--b1)}
+
 /* ── FDR ────────────────────────────────────────────────── */
 .fdr{display:inline-flex;align-items:center;justify-content:center;border-radius:5px;font-size:10px;font-weight:800;min-width:44px;padding:3px 6px}
 .f1{background:#bbf7d0;color:#166534}.f2{background:#d1fae5;color:#065f46}
@@ -587,6 +676,19 @@ select.inp{
   .live-bar-item{min-width:45%;padding:8px 6px}
   .lb-val{font-size:.9rem}
   .lb-label{font-size:7px}
+
+  /* Live Rank summary bar compact */
+  .lr-summary{flex-wrap:wrap}
+  .lr-s-item{min-width:30%;padding:12px 10px}
+  .lr-s-val{font-size:1.1rem}
+  .lr-s-main .lr-s-val{font-size:1.4rem}
+  .lr-s-label{font-size:8px}
+
+  /* Live player cards compact */
+  .lr-player{padding:8px 10px;gap:8px}
+  .lr-player-name{font-size:.77rem}
+  .lr-player-pts{font-size:1rem}
+  .lr-player-mins{width:36px;font-size:.69rem}
 
   /* Countdown digits */
   .cd-v{font-size:1rem}
@@ -1004,33 +1106,62 @@ select.inp{
 
   <!-- LIVE RANK -->
   <div class="page" id="page-liverank">
-    <div class="ph"><h2>Live Rank</h2><p>Your estimated overall rank in real time as matches play &mdash; refreshes every 60 seconds</p></div>
+    <div class="ph"><h2>Live Rank</h2><p>Estimated overall rank in real time &bull; auto-refreshes every 60s</p></div>
     <div id="lr-status" class="al ai mb-16" style="display:none"></div>
-    <div class="g4 mb-16">
-      <div class="kpi"><div class="kpi-l">Live Overall Rank</div><div class="kpi-v ca" id="lr-rank">&mdash;</div><div class="kpi-d" id="lr-rank-d">Enter Manager ID in My Squad first</div></div>
-      <div class="kpi"><div class="kpi-l">Live GW Points</div><div class="kpi-v cbl" id="lr-pts">&mdash;</div><div class="kpi-d" id="lr-pts-d">incl. predicted bonus</div></div>
+
+    <!-- LiveFPL-style dark summary header -->
+    <div class="lr-summary mb-16" id="lr-summary">
+      <div class="lr-s-item">
+        <div class="lr-s-label">GW <span id="lr-gw-num">--</span> Rank</div>
+        <div class="lr-s-val" id="lr-gw-rank">&mdash;</div>
+      </div>
+      <div class="lr-s-item lr-s-main">
+        <div class="lr-s-label">Live Rank</div>
+        <div class="lr-s-val" id="lr-rank">&mdash;</div>
+        <div class="lr-s-sub" id="lr-rank-d">Load squad first</div>
+      </div>
+      <div class="lr-s-item">
+        <div class="lr-s-label">Points</div>
+        <div class="lr-s-val" id="lr-pts">&mdash;</div>
+        <div class="lr-s-sub" id="lr-pts-d">incl. bonus</div>
+      </div>
+    </div>
+
+    <!-- Safety / Delta / Average -->
+    <div class="g3 mb-16">
       <div class="kpi"><div class="kpi-l">Safety Score</div><div class="kpi-v cy" id="lr-safe">&mdash;</div><div class="kpi-d" id="lr-safe-d">pts needed for green arrow</div></div>
+      <div class="kpi"><div class="kpi-l">vs Average</div><div class="kpi-v" id="lr-delta">&mdash;</div><div class="kpi-d" id="lr-delta-d">delta from GW average</div></div>
       <div class="kpi"><div class="kpi-l">GW Average</div><div class="kpi-v t2c" id="lr-avg">&mdash;</div><div class="kpi-d">current GW avg pts</div></div>
     </div>
+
+    <!-- Breakdown + Comparison side-by-side -->
     <div class="g2 mb-16">
       <div class="card">
-        <div class="ct">Live Squad Points <span id="lr-gw-lbl"></span></div>
-        <div id="lr-squad"><div class="al ai"><span class="al-ic">&#9650;</span><div>Load your squad in <strong>My Squad</strong> tab first, then return here. Auto-refreshes every 60s during live GWs.</div></div></div>
+        <div class="ct">Points Breakdown</div>
+        <div id="lr-breakdown">
+          <div class="lr-bd-row"><span class="lr-bd-label">Load squad to see breakdown</span></div>
+        </div>
       </div>
       <div class="card">
-        <div class="ct">Rank Estimate Explained</div>
-        <div style="font-size:.833rem;color:var(--t2);line-height:1.7">
-          <p class="mb-8"><strong class="t1c">How it works</strong><br>Your projected score (including predicted bonus from live BPS) is compared against the global scoring distribution, estimated from player ownership percentages.</p>
-          <p class="mb-8"><strong class="t1c">Accuracy</strong><br>Very close to final rank once most matches are played. Early in a GW (few matches played) the estimate is wider. Bonus predictions may shift slightly until FPL confirms them.</p>
-          <p><strong class="t1c">Safety score</strong><br>The points you need to be above the current GW average. If you exceed it, you get a green arrow. Below it, a red arrow.</p>
+        <div class="ct">vs Average</div>
+        <div id="lr-comparison">
+          <div class="lr-cmp-row"><div class="lr-cmp-label">Load squad to compare</div></div>
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="fbc mb-16">
-        <div class="ct" style="margin-bottom:0">Live Player Stats &mdash; Current GW</div>
-        <button class="btn btn-p btn-sm" onclick="startLiveRank()">&#8635; Refresh Now</button>
+
+    <!-- Live Squad — player cards -->
+    <div class="card mb-16">
+      <div class="fbc mb-12">
+        <div class="ct" style="margin-bottom:0">Live Squad <span id="lr-formation" class="tag tg"></span> <span id="lr-gw-lbl"></span></div>
+        <button class="btn btn-p btn-sm" onclick="startLiveRank()">&#8635; Refresh</button>
       </div>
+      <div id="lr-squad"><div class="al ai"><span class="al-ic">&#9650;</span><div>Load your squad in <strong>My Squad</strong> tab first, then return here.</div></div></div>
+    </div>
+
+    <!-- Detailed stats table -->
+    <div class="card">
+      <div class="ct">Live Player Stats &mdash; Current GW</div>
       <div class="tw">
         <table><thead><tr><th>Player</th><th>Club</th><th class="r">Mins</th><th class="r">G</th><th class="r">A</th><th class="r">CS</th><th class="r">BPS</th><th class="r">Bonus</th><th class="r">Pts</th></tr></thead>
         <tbody id="lr-live-tbl"><tr><td colspan="9" style="text-align:center;padding:32px;color:var(--t3)">No live data yet &mdash; load squad first</td></tr></tbody>
@@ -1200,7 +1331,7 @@ select.inp{
 <script>
 const S={
   mid:localStorage.getItem('fplwr_mid')||localStorage.getItem('fwr_mid')||'',gw:29,deadline:null,bs:null,
-  charts:{},cmpData:[null,null,null,null],txN:0,liveData:null,liveInterval:null,myPicks:null,
+  charts:{},cmpData:[null,null,null,null],txN:0,liveData:null,liveInterval:null,myPicks:null,preGwRank:null,
   chips:{wc1:'available',wc2:'available',fh1:'available',fh2:'available',bb1:'available',bb2:'available',tc1:'available',tc2:'available'},
   rivals:JSON.parse(localStorage.getItem('fplwr_rivals')||localStorage.getItem('fwr_rivals')||'[]'),
   watch:JSON.parse(localStorage.getItem('fwr_watch')||'[]'),
@@ -1972,6 +2103,7 @@ async function loadSquad(){
     if(lat){
       setKPI('k-pts',lat.total_points.toLocaleString());setKPI('k-gw',lat.points,'up');
       setKPI('k-rank',lat.overall_rank.toLocaleString());setKPI('r-cur',lat.overall_rank.toLocaleString());
+      S.preGwRank=lat.overall_rank;
       const gap=lat.overall_rank-85000;
       document.getElementById('r-gap').textContent=gap>0?`Gap: ${gap.toLocaleString()}`:'🏆 Top 1%!';
       const prev=gwh[gwh.length-2];
@@ -2266,7 +2398,7 @@ async function updateAllLive(){
   renderCapScenarios();
 }
 
-// ─── LIVE RANK ──────────────────────────────────────────────
+// ─── LIVE RANK (LiveFPL-inspired) ───────────────────────────
 function renderLiveRank({liveEv, picks}){
   if(!S.bs)return;
   const eleMap={};
@@ -2277,8 +2409,10 @@ function renderLiveRank({liveEv, picks}){
   S.bs.teams.forEach(t=>teamMap[t.id]=t);
 
   // Calculate live score for my squad
-  let livePts=0, startPts=0;
+  let livePts=0, starterPts=0, benchPts=0, capPts=0, capRawPts=0;
   const playerRows=[];
+  const posCount={1:0,2:0,3:0,4:0};
+  const hitsCost=picks.entry_history?.event_transfers_cost||0;
 
   picks.picks.forEach(pick=>{
     const live=eleMap[pick.element];
@@ -2288,14 +2422,19 @@ function renderLiveRank({liveEv, picks}){
     const rawPts=calcLivePts(live,pos);
     const mult=pick.multiplier||1; // 2=captain, 3=TC
     const pts=rawPts*mult;
-    if(pick.multiplier>0) startPts+=pts;
-    livePts+=pts;
+    const isStarter=pick.multiplier>0;
+    if(isStarter){starterPts+=pts;posCount[pos]=(posCount[pos]||0)+1;}
+    else benchPts+=rawPts;
+    if(pick.is_captain){capPts=pts;capRawPts=rawPts;}
+    livePts+=isStarter?pts:0;
 
     playerRows.push({
       id:pick.element,
       name:bs.web_name||'?',
       club:(teamMap[bs.team]||{}).short_name||'?',
+      teamId:bs.team,
       pos:PM[pos]||'?',
+      posNum:pos,
       mins:live.stats.minutes||0,
       goals:live.stats.goals_scored||0,
       assists:live.stats.assists||0,
@@ -2306,36 +2445,54 @@ function renderLiveRank({liveEv, picks}){
       rawPts:rawPts,
       isCap:pick.is_captain,
       isVc:pick.is_vice_captain,
-      isStarter:pick.multiplier>0
+      isStarter:isStarter,
+      position:pick.position
     });
   });
+
+  // Formation string
+  const formation=`${posCount[2]||0}-${posCount[3]||0}-${posCount[4]||0}`;
 
   // GW average from bootstrap events
   const gwData=S.bs.events.find(e=>e.id===S.gw)||{};
   const gwAvg=gwData.average_entry_score||0;
+  const delta=livePts-(gwAvg||0);
+  const netPts=livePts-hitsCost;
 
   // Estimate rank
   const estRank=estimateRank(livePts, gwAvg||48);
   const safeScore = Math.ceil(gwAvg||48);
 
-  // Update KPIs
-  setKPI('lr-pts', livePts.toString());
-  document.getElementById('lr-pts-d').textContent = picks.picks.filter(p=>p.multiplier>0).length+' players scored';
-  setKPI('lr-avg', gwAvg ? gwAvg.toFixed(1) : '~48');
+  // ── Summary bar ──
+  const gwNum=document.getElementById('lr-gw-num');
+  if(gwNum)gwNum.textContent=S.gw;
+  const gwRankEl=document.getElementById('lr-gw-rank');
+  if(gwRankEl)gwRankEl.textContent=S.preGwRank?S.preGwRank.toLocaleString():'—';
+
+  document.getElementById('lr-pts').textContent=livePts;
+  document.getElementById('lr-pts-d').textContent=picks.picks.filter(p=>p.multiplier>0).length+' starters scored';
 
   if(estRank){
-    document.getElementById('lr-rank').textContent = estRank.toLocaleString();
-    const rankDiff = S.lastLiveRank ? S.lastLiveRank - estRank : 0;
-    const rankEl = document.getElementById('lr-rank-d');
-    if(rankDiff>0) rankEl.innerHTML=`<span class="up">&#9650; ${rankDiff.toLocaleString()} estimated gain</span>`;
-    else if(rankDiff<0) rankEl.innerHTML=`<span class="dn">&#9660; ${Math.abs(rankDiff).toLocaleString()} estimated drop</span>`;
-    else rankEl.textContent='estimated from ownership';
-    S.lastLiveRank = estRank;
+    document.getElementById('lr-rank').textContent=estRank.toLocaleString();
+    const rankEl=document.getElementById('lr-rank-d');
+    if(S.preGwRank){
+      const rd=S.preGwRank-estRank;
+      const pct=S.preGwRank>0?((rd/S.preGwRank)*100).toFixed(1):'0';
+      if(rd>0)rankEl.innerHTML=`<span class="up">&#9650; ${rd.toLocaleString()} (${pct}%)</span>`;
+      else if(rd<0)rankEl.innerHTML=`<span class="dn">&#9660; ${Math.abs(rd).toLocaleString()} (${Math.abs(pct)}%)</span>`;
+      else rankEl.textContent='no change';
+    } else {
+      rankEl.textContent='estimated from ownership';
+    }
+    S.lastLiveRank=estRank;
   }
 
-  const ptsNeeded = safeScore - livePts;
-  const safeEl = document.getElementById('lr-safe');
-  const safeDEl = document.getElementById('lr-safe-d');
+  // ── KPI row: Safety / Delta / Average ──
+  setKPI('lr-avg', gwAvg?gwAvg.toFixed(1):'~48');
+
+  const ptsNeeded=safeScore-livePts;
+  const safeEl=document.getElementById('lr-safe');
+  const safeDEl=document.getElementById('lr-safe-d');
   if(ptsNeeded<=0){
     safeEl.textContent='SAFE';safeEl.style.color='var(--gr)';
     if(safeDEl)safeDEl.innerHTML='<span class="up">On track for green arrow</span>';
@@ -2344,12 +2501,94 @@ function renderLiveRank({liveEv, picks}){
     if(safeDEl)safeDEl.textContent='pts needed for green arrow';
   }
 
+  const deltaEl=document.getElementById('lr-delta');
+  const deltaDEl=document.getElementById('lr-delta-d');
+  if(deltaEl){
+    deltaEl.textContent=(delta>=0?'+':'')+delta;
+    deltaEl.style.color=delta>=0?'var(--gr)':'var(--rd)';
+  }
+  if(deltaDEl)deltaDEl.textContent=delta>=0?'above GW average':'below GW average';
+
+  // ── Points Breakdown ──
+  const bdEl=document.getElementById('lr-breakdown');
+  if(bdEl){
+    bdEl.innerHTML=`
+      <div class="lr-bd-row"><span class="lr-bd-label">Starter points</span><span class="lr-bd-val">${starterPts}</span></div>
+      <div class="lr-bd-row"><span class="lr-bd-label">Captain (${playerRows.find(p=>p.isCap)?.name||'?'})${capPts!==capRawPts?' ×'+(capPts/capRawPts||1):''}</span><span class="lr-bd-val ca">${capPts}</span></div>
+      <div class="lr-bd-row"><span class="lr-bd-label">Bench points</span><span class="lr-bd-val t3c">${benchPts}</span></div>
+      <div class="lr-bd-row"><span class="lr-bd-label">Transfer hits</span><span class="lr-bd-val ${hitsCost>0?'cr':''}">${hitsCost>0?'-'+hitsCost:'0'}</span></div>
+      <div class="lr-bd-row lr-bd-total"><span class="lr-bd-label">Net GW Points</span><span class="lr-bd-val ${netPts>=0?'ca':'cr'}">${netPts}</span></div>`;
+  }
+
+  // ── Average Comparison ──
+  const cmpEl=document.getElementById('lr-comparison');
+  if(cmpEl){
+    const maxPts=Math.max(livePts,gwAvg,1);
+    const myPct=Math.min(100,(livePts/maxPts)*100);
+    const avgPct=Math.min(100,((gwAvg||0)/maxPts)*100);
+    const topEst=Math.round((gwAvg||48)*1.3);
+    const topPct=Math.min(100,(topEst/maxPts)*100);
+    cmpEl.innerHTML=`
+      <div class="lr-cmp-row">
+        <div class="lr-cmp-header"><span class="lr-cmp-label">Your Points</span><span class="lr-cmp-val ca">${livePts}</span></div>
+        <div class="lr-cmp-bar"><div class="lr-cmp-fill" style="width:${myPct}%;background:var(--gr)"></div></div>
+      </div>
+      <div class="lr-cmp-row">
+        <div class="lr-cmp-header"><span class="lr-cmp-label">GW Average</span><span class="lr-cmp-val t2c">${gwAvg?gwAvg.toFixed(1):'—'}</span></div>
+        <div class="lr-cmp-bar"><div class="lr-cmp-fill" style="width:${avgPct}%;background:var(--bl)"></div></div>
+      </div>
+      <div class="lr-cmp-row">
+        <div class="lr-cmp-header"><span class="lr-cmp-label">Top 10k Est.</span><span class="lr-cmp-val cy">${topEst}</span></div>
+        <div class="lr-cmp-bar"><div class="lr-cmp-fill" style="width:${topPct}%;background:var(--am)"></div></div>
+      </div>`;
+  }
+
+  // ── Formation badge ──
+  const formEl=document.getElementById('lr-formation');
+  if(formEl)formEl.textContent=formation;
   document.getElementById('lr-gw-lbl').innerHTML=`<span class="tag tg">GW${S.gw} &bull; Live</span>`;
 
-  // Live squad table
+  // ── Live Squad — player cards ──
+  const starters=playerRows.filter(p=>p.isStarter).sort((a,b)=>a.posNum-b.posNum||b.pts-a.pts);
+  const bench=playerRows.filter(p=>!p.isStarter).sort((a,b)=>a.position-b.position);
+
+  const renderCard=p=>{
+    const tc=TEAM_COLORS[p.club]||{bg:'#555',tx:'#fff'};
+    const minsPct=Math.min(100,Math.round((p.mins/90)*100));
+    const minsColor=p.mins===0?'var(--rd)':p.mins>=60?'var(--gr)':'var(--am)';
+    const minsLabel=p.mins===0?'0\'':p.mins+'\'';
+    const badges=`${p.isCap?'<span class="tag ty">C</span>':''}${p.isVc?'<span class="tag tb">V</span>':''}`;
+    const statParts=[];
+    if(p.goals>0)statParts.push(`${p.goals}G`);
+    if(p.assists>0)statParts.push(`${p.assists}A`);
+    if(p.cs>0)statParts.push('CS');
+    if(p.bonus>0)statParts.push(`+${p.bonus}bp`);
+    return `<div class="lr-player${p.isStarter?'':' lr-bench'}">
+      <div class="lr-team-bar" style="background:${tc.bg}"></div>
+      <div class="lr-player-info">
+        <div class="lr-player-name">${p.name} ${badges} <span class="pos p${p.pos}" style="font-size:.6rem">${p.pos}</span></div>
+        <div class="lr-player-detail">${p.club}${statParts.length?' &bull; '+statParts.join(', '):''}</div>
+      </div>
+      <div class="lr-player-mins">
+        ${minsLabel}
+        <div class="lr-mins-bar"><div class="lr-mins-fill" style="width:${minsPct}%;background:${minsColor}"></div></div>
+      </div>
+      <div class="lr-player-pts ${p.pts>0?'ca':p.pts<0?'cr':''}">${p.pts}</div>
+    </div>`;
+  };
+
+  const sqEl=document.getElementById('lr-squad');
+  let squadHtml=starters.map(renderCard).join('');
+  if(bench.length){
+    squadHtml+=`<div class="lr-bench-sep">Bench</div>`;
+    squadHtml+=bench.map(renderCard).join('');
+  }
+  sqEl.innerHTML=squadHtml;
+
+  // ── Detailed stats table (kept for full data view) ──
   const tbody=document.getElementById('lr-live-tbl');
-  tbody.innerHTML=playerRows.sort((a,b)=>b.pts-a.pts).map(p=>{
-    const statusIcon = p.mins===0?'<span class="cr">&#9679; 0 mins</span>':p.mins>=60?'<span class="ca">&#9679; Playing</span>':'<span class="cy">&#9679; On</span>';
+  const allSorted=[...playerRows].sort((a,b)=>b.pts-a.pts);
+  tbody.innerHTML=allSorted.map(p=>{
     return `<tr>
       <td class="cp">${p.name}${p.isCap?' <span class="tag ty">C</span>':''}${p.isVc?' <span class="tag tb">V</span>':''}${!p.isStarter?' <span class="tag tz">Bench</span>':''}</td>
       <td class="t2c">${p.club}</td>
