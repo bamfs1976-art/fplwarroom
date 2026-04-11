@@ -398,30 +398,54 @@ select.inp{
   display:flex;align-items:stretch;
   background:linear-gradient(135deg,#1a1f3a 0%,#0f1628 100%);
   border-radius:var(--r3);overflow:hidden;
-  box-shadow:0 4px 20px rgba(0,0,0,.2);
+  box-shadow:0 4px 20px rgba(0,0,0,.25);
 }
 .lr-s-item{
-  flex:1;padding:16px 20px;text-align:center;
+  flex:1;padding:18px 20px;text-align:center;
   border-right:1px solid rgba(255,255,255,.08);
 }
 .lr-s-item:last-child{border-right:none}
 .lr-s-label{
   font-size:9px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.12em;color:rgba(255,255,255,.45);margin-bottom:6px;
+  letter-spacing:.12em;color:rgba(255,255,255,.45);margin-bottom:8px;
 }
 .lr-s-val{
   font-size:1.4rem;font-weight:900;color:#fff;
   letter-spacing:-.03em;line-height:1;
 }
 .lr-s-main .lr-s-val{font-size:1.8rem;color:#4ade80}
-.lr-s-sub{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:4px}
+.lr-s-sub{font-size:.72rem;color:rgba(255,255,255,.4);margin-top:5px;line-height:1.5}
 .lr-s-sub .up{color:#4ade80}.lr-s-sub .dn{color:#f87171}
-.lr-s-change{
-  display:inline-flex;align-items:center;gap:3px;
-  padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:700;margin-top:6px;
+/* Sub-stats row inside summary bar */
+.lr-s-stats{
+  display:flex;justify-content:center;gap:12px;margin-top:8px;
+  font-size:.69rem;font-weight:600;
 }
-.lr-s-change.green{background:rgba(74,222,128,.15);color:#4ade80}
-.lr-s-change.red{background:rgba(248,113,113,.15);color:#f87171}
+.lr-s-stat{color:rgba(255,255,255,.35)}
+.lr-s-stat span{color:rgba(255,255,255,.7);font-weight:800}
+.lr-s-stat.safe span{color:#4ade80}
+.lr-s-stat.danger span{color:#f87171}
+
+/* Live pulse dot */
+.lr-pulse{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:#4ade80;margin-right:5px;vertical-align:middle;
+}
+@media(prefers-reduced-motion:no-preference){
+  .lr-pulse{animation:lrpulse 2s ease infinite}
+}
+@keyframes lrpulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{opacity:.7;box-shadow:0 0 0 5px transparent}}
+.lr-updated{font-size:.69rem;color:var(--t4);text-align:right;margin-top:6px}
+
+/* Total points row in player list */
+.lr-total{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;border-radius:var(--r1);margin-top:8px;
+  background:linear-gradient(135deg,#1a1f3a,#0f1628);
+  color:#fff;font-weight:800;
+}
+.lr-total-label{font-size:.833rem;display:flex;align-items:center;gap:8px}
+.lr-total-val{font-size:1.3rem;font-weight:900;color:#4ade80}
 
 /* Live player card rows */
 .lr-player{
@@ -678,11 +702,14 @@ select.inp{
   .lb-label{font-size:7px}
 
   /* Live Rank summary bar compact */
-  .lr-summary{flex-wrap:wrap}
-  .lr-s-item{min-width:30%;padding:12px 10px}
-  .lr-s-val{font-size:1.1rem}
-  .lr-s-main .lr-s-val{font-size:1.4rem}
+  .lr-summary{flex-direction:column}
+  .lr-s-item{padding:12px 16px;border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}
+  .lr-s-item:last-child{border-bottom:none}
+  .lr-s-val{font-size:1.2rem}
+  .lr-s-main .lr-s-val{font-size:1.5rem}
   .lr-s-label{font-size:8px}
+  .lr-s-stats{gap:16px}
+  .lr-total-val{font-size:1.1rem}
 
   /* Live player cards compact */
   .lr-player{padding:8px 10px;gap:8px}
@@ -1106,10 +1133,10 @@ select.inp{
 
   <!-- LIVE RANK -->
   <div class="page" id="page-liverank">
-    <div class="ph"><h2>Live Rank</h2><p>Estimated overall rank in real time &bull; auto-refreshes every 60s</p></div>
+    <div class="fbc mb-16"><div class="ph" style="margin-bottom:0"><h2>Live Rank</h2><p>Real-time estimated rank &bull; auto-refreshes every 60s</p></div><button class="btn btn-p btn-sm" onclick="startLiveRank()"><span class="lr-pulse"></span>Refresh</button></div>
     <div id="lr-status" class="al ai mb-16" style="display:none"></div>
 
-    <!-- LiveFPL-style dark summary header -->
+    <!-- LiveFPL-style dark summary header (all key stats consolidated) -->
     <div class="lr-summary mb-16" id="lr-summary">
       <div class="lr-s-item">
         <div class="lr-s-label">GW <span id="lr-gw-num">--</span> Rank</div>
@@ -1124,14 +1151,20 @@ select.inp{
         <div class="lr-s-label">Points</div>
         <div class="lr-s-val" id="lr-pts">&mdash;</div>
         <div class="lr-s-sub" id="lr-pts-d">incl. bonus</div>
+        <div class="lr-s-stats" id="lr-pts-stats">
+          <div class="lr-s-stat">Safety: <span id="lr-safe">--</span></div>
+          <div class="lr-s-stat">&Delta;: <span id="lr-delta">--</span></div>
+        </div>
       </div>
     </div>
 
-    <!-- Safety / Delta / Average -->
-    <div class="g3 mb-16">
-      <div class="kpi"><div class="kpi-l">Safety Score</div><div class="kpi-v cy" id="lr-safe">&mdash;</div><div class="kpi-d" id="lr-safe-d">pts needed for green arrow</div></div>
-      <div class="kpi"><div class="kpi-l">vs Average</div><div class="kpi-v" id="lr-delta">&mdash;</div><div class="kpi-d" id="lr-delta-d">delta from GW average</div></div>
-      <div class="kpi"><div class="kpi-l">GW Average</div><div class="kpi-v t2c" id="lr-avg">&mdash;</div><div class="kpi-d">current GW avg pts</div></div>
+    <!-- Live Squad — player cards (primary content) -->
+    <div class="card mb-16">
+      <div class="fbc mb-12">
+        <div class="ct" style="margin-bottom:0">Live Squad <span id="lr-formation" class="tag tg"></span> <span id="lr-gw-lbl"></span></div>
+        <div class="lr-updated" id="lr-updated"></div>
+      </div>
+      <div id="lr-squad"><div class="al ai"><span class="al-ic">&#9650;</span><div>Load your squad in <strong>My Squad</strong> tab first, then return here.</div></div></div>
     </div>
 
     <!-- Breakdown + Comparison side-by-side -->
@@ -1148,15 +1181,6 @@ select.inp{
           <div class="lr-cmp-row"><div class="lr-cmp-label">Load squad to compare</div></div>
         </div>
       </div>
-    </div>
-
-    <!-- Live Squad — player cards -->
-    <div class="card mb-16">
-      <div class="fbc mb-12">
-        <div class="ct" style="margin-bottom:0">Live Squad <span id="lr-formation" class="tag tg"></span> <span id="lr-gw-lbl"></span></div>
-        <button class="btn btn-p btn-sm" onclick="startLiveRank()">&#8635; Refresh</button>
-      </div>
-      <div id="lr-squad"><div class="al ai"><span class="al-ic">&#9650;</span><div>Load your squad in <strong>My Squad</strong> tab first, then return here.</div></div></div>
     </div>
 
     <!-- Detailed stats table -->
@@ -2409,7 +2433,7 @@ function renderLiveRank({liveEv, picks}){
   S.bs.teams.forEach(t=>teamMap[t.id]=t);
 
   // Calculate live score for my squad
-  let livePts=0, starterPts=0, benchPts=0, capPts=0, capRawPts=0;
+  let livePts=0, starterPts=0, benchPts=0, capPts=0, capRawPts=0, totalBonus=0;
   const playerRows=[];
   const posCount={1:0,2:0,3:0,4:0};
   const hitsCost=picks.entry_history?.event_transfers_cost||0;
@@ -2420,10 +2444,10 @@ function renderLiveRank({liveEv, picks}){
     if(!live)return;
     const pos=bs.element_type||4;
     const rawPts=calcLivePts(live,pos);
-    const mult=pick.multiplier||1; // 2=captain, 3=TC
+    const mult=pick.multiplier||1;
     const pts=rawPts*mult;
     const isStarter=pick.multiplier>0;
-    if(isStarter){starterPts+=pts;posCount[pos]=(posCount[pos]||0)+1;}
+    if(isStarter){starterPts+=pts;posCount[pos]=(posCount[pos]||0)+1;totalBonus+=(live.stats.bonus||0)*mult;}
     else benchPts+=rawPts;
     if(pick.is_captain){capPts=pts;capRawPts=rawPts;}
     livePts+=isStarter?pts:0;
@@ -2441,8 +2465,10 @@ function renderLiveRank({liveEv, picks}){
       cs:live.stats.clean_sheets||0,
       bps:live.stats.bps||0,
       bonus:live.stats.bonus||0,
+      own:bs.selected_by_percent||'0',
       pts:pts,
       rawPts:rawPts,
+      mult:mult,
       isCap:pick.is_captain,
       isVc:pick.is_vice_captain,
       isStarter:isStarter,
@@ -2458,10 +2484,12 @@ function renderLiveRank({liveEv, picks}){
   const gwAvg=gwData.average_entry_score||0;
   const delta=livePts-(gwAvg||0);
   const netPts=livePts-hitsCost;
+  const ptsWithoutBonus=livePts-totalBonus;
 
   // Estimate rank
   const estRank=estimateRank(livePts, gwAvg||48);
-  const safeScore = Math.ceil(gwAvg||48);
+  const safeScore=Math.ceil(gwAvg||48);
+  const ptsNeeded=safeScore-livePts;
 
   // ── Summary bar ──
   const gwNum=document.getElementById('lr-gw-num');
@@ -2469,8 +2497,20 @@ function renderLiveRank({liveEv, picks}){
   const gwRankEl=document.getElementById('lr-gw-rank');
   if(gwRankEl)gwRankEl.textContent=S.preGwRank?S.preGwRank.toLocaleString():'—';
 
-  document.getElementById('lr-pts').textContent=livePts;
-  document.getElementById('lr-pts-d').textContent=picks.picks.filter(p=>p.multiplier>0).length+' starters scored';
+  // Points display: "X(B)=Y" format like LiveFPL
+  const ptsEl=document.getElementById('lr-pts');
+  if(ptsEl)ptsEl.innerHTML=`${ptsWithoutBonus}<span style="font-size:.7em;opacity:.6">(${totalBonus})</span>=${livePts}`;
+  document.getElementById('lr-pts-d').textContent=hitsCost>0?`-${hitsCost} hit cost`:`${picks.picks.filter(p=>p.multiplier>0).length} starters`;
+
+  // Safety & Delta in the points sub-stats area
+  const ptsStats=document.getElementById('lr-pts-stats');
+  if(ptsStats){
+    const safeClass=ptsNeeded<=0?'safe':'danger';
+    const safeVal=ptsNeeded<=0?'SAFE':'+'+ptsNeeded;
+    const deltaStr=(delta>=0?'+':'')+delta;
+    const deltaClass=delta>=0?'safe':'danger';
+    ptsStats.innerHTML=`<div class="lr-s-stat ${safeClass}">Safety: <span>${safeVal}</span></div><div class="lr-s-stat ${deltaClass}">&Delta;: <span>${deltaStr}</span></div>`;
+  }
 
   if(estRank){
     document.getElementById('lr-rank').textContent=estRank.toLocaleString();
@@ -2478,8 +2518,8 @@ function renderLiveRank({liveEv, picks}){
     if(S.preGwRank){
       const rd=S.preGwRank-estRank;
       const pct=S.preGwRank>0?((rd/S.preGwRank)*100).toFixed(1):'0';
-      if(rd>0)rankEl.innerHTML=`<span class="up">&#9650; ${rd.toLocaleString()} (${pct}%)</span>`;
-      else if(rd<0)rankEl.innerHTML=`<span class="dn">&#9660; ${Math.abs(rd).toLocaleString()} (${Math.abs(pct)}%)</span>`;
+      if(rd>0)rankEl.innerHTML=`<span class="up">&#9650; ${rd.toLocaleString()} (-${Math.abs(pct)}%)</span>`;
+      else if(rd<0)rankEl.innerHTML=`<span class="dn">&#9660; ${Math.abs(rd).toLocaleString()} (+${Math.abs(pct)}%)</span>`;
       else rankEl.textContent='no change';
     } else {
       rankEl.textContent='estimated from ownership';
@@ -2487,34 +2527,14 @@ function renderLiveRank({liveEv, picks}){
     S.lastLiveRank=estRank;
   }
 
-  // ── KPI row: Safety / Delta / Average ──
-  setKPI('lr-avg', gwAvg?gwAvg.toFixed(1):'~48');
-
-  const ptsNeeded=safeScore-livePts;
-  const safeEl=document.getElementById('lr-safe');
-  const safeDEl=document.getElementById('lr-safe-d');
-  if(ptsNeeded<=0){
-    safeEl.textContent='SAFE';safeEl.style.color='var(--gr)';
-    if(safeDEl)safeDEl.innerHTML='<span class="up">On track for green arrow</span>';
-  } else {
-    safeEl.textContent='+'+ptsNeeded;safeEl.style.color='var(--am)';
-    if(safeDEl)safeDEl.textContent='pts needed for green arrow';
-  }
-
-  const deltaEl=document.getElementById('lr-delta');
-  const deltaDEl=document.getElementById('lr-delta-d');
-  if(deltaEl){
-    deltaEl.textContent=(delta>=0?'+':'')+delta;
-    deltaEl.style.color=delta>=0?'var(--gr)':'var(--rd)';
-  }
-  if(deltaDEl)deltaDEl.textContent=delta>=0?'above GW average':'below GW average';
-
   // ── Points Breakdown ──
   const bdEl=document.getElementById('lr-breakdown');
   if(bdEl){
+    const capName=playerRows.find(p=>p.isCap)?.name||'?';
+    const capMult=capRawPts>0?(capPts/capRawPts):1;
     bdEl.innerHTML=`
       <div class="lr-bd-row"><span class="lr-bd-label">Starter points</span><span class="lr-bd-val">${starterPts}</span></div>
-      <div class="lr-bd-row"><span class="lr-bd-label">Captain (${playerRows.find(p=>p.isCap)?.name||'?'})${capPts!==capRawPts?' ×'+(capPts/capRawPts||1):''}</span><span class="lr-bd-val ca">${capPts}</span></div>
+      <div class="lr-bd-row"><span class="lr-bd-label">Captain (${capName}) &times;${capMult}</span><span class="lr-bd-val ca">${capPts}</span></div>
       <div class="lr-bd-row"><span class="lr-bd-label">Bench points</span><span class="lr-bd-val t3c">${benchPts}</span></div>
       <div class="lr-bd-row"><span class="lr-bd-label">Transfer hits</span><span class="lr-bd-val ${hitsCost>0?'cr':''}">${hitsCost>0?'-'+hitsCost:'0'}</span></div>
       <div class="lr-bd-row lr-bd-total"><span class="lr-bd-label">Net GW Points</span><span class="lr-bd-val ${netPts>=0?'ca':'cr'}">${netPts}</span></div>`;
@@ -2523,10 +2543,10 @@ function renderLiveRank({liveEv, picks}){
   // ── Average Comparison ──
   const cmpEl=document.getElementById('lr-comparison');
   if(cmpEl){
-    const maxPts=Math.max(livePts,gwAvg,1);
+    const topEst=Math.round((gwAvg||48)*1.3);
+    const maxPts=Math.max(livePts,gwAvg,topEst,1);
     const myPct=Math.min(100,(livePts/maxPts)*100);
     const avgPct=Math.min(100,((gwAvg||0)/maxPts)*100);
-    const topEst=Math.round((gwAvg||48)*1.3);
     const topPct=Math.min(100,(topEst/maxPts)*100);
     cmpEl.innerHTML=`
       <div class="lr-cmp-row">
@@ -2543,12 +2563,16 @@ function renderLiveRank({liveEv, picks}){
       </div>`;
   }
 
-  // ── Formation badge ──
+  // ── Formation badge + GW label ──
   const formEl=document.getElementById('lr-formation');
   if(formEl)formEl.textContent=formation;
   document.getElementById('lr-gw-lbl').innerHTML=`<span class="tag tg">GW${S.gw} &bull; Live</span>`;
 
-  // ── Live Squad — player cards ──
+  // ── Timestamp ──
+  const updEl=document.getElementById('lr-updated');
+  if(updEl)updEl.textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+  // ── Live Squad — player cards with ownership% ──
   const starters=playerRows.filter(p=>p.isStarter).sort((a,b)=>a.posNum-b.posNum||b.pts-a.pts);
   const bench=playerRows.filter(p=>!p.isStarter).sort((a,b)=>a.position-b.position);
 
@@ -2557,7 +2581,8 @@ function renderLiveRank({liveEv, picks}){
     const minsPct=Math.min(100,Math.round((p.mins/90)*100));
     const minsColor=p.mins===0?'var(--rd)':p.mins>=60?'var(--gr)':'var(--am)';
     const minsLabel=p.mins===0?'0\'':p.mins+'\'';
-    const badges=`${p.isCap?'<span class="tag ty">C</span>':''}${p.isVc?'<span class="tag tb">V</span>':''}`;
+    const capBadge=p.isCap?`<span class="tag ty">C${p.mult>1?' &times;'+p.mult:''}</span>`:'';
+    const vcBadge=p.isVc?'<span class="tag tb">V</span>':'';
     const statParts=[];
     if(p.goals>0)statParts.push(`${p.goals}G`);
     if(p.assists>0)statParts.push(`${p.assists}A`);
@@ -2566,8 +2591,8 @@ function renderLiveRank({liveEv, picks}){
     return `<div class="lr-player${p.isStarter?'':' lr-bench'}">
       <div class="lr-team-bar" style="background:${tc.bg}"></div>
       <div class="lr-player-info">
-        <div class="lr-player-name">${p.name} ${badges} <span class="pos p${p.pos}" style="font-size:.6rem">${p.pos}</span></div>
-        <div class="lr-player-detail">${p.club}${statParts.length?' &bull; '+statParts.join(', '):''}</div>
+        <div class="lr-player-name">${p.name} ${capBadge}${vcBadge} <span class="pos p${p.pos}" style="font-size:.6rem">${p.pos}</span></div>
+        <div class="lr-player-detail">${p.club} &bull; ${p.own}% own${statParts.length?' &bull; '+statParts.join(', '):''}</div>
       </div>
       <div class="lr-player-mins">
         ${minsLabel}
@@ -2583,9 +2608,11 @@ function renderLiveRank({liveEv, picks}){
     squadHtml+=`<div class="lr-bench-sep">Bench</div>`;
     squadHtml+=bench.map(renderCard).join('');
   }
+  // Total points row
+  squadHtml+=`<div class="lr-total"><div class="lr-total-label"><span class="lr-pulse"></span>Total${hitsCost>0?' (after -'+hitsCost+' hits)':''}</div><div class="lr-total-val">${netPts}</div></div>`;
   sqEl.innerHTML=squadHtml;
 
-  // ── Detailed stats table (kept for full data view) ──
+  // ── Detailed stats table ──
   const tbody=document.getElementById('lr-live-tbl');
   const allSorted=[...playerRows].sort((a,b)=>b.pts-a.pts);
   tbody.innerHTML=allSorted.map(p=>{
