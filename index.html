@@ -849,6 +849,28 @@ select.inp{
 @media(prefers-reduced-motion:no-preference){.spinner{animation:spin .7s linear infinite}}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── ACCESSIBILITY (v2.0 — phase 6) ─────────────────────── */
+/* Visible focus rings for keyboard navigation (4.5:1 contrast on both modes). */
+button:focus-visible, .btn:focus-visible, .ni:focus-visible,
+.bn-item:focus-visible, .lr-as-btn:focus-visible, .mp-add:focus-visible,
+.lr-ml-h:focus-visible, .qi-row:focus-visible, .cc:focus-visible,
+.help-btn:focus-visible, .ham:focus-visible, .dm-btn:focus-visible{
+  outline:2px solid var(--gr);outline-offset:2px;border-radius:6px;
+}
+input:focus-visible, select:focus-visible, textarea:focus-visible{
+  outline:2px solid var(--gr);outline-offset:2px;
+}
+/* Hide focus ring for mouse/touch users, restore for keyboard */
+:focus:not(:focus-visible){outline:none}
+/* Forced reduced-motion class (overrides system preference if user opts in) */
+.reduce-motion *,.reduce-motion *::before,.reduce-motion *::after{
+  animation:none!important;transition:none!important;scroll-behavior:auto!important;
+}
+/* Visually-hidden helper for screen-reader-only labels */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* Live region styling — invisible visually but reads for screen readers */
+.aria-live-poll{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
 /* ── SKELETON LOADERS (v2.0) ────────────────────────────── */
 /* Shimmer placeholders shown while real data is being fetched.
    Replaced by render functions when data arrives. */
@@ -1102,6 +1124,8 @@ select.inp{
     <button class="ni" onclick="nav('defcon',this)"><span class="ni-ic">&#9760;</span>DefCon Threats</button>
     <button class="ni" onclick="nav('autosubs',this)"><span class="ni-ic">&#8644;</span>Auto-Sub Tracker</button>
     <button class="ni" onclick="nav('whatif',this)"><span class="ni-ic">&#63;</span>What-If Simulator</button>
+    <div class="ngl">Account</div>
+    <button class="ni" onclick="nav('settings',this)"><span class="ni-ic">&#9881;</span>Settings</button>
   </nav>
   <div class="sb-foot">
     <div class="sb-foot-text">
@@ -1683,6 +1707,63 @@ select.inp{
     </div>
   </div>
 
+  <!-- SETTINGS (v2.0 — phase 6) -->
+  <div class="page" id="page-settings">
+    <div class="ph"><h2>Settings</h2><p>Manage your manager ID, theme, currency and cached data</p></div>
+    <div class="g2 mb-16">
+      <div class="card">
+        <div class="ct">FPL Manager ID</div>
+        <div class="xs t3c mb-8">Your numeric Manager ID from your FPL profile URL.</div>
+        <div class="fac gap-8">
+          <input type="number" id="set-mid" class="inp" placeholder="e.g. 1234567" inputmode="numeric" pattern="[0-9]*">
+          <button class="btn btn-p btn-sm" onclick="saveSettingsMid()" type="button">Save</button>
+        </div>
+        <div id="set-mid-msg" class="xs mt-8" aria-live="polite"></div>
+      </div>
+      <div class="card">
+        <div class="ct">Theme</div>
+        <div class="xs t3c mb-8">Light keeps the data dense for long sessions. Dark is easier on the eye during matchday.</div>
+        <div class="fac gap-8">
+          <button id="set-theme-l" class="btn btn-g btn-sm" onclick="setTheme(false)" type="button">&#9728;&#65039; Light</button>
+          <button id="set-theme-d" class="btn btn-g btn-sm" onclick="setTheme(true)" type="button">&#127769; Dark</button>
+        </div>
+      </div>
+    </div>
+    <div class="g2 mb-16">
+      <div class="card">
+        <div class="ct">Currency for value displays</div>
+        <div class="xs t3c mb-8">FPL prices are in pounds. This only affects how prices are formatted in the UI.</div>
+        <select id="set-currency" class="inp" onchange="saveCurrency(this.value)">
+          <option value="GBP">£ Pound (GBP)</option>
+          <option value="USD">$ Dollar (USD)</option>
+          <option value="EUR">€ Euro (EUR)</option>
+        </select>
+      </div>
+      <div class="card">
+        <div class="ct">Reduced motion</div>
+        <div class="xs t3c mb-8">Match your OS setting, or force animations off for low-end devices.</div>
+        <select id="set-motion" class="inp" onchange="saveMotion(this.value)">
+          <option value="auto">Match system (auto)</option>
+          <option value="reduce">Reduce motion</option>
+        </select>
+      </div>
+    </div>
+    <div class="card mb-16">
+      <div class="ct">Cache &amp; data</div>
+      <div class="xs t3c mb-12">FPL War Room caches API responses in your browser to keep things fast (15 min for live data, 1 hour for static data). Clearing forces a fresh fetch.</div>
+      <div class="fac gap-8" style="flex-wrap:wrap">
+        <button class="btn btn-g btn-sm" onclick="clearApiCache()" type="button">Clear API cache</button>
+        <button class="btn btn-g btn-sm" onclick="clearAllLocal()" type="button" style="color:var(--rd)">Clear all local data</button>
+      </div>
+      <div id="set-cache-msg" class="xs mt-8" aria-live="polite"></div>
+      <div id="set-cache-stats" class="xs t3c mt-12"></div>
+    </div>
+    <div class="card">
+      <div class="ct">About</div>
+      <div class="xs t3c">FPL War Room v5.0 (v2.0 spec). Single-file HTML, vanilla JS. Fixture and bootstrap data via fantasy.premierleague.com over a Netlify proxy. No third-party tracking.</div>
+    </div>
+  </div>
+
 </div>
 </div>
 
@@ -1893,11 +1974,90 @@ function toggleDark(){
   const root=document.getElementById('root');
   const isDark=root.classList.toggle('dark');
   localStorage.setItem('fwr_dark',isDark?'1':'0');
+  // Sync the settings buttons if they're rendered
+  const dl=document.getElementById('set-theme-l'),dd=document.getElementById('set-theme-d');
+  if(dl&&dd){dl.classList.toggle('active',!isDark);dd.classList.toggle('active',isDark);}
 }
 function applyDark(){
   const saved=localStorage.getItem('fwr_dark');
   // Default: light mode. Only go dark if explicitly saved.
   if(saved==='1') document.getElementById('root').classList.add('dark');
+}
+function setTheme(dark){
+  const root=document.getElementById('root');
+  if(dark)root.classList.add('dark');else root.classList.remove('dark');
+  localStorage.setItem('fwr_dark',dark?'1':'0');
+  document.getElementById('set-theme-l')?.classList.toggle('active',!dark);
+  document.getElementById('set-theme-d')?.classList.toggle('active',dark);
+}
+
+// ── SETTINGS PANEL (v2.0 — phase 6) ──────────────────────────
+function saveSettingsMid(){
+  const inp=document.getElementById('set-mid');const msg=document.getElementById('set-mid-msg');
+  const v=(inp?.value||'').trim();
+  if(!v||!isValidMid(v)){msg.innerHTML='<span class="cr">Invalid Manager ID — must be 1–8 digits.</span>';return;}
+  S.mid=v;localStorage.setItem('fplwr_mid',v);localStorage.setItem('fwr_mid',v);
+  document.getElementById('sb-mid').textContent='#'+v;
+  const sqInp=document.getElementById('mid-in');if(sqInp)sqInp.value=v;
+  msg.innerHTML='<span class="ca">Saved. Loading squad…</span>';
+  loadSquad();
+  setTimeout(()=>{msg.innerHTML='';},2200);
+}
+function saveCurrency(c){localStorage.setItem('fwr_currency',c);}
+function getCurrencySymbol(){
+  const c=localStorage.getItem('fwr_currency')||'GBP';
+  return c==='USD'?'$':c==='EUR'?'€':'£';
+}
+function saveMotion(v){
+  localStorage.setItem('fwr_motion',v);
+  document.documentElement.classList.toggle('reduce-motion', v==='reduce');
+}
+function applyMotion(){
+  const m=localStorage.getItem('fwr_motion');
+  if(m==='reduce')document.documentElement.classList.add('reduce-motion');
+}
+function clearApiCache(){
+  let n=0;
+  for(let i=localStorage.length-1;i>=0;i--){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith('fwr_apicache_')){localStorage.removeItem(k);n++;}
+  }
+  document.getElementById('set-cache-msg').innerHTML='<span class="ca">Cleared '+n+' cached API responses.</span>';
+  refreshCacheStats();
+  setTimeout(()=>{const m=document.getElementById('set-cache-msg');if(m)m.innerHTML='';},2200);
+}
+function clearAllLocal(){
+  if(!confirm('Clear all FPL War Room local data? This removes your saved Manager ID, plans, leagues and rivals.'))return;
+  for(let i=localStorage.length-1;i>=0;i--){
+    const k=localStorage.key(i);
+    if(k&&(k.startsWith('fwr_')||k.startsWith('fplwr_'))){localStorage.removeItem(k);}
+  }
+  alert('All local data cleared. Reloading…');
+  location.reload();
+}
+function refreshCacheStats(){
+  const el=document.getElementById('set-cache-stats');if(!el)return;
+  let count=0,bytes=0;
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith('fwr_apicache_')){count++;bytes+=(localStorage.getItem(k)||'').length;}
+  }
+  el.textContent=count?`${count} cached responses, ~${(bytes/1024).toFixed(1)} KB`:'No cached responses.';
+}
+function loadSettingsForm(){
+  document.getElementById('set-mid').value=S.mid||'';
+  const isDark=document.getElementById('root').classList.contains('dark');
+  document.getElementById('set-theme-l')?.classList.toggle('active',!isDark);
+  document.getElementById('set-theme-d')?.classList.toggle('active',isDark);
+  const cur=document.getElementById('set-currency');if(cur)cur.value=localStorage.getItem('fwr_currency')||'GBP';
+  const mot=document.getElementById('set-motion');if(mot)mot.value=localStorage.getItem('fwr_motion')||'auto';
+  refreshCacheStats();
+}
+
+// ── DEBOUNCE HELPER ──────────────────────────────────────────
+function debounce(fn, ms){
+  let t;
+  return function(...args){clearTimeout(t);t=setTimeout(()=>fn.apply(this,args),ms);};
 }
 
 function nav(n,b){
@@ -1906,8 +2066,10 @@ function nav(n,b){
   const pg=document.getElementById('page-'+n);if(pg)pg.classList.add('active');
   if(b)b.classList.add('active');
   else document.querySelectorAll('.ni').forEach(x=>{if(x.getAttribute('onclick')?.includes("'"+n+"'"))x.classList.add('active');});
-  const T={dashboard:'Dashboard',squad:'My Squad',rank:'Rank Tracker',gwhistory:'GW History',eo:'EO Tracker',compare:'Player Compare',template:'Template Meter',rivals:'Rival Scout',transfers:'Transfer Planner',captain:'Captaincy Lab',chips:'Chip Strategy',fixtures:'Fixture Planner',price:'Price Predictor',bonus:'Bonus Monitor',rotation:'Rotation Risk',setpiece:'Set Piece Register',diffs:'Differentials',injuries:'Injury Monitor',watchlist:'Watchlist',alerts:'Alerts',liverank:'Live Rank',defcon:'DefCon Threats',autosubs:'Auto-Sub Tracker',whatif:'What-If Simulator'};
+  const T={dashboard:'Dashboard',squad:'My Squad',rank:'Rank Tracker',gwhistory:'GW History',eo:'EO Tracker',compare:'Player Compare',template:'Template Meter',rivals:'Rival Scout',transfers:'Transfer Planner',captain:'Captaincy Lab',chips:'Chip Strategy',fixtures:'Fixture Planner',price:'Price Predictor',bonus:'Bonus Monitor',rotation:'Predicted Lineups',setpiece:'Set Piece Register',diffs:'Differentials',injuries:'Injury Monitor',watchlist:'Watchlist',alerts:'Alerts',liverank:'Matchday',defcon:'DefCon Threats',autosubs:'Auto-Sub Tracker',whatif:'What-If Simulator',settings:'Settings'};
   document.getElementById('tb-title').textContent=T[n]||n;
+  // Lazy-load page-specific data on first visit (v2.0 perf — item 25)
+  if(n==='settings')loadSettingsForm();
   closeSb();
 }
 
@@ -1926,15 +2088,56 @@ function fetchTimeout(url,ms=9000){
   const timer=new Promise((_,rej)=>setTimeout(()=>rej(new Error('Timeout')),ms));
   return Promise.race([fetch(url),timer]);
 }
+// ── API CACHE (v2.0 — phase 6 perf, item 25) ────────────────
+// 15min TTL for live/event data, 1hr for static (bootstrap, fixtures, etc).
+function cacheTtlFor(path){
+  if(/event\/\d+\/live|leagues-classic|entry\/\d+/.test(path))return 15*60*1000;
+  return 60*60*1000;
+}
+function cacheGet(path){
+  try{
+    const raw=localStorage.getItem('fwr_apicache_'+path);
+    if(!raw)return null;
+    const obj=JSON.parse(raw);
+    if(!obj||!obj.t||!obj.d)return null;
+    if(Date.now()-obj.t>cacheTtlFor(path))return null;
+    return obj.d;
+  }catch(e){return null;}
+}
+function cachePut(path, data){
+  try{
+    // Skip caching huge bootstrap payloads in private/incognito where quota is small
+    const payload=JSON.stringify({t:Date.now(),d:data});
+    if(payload.length>2_500_000)return;
+    localStorage.setItem('fwr_apicache_'+path, payload);
+  }catch(e){
+    // QuotaExceeded → silently fall back to no cache, optionally drop oldest entries
+    try{
+      for(let i=localStorage.length-1;i>=0;i--){
+        const k=localStorage.key(i);if(k&&k.startsWith('fwr_apicache_')){localStorage.removeItem(k);break;}
+      }
+    }catch(_){}
+  }
+}
+
 // Primary: Netlify serverless function (deployed)
 // Fallback: third-party CORS proxies (local / file:// access)
-async function fplGet(path){
+async function fplGet(path, opts){
+  opts=opts||{};
+  // Cache check unless caller explicitly bypasses
+  if(!opts.fresh){
+    const hit=cacheGet(path);
+    if(hit)return hit;
+  }
+  let data;
   // Use own Netlify function when deployed — fastest and most reliable
   if(IS_NETLIFY){
     try{
       const r=await fetchTimeout(NETLIFY_FN+encodeURIComponent(path));
       if(!r.ok)throw new Error('HTTP '+r.status);
-      return await r.json();
+      data=await r.json();
+      cachePut(path,data);
+      return data;
     }catch(e){console.warn('Netlify fn failed, trying proxies:',e.message);}
   }
   // Fallback cascade for local file:// access or if Netlify fn fails
@@ -1944,7 +2147,9 @@ async function fplGet(path){
     try{
       const r=await fetchTimeout(px(target));
       if(!r.ok)throw new Error('HTTP '+r.status);
-      return await r.json();
+      data=await r.json();
+      cachePut(path,data);
+      return data;
     }catch(e){lastErr=e;console.warn('Proxy failed:',e.message);}
   }
   throw lastErr||new Error('All fetch methods failed');
@@ -2974,12 +3179,14 @@ async function loadSquad(){
   }catch(e){console.error(e);document.getElementById('sq-bod').innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--rd);padding:24px">Failed to load. Check Manager ID or try again.</td></tr>';}
 }
 
-function srchCmp(slot,val){
+// Debounced via wrapper below; raw search runs on the next animation frame after 200ms idle
+function _srchCmpRaw(slot,val){
   const res=document.getElementById('cr'+slot);if(!val.trim()||!S.bs){res.innerHTML='';return;}
   const results=S.bs.elements.filter(e=>e.web_name.toLowerCase().includes(val.toLowerCase())).slice(0,5);
   const tm={};S.bs.teams.forEach(t=>tm[t.id]=t);
   res.innerHTML=results.length?`<div class="cpdd">${results.map(e=>`<div class="cpdd-i" onclick="selCmp(${slot},${e.id})">${e.web_name} <span class="t3c">${(tm[e.team]||{}).short_name||''}</span></div>`).join('')}</div>`:'';
 }
+const srchCmp = debounce(_srchCmpRaw, 200);
 function selCmp(slot,id){
   if(!S.bs)return;const p=S.bs.elements.find(e=>e.id===id);
   S.cmpData[slot-1]=p;document.getElementById('cp'+slot).value=p.web_name;document.getElementById('cr'+slot).innerHTML='';
@@ -3592,8 +3799,8 @@ async function fetchLiveData(){
   if(!S.mid || !S.bs) return null;
   try{
     const [liveEv, picks] = await Promise.all([
-      fplGet(`event/${S.gw}/live/`),
-      fplGet(`entry/${S.mid}/event/${S.gw}/picks/`)
+      fplGet(`event/${S.gw}/live/`, {fresh:true}),
+      fplGet(`entry/${S.mid}/event/${S.gw}/picks/`, {fresh:true})
     ]);
     S.liveData = liveEv;
     S.myPicks = picks;
@@ -4089,6 +4296,13 @@ function renderLiveRank({liveEv, picks}){
   }
 
   if(estRank){
+    // Announce rank change for screen readers (only when it actually changes)
+    if(S.lastLiveRank!==estRank){
+      const dir = S.lastLiveRank ? (estRank<S.lastLiveRank?'up':'down') : null;
+      announce(dir
+        ? `Live rank ${dir} to ${estRank.toLocaleString()}, ${livePts} points`
+        : `Live rank ${estRank.toLocaleString()}, ${livePts} points`);
+    }
     // Animated rank counter (v2.0): counts from previous value to estimate over ~1.2s
     animateCounter(document.getElementById('lr-rank'), estRank);
     const rankEl=document.getElementById('lr-rank-d');
@@ -4592,9 +4806,27 @@ function updateFdrHeaders(){
   const range=document.getElementById('fdr-range');if(range)range.textContent='GW'+(base)+'–GW'+(base+5);
 }
 
+// ── ARIA LIVE REGION (v2.0 — phase 6 a11y) ───────────────────
+function ensureLiveRegion(){
+  if(document.getElementById('aria-live-poll'))return;
+  const el=document.createElement('div');
+  el.id='aria-live-poll';el.className='aria-live-poll';
+  el.setAttribute('role','status');el.setAttribute('aria-live','polite');el.setAttribute('aria-atomic','true');
+  document.body.appendChild(el);
+}
+function announce(msg){
+  ensureLiveRegion();
+  const el=document.getElementById('aria-live-poll');if(!el)return;
+  // Re-trigger SR by clearing + setting in a microtask
+  el.textContent='';
+  setTimeout(()=>{el.textContent=msg;},50);
+}
+
 // INIT
 (async function init(){
   applyDark(); // Apply before first paint
+  applyMotion(); // Reduced-motion preference
+  ensureLiveRegion(); // a11y: live region for SR announcements
   showOnboarding(); // First-run modal
   // S.deadline stays null until loadBoot sets it from the real FPL API
   setInterval(tickCD,1000);tickCD();
