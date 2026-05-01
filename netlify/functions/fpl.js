@@ -25,7 +25,7 @@ exports.handler = async (event) => {
 
   // Whitelist: only allow known FPL API paths
   // Note: use $ (not \$) for end-of-string anchor in JS regex literals
-  const ALLOWED = /^(bootstrap-static|fixtures|event-status|dream-team\/\d+|team\/set-piece-notes|event\/\d+\/live|entry\/\d+\/?|entry\/\d+\/event\/\d+\/picks|entry\/\d+\/history|entry\/\d+\/transfers)\/?$/;
+  const ALLOWED = /^(bootstrap-static|fixtures|event-status|dream-team\/\d+|team\/set-piece-notes|event\/\d+\/live|entry\/\d+\/?|entry\/\d+\/event\/\d+\/picks|entry\/\d+\/history|entry\/\d+\/transfers|leagues-classic\/\d+\/standings)\/?$/;
 
   const cleanPath = path.replace(/\/$/, '');
 

@@ -593,6 +593,89 @@ select.inp{
 .csv2{font-size:1.15rem;font-weight:900;letter-spacing:-.02em}
 .sb2{height:4px;background:var(--c4);border-radius:2px;margin-top:10px;overflow:hidden}
 .sf{height:100%;border-radius:2px;transition:width .8s var(--ease)}
+/* Live Pitch (v2.0) — Matchday view */
+.lr-pitch{
+  background:linear-gradient(180deg,#166534 0%,#15803d 18%,#166534 36%,#15803d 54%,#166534 72%,#15803d 90%,#166534 100%);
+  border:1px solid rgba(255,255,255,.15);border-radius:var(--r2);padding:24px 12px 0;position:relative;overflow:hidden;
+}
+.lr-pitch::before{content:'';position:absolute;top:50%;left:6%;right:6%;height:1px;background:rgba(255,255,255,.13);z-index:1}
+.lr-pitch::after{content:'';position:absolute;top:50%;left:50%;width:72px;height:72px;transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.13);border-radius:50%;z-index:1}
+.lr-pitch-row{display:flex;justify-content:center;gap:6px;margin-bottom:10px;position:relative;z-index:2}
+.lr-pt{display:flex;flex-direction:column;align-items:center;gap:2px;width:72px;cursor:default}
+.lr-pt .kit-wrap{position:relative;display:inline-flex}
+.lr-pt .kit{
+  width:44px;height:48px;display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(20% 0%,0% 13%,0% 30%,17% 24%,17% 100%,83% 100%,83% 24%,100% 30%,100% 13%,80% 0%,62% 7%,50% 9%,38% 7%);
+  font-size:11px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.25);
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.35));
+  transition:filter .14s;
+}
+.lr-pt.on-pitch .kit{filter:drop-shadow(0 0 8px #fde047) drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+@media(prefers-reduced-motion:no-preference){
+  .lr-pt.on-pitch .kit{animation:lr-glow 1.6s ease-in-out infinite}
+}
+@keyframes lr-glow{0%,100%{filter:drop-shadow(0 0 6px rgba(253,224,71,.6)) drop-shadow(0 2px 4px rgba(0,0,0,.4))}50%{filter:drop-shadow(0 0 14px rgba(253,224,71,1)) drop-shadow(0 2px 4px rgba(0,0,0,.4))}}
+.lr-pt-name{font-size:9px;font-weight:700;color:#fff;text-align:center;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.lr-pt-pts{font-size:11px;font-weight:800;color:#fff;background:rgba(0,0,0,.55);border-radius:4px;padding:1px 7px;min-width:24px;text-align:center;font-family:var(--fm)}
+.lr-pt-pts.cap{background:var(--am);color:#0f1117}
+.lr-pt-min{font-size:8px;font-weight:600;color:rgba(255,255,255,.85);font-family:var(--fm);min-width:24px;text-align:center;background:rgba(0,0,0,.4);border-radius:3px;padding:0 4px;margin-top:1px}
+.lr-pt-min.live{color:#fde047;background:rgba(0,0,0,.6)}
+.lr-pt-min.zero{color:rgba(255,100,100,.9)}
+.lr-pt .cap-b{position:absolute;top:-4px;right:-6px;width:16px;height:16px;border-radius:50%;background:var(--am);color:#fff;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;border:2px solid #fff;z-index:3;line-height:1}
+.lr-pt .vc-b{background:var(--bl)}
+.lr-pt .pt-flag{position:absolute;top:-4px;left:-6px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;border:2px solid #fff;z-index:3;line-height:1}
+.lr-pt .pt-flag.f-out{background:var(--rd);color:#fff}
+.lr-pt .pt-flag.f-doubt{background:var(--am);color:#fff}
+.lr-pt-bench{opacity:.55}
+.lr-pt-bench .lr-pt-pts{background:rgba(0,0,0,.4);color:rgba(255,255,255,.7)}
+.lr-pitch-bench{border-top:1px solid rgba(255,255,255,.12);margin:10px -12px 0;padding:10px 12px 12px;background:rgba(0,0,0,.18);border-radius:0 0 var(--r2) var(--r2)}
+.lr-pitch-bench-lbl{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:6px;text-align:center}
+
+/* Autosub toggle (v2.0) */
+.lr-autosub{display:inline-flex;background:var(--c4);border:1px solid var(--b2);border-radius:6px;margin-top:8px;overflow:hidden}
+.lr-as-btn{font-size:.65rem;font-weight:700;padding:4px 10px;color:var(--t3);background:transparent;border:none;cursor:pointer;transition:all .14s}
+.lr-as-btn.active{background:var(--gr);color:#0f1117}
+.lr-as-btn:focus{outline:2px solid var(--gr);outline-offset:1px}
+
+/* Live Bonus Monitor (v2.0) */
+.lr-bonus-match{background:var(--c3);border:1px solid var(--b1);border-radius:var(--r2);padding:12px;margin-bottom:10px}
+.lr-bonus-match.upcoming{opacity:.6}
+.lr-bonus-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:.78rem;font-weight:700;color:var(--t1)}
+.lr-bonus-h-status{font-size:.66rem;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:10px;font-family:var(--fm)}
+.lr-bonus-h-status.live{background:var(--rd);color:#fff;animation:lr-blink 1.6s ease-in-out infinite}
+.lr-bonus-h-status.finished{background:var(--c4);color:var(--t3)}
+.lr-bonus-h-status.upcoming{background:var(--bd);color:var(--bl)}
+@keyframes lr-blink{0%,100%{opacity:1}50%{opacity:.6}}
+.lr-bonus-list{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+@media(max-width:600px){.lr-bonus-list{grid-template-columns:1fr}}
+.lr-bonus-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r1);background:var(--c1);border:1px solid var(--b1);font-size:.7rem}
+.lr-bonus-row.mine{border-color:var(--gr);background:var(--gd)}
+.lr-bonus-bb{font-family:var(--fm);font-weight:800;font-size:.8rem;color:var(--am);min-width:18px;text-align:center}
+.lr-bonus-row.mine .lr-bonus-bb{color:var(--gr)}
+.lr-bonus-name{flex:1;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lr-bonus-bps{font-family:var(--fm);font-weight:700;color:var(--t2);font-size:.65rem}
+
+/* Live Mini-Leagues (v2.0) */
+.lr-ml-card{background:var(--c3);border:1px solid var(--b1);border-radius:var(--r2);margin-bottom:10px;overflow:hidden}
+.lr-ml-h{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--c1);cursor:pointer;border-bottom:1px solid var(--b1)}
+.lr-ml-h:hover{background:var(--c4)}
+.lr-ml-h-name{font-size:.85rem;font-weight:700;color:var(--t1)}
+.lr-ml-h-meta{font-size:.7rem;color:var(--t3);margin-top:2px}
+.lr-ml-h-rank{font-family:var(--fm);font-size:1.05rem;font-weight:800;color:var(--gr);margin-left:auto;text-align:right}
+.lr-ml-h-rank-sub{font-size:.65rem;color:var(--t3);font-family:var(--fm)}
+.lr-ml-h-rm{background:var(--rdd);color:var(--rd);border:none;border-radius:4px;width:24px;height:24px;cursor:pointer;font-size:11px;font-weight:700;line-height:1;margin-left:8px}
+.lr-ml-h-rm:hover{background:var(--rd);color:#fff}
+.lr-ml-tbl{width:100%;font-size:.75rem;border-collapse:collapse}
+.lr-ml-tbl th{font-size:.625rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);padding:8px 12px;background:var(--c4);text-align:left}
+.lr-ml-tbl th.r{text-align:right}
+.lr-ml-tbl td{padding:8px 12px;border-top:1px solid var(--b1);color:var(--t1)}
+.lr-ml-tbl td.r{text-align:right;font-family:var(--fm);font-weight:700}
+.lr-ml-tbl tr.me{background:var(--gd)}
+.lr-ml-tbl tr.expanded{background:var(--c4)}
+.lr-ml-tbl .ml-mv{font-family:var(--fm);font-weight:700;font-size:.7rem}
+.lr-ml-tbl .ml-mv.up{color:var(--sg)}.lr-ml-tbl .ml-mv.dn{color:var(--rd)}
+.lr-ml-empty{padding:14px;text-align:center;color:var(--t3);font-size:.75rem;background:var(--c3);border:1px dashed var(--b2);border-radius:var(--r1)}
+
 /* Multi-GW Transfer Planner (v2.0) */
 .mp-totals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 @media(max-width:600px){.mp-totals{grid-template-columns:repeat(2,1fr)}}
@@ -1337,21 +1420,25 @@ select.inp{
   </div>
 
 
-  <!-- LIVE RANK -->
+  <!-- LIVE RANK / MATCHDAY (v2.0) -->
   <div class="page" id="page-liverank">
-    <div class="fbc mb-16"><div class="ph" style="margin-bottom:0"><h2>Live Rank</h2><p>Real-time estimated rank &bull; auto-refreshes every 60s</p></div><button class="btn btn-p btn-sm" onclick="startLiveRank()"><span class="lr-pulse"></span>Refresh</button></div>
+    <div class="fbc mb-16"><div class="ph" style="margin-bottom:0"><h2>Matchday</h2><p>Live rank &middot; live points &middot; bonus &middot; mini-leagues &middot; auto-refresh 60s</p></div><button class="btn btn-p btn-sm" onclick="startLiveRank()"><span class="lr-pulse"></span>Refresh</button></div>
     <div id="lr-status" class="al ai mb-16" style="display:none"></div>
 
-    <!-- LiveFPL-style dark summary header (all key stats consolidated) -->
+    <!-- v2.0 Hero rank header — autosub toggle on the right -->
     <div class="lr-summary mb-16" id="lr-summary">
       <div class="lr-s-item">
         <div class="lr-s-label">GW <span id="lr-gw-num">--</span> Rank</div>
         <div class="lr-s-val" id="lr-gw-rank">&mdash;</div>
       </div>
       <div class="lr-s-item lr-s-main">
-        <div class="lr-s-label">Live Rank</div>
+        <div class="lr-s-label" id="lr-rank-label">Live Rank</div>
         <div class="lr-s-val" id="lr-rank">&mdash;</div>
         <div class="lr-s-sub" id="lr-rank-d">Load squad first</div>
+        <div class="lr-autosub" role="group" aria-label="Toggle autosub adjustment">
+          <button id="lr-as-on" class="lr-as-btn active" onclick="setAutosub(true)" type="button" aria-pressed="true">With autosubs</button>
+          <button id="lr-as-off" class="lr-as-btn" onclick="setAutosub(false)" type="button" aria-pressed="false">Raw XI</button>
+        </div>
       </div>
       <div class="lr-s-item">
         <div class="lr-s-label">Points</div>
@@ -1364,13 +1451,13 @@ select.inp{
       </div>
     </div>
 
-    <!-- Live Squad — player cards (primary content) -->
+    <!-- Live Pitch (v2.0) — pitch view with on-pitch glow and live points -->
     <div class="card mb-16">
       <div class="fbc mb-12">
-        <div class="ct" style="margin-bottom:0">Live Squad <span id="lr-formation" class="tag tg"></span> <span id="lr-gw-lbl"></span></div>
+        <div class="ct" style="margin-bottom:0">Live Pitch <span id="lr-formation" class="tag tg"></span> <span id="lr-gw-lbl"></span></div>
         <div class="lr-updated" id="lr-updated"></div>
       </div>
-      <div id="lr-squad"><div class="al ai"><span class="al-ic">&#9650;</span><div>Load your squad in <strong>My Squad</strong> tab first, then return here.</div></div></div>
+      <div id="lr-pitch-wrap"><div class="al ai"><span class="al-ic">&#9650;</span><div>Load your squad in <strong>My Squad</strong> tab first, then return here.</div></div></div>
     </div>
 
     <!-- Breakdown + Comparison side-by-side -->
@@ -1387,6 +1474,25 @@ select.inp{
           <div class="lr-cmp-row"><div class="lr-cmp-label">Load squad to compare</div></div>
         </div>
       </div>
+    </div>
+
+    <!-- Live Bonus Points (v2.0) -->
+    <div class="card mb-16">
+      <div class="ct">Live Bonus Points <span class="tag tb">Per match</span> <span class="xs t3c" style="font-weight:400">Top 3 BPS get 3/2/1 bonus</span></div>
+      <div id="lr-bonus"><div class="al ai"><span class="al-ic">&#9733;</span><div>Bonus appears here once any GW matches kick off.</div></div></div>
+    </div>
+
+    <!-- Live Mini-League (v2.0) -->
+    <div class="card mb-16">
+      <div class="fbc mb-12" style="flex-wrap:wrap;gap:8px">
+        <div class="ct" style="margin-bottom:0">Live Mini-Leagues <span class="tag tb" id="lr-ml-count">0/5</span></div>
+        <div class="fac gap-8" style="flex-wrap:wrap">
+          <input type="number" id="lr-ml-input" class="inp" placeholder="Mini-league ID" style="width:160px" inputmode="numeric" pattern="[0-9]*" onkeydown="if(event.key==='Enter')addMiniLeague()">
+          <button class="btn btn-g btn-sm" onclick="addMiniLeague()" type="button">+ Add league</button>
+        </div>
+      </div>
+      <div id="lr-ml-help" class="xs t3c mb-12">Track up to 5 classic leagues. Live GW score &amp; rank movement refresh every 60s.</div>
+      <div id="lr-ml-list"></div>
     </div>
 
     <!-- Detailed stats table -->
@@ -3168,11 +3274,348 @@ function stopLiveRank(){
   if(S.liveInterval){clearInterval(S.liveInterval);S.liveInterval=null;}
 }
 
+// ─── PHASE 4 — MATCHDAY ENGINE (v2.0) ────────────────────────
+// Autosub mode toggle (true = with autosubs applied, false = raw XI)
+S.autosubMode = localStorage.getItem('fwr_autosub') !== '0';
+function setAutosub(on){
+  S.autosubMode = !!on;
+  localStorage.setItem('fwr_autosub', on?'1':'0');
+  document.getElementById('lr-as-on')?.classList.toggle('active', on);
+  document.getElementById('lr-as-on')?.setAttribute('aria-pressed', String(on));
+  document.getElementById('lr-as-off')?.classList.toggle('active', !on);
+  document.getElementById('lr-as-off')?.setAttribute('aria-pressed', String(!on));
+  document.getElementById('lr-rank-label').textContent = on ? 'Live Rank (autosubs)' : 'Live Rank (raw XI)';
+  // Re-render with the cached live data
+  if(S.liveData && S.myPicks) renderLiveRank({liveEv:S.liveData, picks:S.myPicks});
+}
+
+// Compute the autosub-adjusted XI per FPL rules:
+// 1. If GK didn't play, sub in bench GK.
+// 2. For each starter who didn't play (mins===0) and isn't already subbed, replace with the
+//    earliest valid bench player whose position keeps a legal formation
+//    (1 GK, 3-5 DEF, 2-5 MID, 1-3 FWD).
+// Returns: { xi: [{element, multiplier, position, autosubbed?, replaces?}], bench: [...] }
+function applyAutosubs(picks, eleMap){
+  if(!S.bs) return null;
+  const bsMap={};S.bs.elements.forEach(e=>bsMap[e.id]=e);
+  const sorted = [...picks.picks].sort((a,b)=>a.position-b.position);
+  const starters = sorted.filter(p=>p.position<=11).map(p=>({...p}));
+  const bench = sorted.filter(p=>p.position>11).map(p=>({...p, used:false}));
+  const played = el => (eleMap[el]?.stats?.minutes||0) > 0;
+
+  // GK swap: position 1 (starter GK) for position 12 (bench GK) if starter didn't play
+  const gk = starters.find(p=>p.position===1);
+  if(gk && !played(gk.element)){
+    const benchGk = bench.find(p=>p.position===12);
+    if(benchGk && played(benchGk.element)){
+      gk.element = benchGk.element;
+      gk.autosubbed = true;
+      gk.replaces = sorted.find(p=>p.position===1).element;
+      gk.multiplier = 1;
+      benchGk.used = true;
+    }
+  }
+  // Outfield autosubs: iterate non-played starters, find first eligible bench player
+  // Eligibility: keeps formation legal (min 3 DEF, 2 MID — well, FPL's actual rule is min counts)
+  const formationCounts = ()=>{
+    const c={1:0,2:0,3:0,4:0};
+    starters.forEach(s=>{const t=bsMap[s.element]?.element_type;if(t)c[t]++;});
+    return c;
+  };
+  starters.forEach(s=>{
+    if(s.position===1) return; // GK handled
+    if(played(s.element)) return;
+    const outType = bsMap[s.element]?.element_type;
+    // Bench order: positions 13, 14, 15
+    for(const b of bench){
+      if(b.position===12||b.used) continue;
+      if(!played(b.element)) continue;
+      const inType = bsMap[b.element]?.element_type;
+      // Tentatively swap and check formation legality
+      const counts = formationCounts();
+      counts[outType]--; counts[inType]++;
+      if(counts[2]>=3 && counts[3]>=2 && counts[4]>=1 && counts[1]===1 && counts[2]<=5 && counts[3]<=5 && counts[4]<=3){
+        s.element = b.element;
+        s.autosubbed = true;
+        s.replaces = sorted.find(x=>x.position===s.position).element;
+        s.multiplier = 1;
+        b.used = true;
+        break;
+      }
+    }
+  });
+  // If captain didn't play, captaincy passes to vice-captain (also a real FPL rule)
+  const cap = starters.find(p=>p.is_captain);
+  if(cap && !played(cap.element)){
+    const vc = starters.find(p=>p.is_vice_captain);
+    if(vc && played(vc.element)){
+      cap.multiplier = 1;
+      vc.multiplier = (sorted.find(p=>p.is_captain)?.multiplier)||2;
+    }
+  }
+  return {xi:starters, bench, autosubbed:starters.some(s=>s.autosubbed)};
+}
+// Compute live points for a given XI/bench split. Returns {livePts, benchPts, breakdown}.
+function computeLivePoints(xi, eleMap){
+  if(!S.bs) return {livePts:0, benchPts:0};
+  const bsMap={};S.bs.elements.forEach(e=>bsMap[e.id]=e);
+  let livePts=0;
+  xi.forEach(p=>{
+    const live=eleMap[p.element];if(!live)return;
+    const pos=bsMap[p.element]?.element_type||4;
+    livePts += calcLivePts(live,pos) * (p.multiplier||1);
+  });
+  return {livePts};
+}
+
+// Build per-fixture status from S.fixtures + current time
+function getFixtureStatus(){
+  if(!Array.isArray(S.fixtures)) return {};
+  const now=Date.now();
+  const map={};
+  S.fixtures.filter(f=>f.event===S.gw).forEach(f=>{
+    const ko=f.kickoff_time?new Date(f.kickoff_time).getTime():null;
+    let status='upcoming',minute=null;
+    if(f.finished){status='finished';}
+    else if(f.started){status='live'; if(ko)minute=Math.min(95,Math.max(1,Math.round((now-ko)/60000)));}
+    else if(ko && now>=ko){status='live';minute=1;}
+    map[f.team_h]={status,minute,fixture:f,opp:f.team_a,isHome:true};
+    map[f.team_a]={status,minute,fixture:f,opp:f.team_h,isHome:false};
+  });
+  return map;
+}
+
+// Render the live pitch (item 16): pitch view with live points, captain doubled,
+// bench greyed, on-pitch yellow glow, match minute for live games.
+function renderLivePitch(picks, eleMap, fixtureStatus){
+  if(!S.bs) return;
+  const wrap = document.getElementById('lr-pitch-wrap');
+  if(!wrap) return;
+  const bsMap={};S.bs.elements.forEach(e=>bsMap[e.id]=e);
+  const tmById={};S.bs.teams.forEach(t=>tmById[t.id]=t);
+  // Decide which XI to render: autosub-adjusted or raw
+  const autoData = applyAutosubs(picks, eleMap);
+  const xiSrc = (S.autosubMode && autoData) ? autoData.xi : picks.picks.filter(p=>p.position<=11);
+  const benchSrc = (S.autosubMode && autoData) ? autoData.bench : picks.picks.filter(p=>p.position>11).sort((a,b)=>a.position-b.position);
+  const buildTok = pick => {
+    const el = bsMap[pick.element]||{};
+    const live = eleMap[pick.element]||{stats:{}};
+    const pos = el.element_type||4;
+    const club = (tmById[el.team]||{}).short_name||'?';
+    const tc = TEAM_COLORS[club]||{bg:'#555',tx:'#fff'};
+    const fxStatus = fixtureStatus[el.team];
+    const mins = live.stats?.minutes||0;
+    const isLive = fxStatus?.status==='live';
+    // "on pitch" if their match is live AND they have minutes (they're playing) and not subbed off (heuristic: mins < (fxMinute-1) means subbed off)
+    const onPitch = isLive && mins>0 && (!fxStatus.minute || mins>=fxStatus.minute-2);
+    const rawPts = calcLivePts(live,pos);
+    const pts = rawPts * (pick.multiplier||1);
+    let flag = null;
+    if(el.status==='i'||el.status==='o'||el.status==='u') flag='out';
+    else if(el.status==='d'||el.status==='n') flag='doubt';
+    let minLabel='';
+    if(fxStatus?.status==='upcoming') minLabel = '–';
+    else if(mins===0 && fxStatus?.status==='finished') minLabel='DNP';
+    else if(mins===0) minLabel='0\'';
+    else minLabel = mins+'\'';
+    const minClass = onPitch?'live':(mins===0?'zero':'');
+    const flagBadge = flag?`<div class="pt-flag f-${flag}" aria-label="${flag==='out'?'Unavailable':'Doubt'}">!</div>`:'';
+    const capBadge = pick.is_captain?'<div class="cap-b">C</div>':pick.is_vice_captain?'<div class="cap-b vc-b">V</div>':'';
+    const ptsClass = pick.is_captain ? 'cap' : '';
+    const isBenchTok = pick.position>11;
+    const autoMark = pick.autosubbed?' <span style="color:#fde047;font-size:9px">↑</span>':'';
+    return `<div class="lr-pt${onPitch?' on-pitch':''}${isBenchTok?' lr-pt-bench':''}" title="${el.web_name||'?'} · ${club} · ${minLabel} · ${pts}pts${pick.autosubbed?' (auto-sub)':''}">
+      <div class="kit-wrap">
+        <div class="kit" style="background:${tc.bg};color:${tc.tx}">${club}</div>
+        ${flagBadge}${capBadge}
+      </div>
+      <div class="lr-pt-name">${el.web_name||'?'}${autoMark}</div>
+      <div class="lr-pt-pts ${ptsClass}">${pts}</div>
+      <div class="lr-pt-min ${minClass}">${minLabel}</div>
+    </div>`;
+  };
+  // Group by element_type for pitch rows
+  const byPos={1:[],2:[],3:[],4:[]};
+  xiSrc.forEach(p=>{const t=bsMap[p.element]?.element_type||4;byPos[t].push(p);});
+  let html='';
+  [1,2,3,4].forEach(t=>{if(byPos[t].length)html+=`<div class="lr-pitch-row">${byPos[t].map(buildTok).join('')}</div>`;});
+  // Bench
+  if(benchSrc.length){
+    html+='<div class="lr-pitch-bench"><div class="lr-pitch-bench-lbl">Bench</div><div class="lr-pitch-row">'+benchSrc.map(buildTok).join('')+'</div></div>';
+  }
+  wrap.innerHTML = `<div class="lr-pitch">${html}</div>`;
+  // Show autosub indicator note if active
+  if(S.autosubMode && autoData?.autosubbed){
+    wrap.insertAdjacentHTML('beforeend', '<div class="xs t3c mt-8" style="text-align:center">↑ indicates auto-sub applied</div>');
+  }
+}
+
+// Render Live Bonus Points (item 17): per fixture, top 3 BPS = projected 3/2/1 bonus,
+// highlighted if the player is in your squad.
+function renderLiveBonus({liveEv, picks}){
+  const wrap = document.getElementById('lr-bonus');
+  if(!wrap||!S.bs) return;
+  if(!Array.isArray(S.fixtures)){
+    wrap.innerHTML = '<div class="al ai"><span class="al-ic">&#9733;</span><div>No fixture data yet.</div></div>';return;
+  }
+  const fixtures = S.fixtures.filter(f=>f.event===S.gw);
+  if(!fixtures.length){
+    wrap.innerHTML = '<div class="al ai"><span class="al-ic">&#9733;</span><div>No fixtures this gameweek.</div></div>';return;
+  }
+  const bsMap={};S.bs.elements.forEach(e=>bsMap[e.id]=e);
+  const tmById={};S.bs.teams.forEach(t=>tmById[t.id]=t);
+  const myIds = new Set(picks?.picks?.map(p=>p.element) || []);
+  const eleMap={};liveEv.elements.forEach(e=>eleMap[e.id]=e);
+
+  // Sort fixtures: live → finished → upcoming
+  const order={live:0, finished:1, upcoming:2};
+  const ranked = fixtures.map(f=>{
+    let status='upcoming';
+    if(f.finished)status='finished';
+    else if(f.started)status='live';
+    return {...f, status};
+  }).sort((a,b)=>order[a.status]-order[b.status]);
+
+  wrap.innerHTML = ranked.map(f=>{
+    const home = (tmById[f.team_h]||{}).short_name||'?';
+    const away = (tmById[f.team_a]||{}).short_name||'?';
+    // Score
+    const score = (f.team_h_score!=null && f.team_a_score!=null) ? `${f.team_h_score} – ${f.team_a_score}` : '';
+    // BPS: gather all players in this fixture, sort desc
+    const fixturePlayers = S.bs.elements.filter(e=>e.team===f.team_h||e.team===f.team_a)
+      .map(e=>({el:e, live:eleMap[e.id], bps:eleMap[e.id]?.stats?.bps||0}))
+      .filter(p=>p.bps>0)
+      .sort((a,b)=>b.bps-a.bps);
+    // Project bonus: 1st = 3, 2nd = 2, 3rd = 1; ties share
+    const top3 = fixturePlayers.slice(0,3);
+    let bonusList=[];
+    if(top3.length){
+      const seen={};
+      let nextBonus=3;
+      top3.forEach((p,i)=>{
+        // Handle ties: if same BPS as previous, same bonus
+        const prev = bonusList[i-1];
+        if(prev && p.bps===prev.bps) bonusList.push({...p, bonus:prev.bonus});
+        else { bonusList.push({...p, bonus:nextBonus}); nextBonus--; }
+      });
+    }
+    const statusBadge = f.status==='live'?`<span class="lr-bonus-h-status live">LIVE</span>`
+      : f.status==='finished'?`<span class="lr-bonus-h-status finished">FT</span>`
+      : `<span class="lr-bonus-h-status upcoming">${f.kickoff_time?new Date(f.kickoff_time).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'TBD'}</span>`;
+    const matchClass = f.status==='upcoming' ? 'upcoming' : '';
+    let body;
+    if(!bonusList.length){
+      body = '<div class="xs t3c" style="padding:6px 8px">No bonus accumulated yet</div>';
+    } else {
+      body = '<div class="lr-bonus-list">' + bonusList.map(b=>{
+        const mine = myIds.has(b.el.id);
+        return `<div class="lr-bonus-row${mine?' mine':''}"><span class="lr-bonus-bb">+${b.bonus}</span><span class="lr-bonus-name">${b.el.web_name}</span><span class="lr-bonus-bps">${b.bps} bps</span></div>`;
+      }).join('') + '</div>';
+    }
+    return `<div class="lr-bonus-match ${matchClass}">
+      <div class="lr-bonus-h"><span>${home} ${score} ${away}</span>${statusBadge}</div>
+      ${body}
+    </div>`;
+  }).join('');
+}
+
+// ─── LIVE MINI-LEAGUES (item 18) ─────────────────────────────
+S.miniLeagues = JSON.parse(localStorage.getItem('fwr_minileagues')||'[]');
+S.miniLeagueData = {};
+S.miniLeagueExpanded = new Set(JSON.parse(localStorage.getItem('fwr_mlexp')||'[]'));
+
+function saveMiniLeagues(){localStorage.setItem('fwr_minileagues', JSON.stringify(S.miniLeagues));}
+
+async function addMiniLeague(){
+  const inp = document.getElementById('lr-ml-input');
+  const id = (inp?.value||'').trim();
+  if(!id || !/^\d+$/.test(id)){inp?.focus();return;}
+  if(S.miniLeagues.length>=5){alert('Maximum 5 mini-leagues. Remove one to add a new one.');return;}
+  if(S.miniLeagues.includes(id)){inp.value='';return;}
+  S.miniLeagues.push(id);saveMiniLeagues();
+  inp.value='';
+  await loadMiniLeague(id);
+  renderMiniLeagues();
+}
+function removeMiniLeague(id){
+  S.miniLeagues = S.miniLeagues.filter(x=>x!==id);
+  delete S.miniLeagueData[id];
+  S.miniLeagueExpanded.delete(id);
+  saveMiniLeagues();
+  renderMiniLeagues();
+}
+async function loadMiniLeague(id){
+  try{
+    const data = await fplGet('leagues-classic/'+id+'/standings/');
+    S.miniLeagueData[id] = data;
+  }catch(e){
+    console.warn('Mini-league fetch failed for', id, e.message);
+    S.miniLeagueData[id] = {error:e.message};
+  }
+}
+function toggleMiniLeague(id){
+  if(S.miniLeagueExpanded.has(id)) S.miniLeagueExpanded.delete(id);
+  else S.miniLeagueExpanded.add(id);
+  localStorage.setItem('fwr_mlexp', JSON.stringify([...S.miniLeagueExpanded]));
+  renderMiniLeagues();
+}
+async function refreshAllMiniLeagues(){
+  // Refresh in parallel; ignore individual failures.
+  await Promise.all(S.miniLeagues.map(id=>loadMiniLeague(id)));
+  renderMiniLeagues();
+}
+function renderMiniLeagues(){
+  const wrap = document.getElementById('lr-ml-list');
+  const cnt = document.getElementById('lr-ml-count');
+  if(cnt) cnt.textContent = S.miniLeagues.length+'/5';
+  if(!wrap) return;
+  if(!S.miniLeagues.length){
+    wrap.innerHTML = '<div class="lr-ml-empty">No mini-leagues yet. Paste a classic league ID above to track up to 5.</div>';
+    return;
+  }
+  wrap.innerHTML = S.miniLeagues.map(id=>{
+    const data = S.miniLeagueData[id];
+    if(!data) return `<div class="lr-ml-card"><div class="lr-ml-h"><div class="lr-ml-h-name">League #${id}</div><div class="xs t3c">Loading…</div><button class="lr-ml-h-rm" onclick="removeMiniLeague('${id}')" aria-label="Remove">✕</button></div></div>`;
+    if(data.error) return `<div class="lr-ml-card"><div class="lr-ml-h"><div><div class="lr-ml-h-name">League #${id}</div><div class="lr-ml-h-meta cr">Error: ${data.error}</div></div><button class="lr-ml-h-rm" onclick="removeMiniLeague('${id}')" aria-label="Remove">✕</button></div></div>`;
+    const meName = S.mid && data.standings?.results ? data.standings.results.find(r=>r.entry==parseInt(S.mid)) : null;
+    const myRank = meName?.rank?.toLocaleString()||'—';
+    const myMv = meName ? (meName.last_rank-meName.rank) : 0;
+    const expanded = S.miniLeagueExpanded.has(id);
+    const top = (data.standings?.results||[]).slice(0, expanded?20:5);
+    const tbl = top.length ? `<table class="lr-ml-tbl">
+      <thead><tr><th>Rank</th><th>Manager</th><th class="r">GW</th><th class="r">Total</th><th class="r">Mv</th></tr></thead>
+      <tbody>${top.map(r=>{
+        const mv = r.last_rank-r.rank;
+        const mvHtml = mv>0?`<span class="ml-mv up">▲ ${mv}</span>`:mv<0?`<span class="ml-mv dn">▼ ${Math.abs(mv)}</span>`:'<span class="ml-mv">–</span>';
+        const isMe = S.mid && r.entry==parseInt(S.mid);
+        return `<tr${isMe?' class="me"':''}><td class="r">${r.rank}</td><td>${r.player_name} <span class="xs t3c">${r.entry_name}</span></td><td class="r">${r.event_total||0}</td><td class="r">${(r.total||0).toLocaleString()}</td><td class="r">${mvHtml}</td></tr>`;
+      }).join('')}</tbody></table>` : '<div class="xs t3c" style="padding:12px">No entries yet.</div>';
+    return `<div class="lr-ml-card">
+      <div class="lr-ml-h" onclick="toggleMiniLeague('${id}')">
+        <div>
+          <div class="lr-ml-h-name">${data.league?.name||'League #'+id}</div>
+          <div class="lr-ml-h-meta">${(data.standings?.results||[]).length} managers · ${expanded?'Top 20':'Top 5'}</div>
+        </div>
+        <div>
+          <div class="lr-ml-h-rank">${myRank}</div>
+          <div class="lr-ml-h-rank-sub">${myMv>0?'<span style="color:var(--sg)">▲ '+myMv+'</span>':myMv<0?'<span style="color:var(--rd)">▼ '+Math.abs(myMv)+'</span>':'no change'}</div>
+        </div>
+        <button class="lr-ml-h-rm" onclick="event.stopPropagation();removeMiniLeague('${id}')" aria-label="Remove league">✕</button>
+      </div>
+      ${tbl}
+    </div>`;
+  }).join('');
+}
+
 // Master update — fetches then renders all live panels
 async function updateAllLive(){
   const el=document.getElementById('lr-status');
   if(el){el.style.display='block';el.innerHTML='<span class="al-ic">&#9679;</span><div>Fetching live match data...</div>';el.className='al ai mb-16';}
-  const data = await fetchLiveData();
+  // Refresh fixtures alongside live data so live minutes / status are fresh
+  const [data] = await Promise.all([
+    fetchLiveData(),
+    (async()=>{try{const f=await fplGet('fixtures/');S.fixtures=f;S.fdrMap=buildFdrMap(f);}catch(e){}})()
+  ]);
   if(!data){
     if(el){el.innerHTML='<span class="al-ic">&#9888;</span><div>Could not fetch live data. Retrying next cycle.</div>';el.className='al aw mb-16';}
     return;
@@ -3183,6 +3626,17 @@ async function updateAllLive(){
   renderAutoSubs(data);
   populateWhatIfPlayers();
   renderCapScenarios();
+  // v2.0 Phase 4 additions
+  const fxStatus = getFixtureStatus();
+  renderLivePitch(data.picks, eleMapFromLive(data.liveEv), fxStatus);
+  renderLiveBonus(data);
+  refreshAllMiniLeagues();
+  // Sync autosub toggle UI on first render
+  setAutosub(S.autosubMode);
+}
+// Helper: turn liveEv.elements into { id: live } map for sharing across renders
+function eleMapFromLive(liveEv){
+  const m={};(liveEv?.elements||[]).forEach(e=>m[e.id]=e);return m;
 }
 
 // ─── LIVE RANK (LiveFPL-inspired) ───────────────────────────
@@ -3276,7 +3730,8 @@ function renderLiveRank({liveEv, picks}){
   }
 
   if(estRank){
-    document.getElementById('lr-rank').textContent=estRank.toLocaleString();
+    // Animated rank counter (v2.0): counts from previous value to estimate over ~1.2s
+    animateCounter(document.getElementById('lr-rank'), estRank);
     const rankEl=document.getElementById('lr-rank-d');
     if(S.preGwRank){
       const rd=S.preGwRank-estRank;
@@ -3365,15 +3820,8 @@ function renderLiveRank({liveEv, picks}){
     </div>`;
   };
 
-  const sqEl=document.getElementById('lr-squad');
-  let squadHtml=starters.map(renderCard).join('');
-  if(bench.length){
-    squadHtml+=`<div class="lr-bench-sep">Bench</div>`;
-    squadHtml+=bench.map(renderCard).join('');
-  }
-  // Total points row
-  squadHtml+=`<div class="lr-total"><div class="lr-total-label"><span class="lr-pulse"></span>Total${hitsCost>0?' (after -'+hitsCost+' hits)':''}</div><div class="lr-total-val">${netPts}</div></div>`;
-  sqEl.innerHTML=squadHtml;
+  // (v2.0) The lr-squad cards have been replaced by the live pitch (renderLivePitch).
+  // The detailed stats table below still displays this same data in tabular form.
 
   // ── Detailed stats table ──
   const tbody=document.getElementById('lr-live-tbl');
