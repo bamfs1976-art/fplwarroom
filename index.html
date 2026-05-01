@@ -561,10 +561,16 @@ select.inp{
 
 /* ── FDR ────────────────────────────────────────────────── */
 .fdr{display:inline-flex;align-items:center;justify-content:center;border-radius:5px;font-size:10px;font-weight:800;min-width:44px;padding:3px 6px}
-.f1{background:#bbf7d0;color:#166534}.f2{background:#d1fae5;color:#065f46}
-.f3{background:#fef3c7;color:#92400e}.f4{background:#fee2e2;color:#991b1b}.f5{background:#fca5a5;color:#7f1d1d}
-.dark .f1{background:rgba(0,208,132,.2);color:#4ade80}.dark .f2{background:rgba(0,208,132,.1);color:#86efac}
-.dark .f3{background:rgba(245,158,11,.18);color:var(--am)}.dark .f4{background:rgba(240,79,85,.18);color:#fca5a5}.dark .f5{background:rgba(240,79,85,.32);color:var(--rd)}
+/* Spec FDR colours: 1=bright green, 2=light green, 3=yellow, 4=orange, 5=red */
+.f1{background:#22c55e;color:#052e16}.f2{background:#86efac;color:#14532d}
+.f3{background:#fde047;color:#713f12}.f4{background:#fb923c;color:#7c2d12}.f5{background:#ef4444;color:#fff}
+.dark .f1{background:rgba(34,197,94,.85);color:#04190a}.dark .f2{background:rgba(134,239,172,.6);color:#0d3017}
+.dark .f3{background:rgba(253,224,71,.65);color:#3a2009}.dark .f4{background:rgba(251,146,60,.7);color:#3a1607}.dark .f5{background:rgba(239,68,68,.85);color:#fff}
+/* DGW marker — diagonal accent stripe */
+.fdr.fd{position:relative;font-weight:900}
+.fdr.fd::after{content:"";position:absolute;top:2px;right:3px;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:-5px 0 0 rgba(255,255,255,.85)}
+/* BGW marker — neutral grey */
+.fdr.fb{background:var(--c4);color:var(--t3);border:1px dashed var(--b3);font-size:9px;letter-spacing:.04em}
 
 /* ── TRANSFER ROW ───────────────────────────────────────── */
 .txr{
@@ -587,6 +593,48 @@ select.inp{
 .csv2{font-size:1.15rem;font-weight:900;letter-spacing:-.02em}
 .sb2{height:4px;background:var(--c4);border-radius:2px;margin-top:10px;overflow:hidden}
 .sf{height:100%;border-radius:2px;transition:width .8s var(--ease)}
+/* Multi-GW Transfer Planner (v2.0) */
+.mp-totals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:600px){.mp-totals{grid-template-columns:repeat(2,1fr)}}
+.mp-tot-c{background:var(--c3);border:1px solid var(--b1);border-radius:var(--r1);padding:10px 12px}
+.mp-tot-l{font-size:.625rem;font-weight:700;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.mp-tot-v{font-size:1.1rem;font-weight:800;color:var(--t1);font-family:var(--fm);font-variant-numeric:tabular-nums}
+.mp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.mp-col{background:var(--c1);border:1px solid var(--b1);border-radius:var(--r2);padding:12px;display:flex;flex-direction:column;gap:8px}
+.mp-col-h{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid var(--b1)}
+.mp-col-gw{font-size:.75rem;font-weight:800;color:var(--gr);letter-spacing:.04em}
+.mp-col-meta{font-size:.65rem;color:var(--t3);text-align:right;line-height:1.3}
+.mp-tx{display:grid;grid-template-columns:1fr 18px 1fr 24px;gap:6px;align-items:center;padding:6px;border-radius:var(--r1);background:var(--c3);border:1px solid var(--b1)}
+.mp-tx input{width:100%;padding:6px 8px;font-size:.75rem;background:var(--c1);border:1px solid var(--b1);border-radius:6px;color:var(--t1)}
+.mp-tx input:focus{border-color:var(--gr);outline:none}
+.mp-tx-arrow{text-align:center;font-weight:800;color:var(--t3);font-size:.85rem}
+.mp-tx-rm{background:var(--rdd);color:var(--rd);border:none;border-radius:4px;width:24px;height:24px;cursor:pointer;font-size:11px;font-weight:700;line-height:1}
+.mp-tx-rm:hover{background:var(--rd);color:#fff}
+.mp-tx.risk{border-color:var(--am);background:var(--ad)}
+.mp-add{background:transparent;border:1px dashed var(--b3);border-radius:var(--r1);padding:8px;text-align:center;color:var(--t3);cursor:pointer;font-size:.75rem;font-weight:600;transition:all .12s;width:100%}
+.mp-add:hover{border-color:var(--gr);color:var(--gr);background:var(--gd)}
+.mp-foot{display:flex;justify-content:space-between;font-size:.7rem;color:var(--t3);padding-top:6px;border-top:1px solid var(--b1)}
+.mp-foot .mp-foot-v{font-family:var(--fm);font-weight:700;color:var(--t1)}
+.mp-foot .neg{color:var(--rd)}
+.mp-foot .pos{color:var(--sg)}
+.mp-warn{font-size:.65rem;color:var(--am);margin-top:4px;display:flex;align-items:center;gap:4px}
+
+/* Predicted Lineups (v2.0) */
+.pl-team{background:var(--c1);border:1px solid var(--b1);border-radius:var(--r2);padding:14px;box-shadow:var(--sh)}
+.pl-xi{display:flex;flex-direction:column;gap:2px}
+.pl-row{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;font-size:.75rem;background:var(--c3);border:1px solid transparent;transition:border-color .12s}
+.pl-row.pl-med{border-color:var(--am);background:var(--ad)}
+.pl-row.pl-high{border-color:var(--rd);background:var(--rdd)}
+.pl-name{flex:1;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-cop{font-family:var(--fm);font-weight:700;font-size:.7rem;flex-shrink:0;min-width:36px;text-align:right}
+
+/* Captain Ranker score breakdown (v2.0) */
+.cap-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin-bottom:8px}
+.cap-bd{display:flex;align-items:center;gap:6px}
+.cap-bd-l{font-size:.625rem;font-weight:700;color:var(--t3);min-width:42px;letter-spacing:.04em}
+.cap-bd-bar{flex:1;height:5px;background:var(--c4);border-radius:3px;overflow:hidden;min-width:30px}
+.cap-bd-bar div{height:100%;background:linear-gradient(90deg,var(--bl),var(--gr));border-radius:3px;transition:width .8s var(--ease)}
+.cap-bd-v{font-size:.625rem;font-weight:700;color:var(--t2);font-family:var(--fm);min-width:18px;text-align:right}
 
 /* ── EO BARS ────────────────────────────────────────────── */
 .eo-r{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:var(--r2);background:var(--c1);border:1px solid var(--b1);margin-bottom:8px;box-shadow:var(--sh)}
@@ -971,7 +1019,7 @@ select.inp{
       <div class="card"><div class="ct">Fixture Difficulty &mdash; Next 5 GWs</div><div id="d-fdr"><div class="skel-wrap" role="status" aria-label="Loading fixture difficulty"><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div></div></div></div>
       <div class="card"><div class="ct">Price Movement</div><div id="d-prices"><div class="skel-wrap" role="status" aria-label="Loading price movement"><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w30"></span></div><span class="skel skel-line w40" style="flex:1"></span><span class="skel-tag" style="width:40px"></span></div><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel skel-line w50" style="flex:1"></span><span class="skel-tag" style="width:40px"></span></div><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w30"></span></div><span class="skel skel-line w60" style="flex:1"></span><span class="skel-tag" style="width:40px"></span></div></div></div></div>
     </div>
-    <div class="card"><div class="ct">EO Quick View <span class="tag tb">Effective Ownership</span></div><div id="d-eo"><div class="skel-wrap" role="status" aria-label="Loading effective ownership"><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w80"></span><span class="skel skel-line w50"></span></div><span class="skel skel-line w100" style="flex:1"></span><span class="skel-tag" style="width:80px"></span></div><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w70"></span><span class="skel skel-line w40"></span></div><span class="skel skel-line w90" style="flex:1"></span><span class="skel-tag" style="width:80px"></span></div><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w60"></span><span class="skel skel-line w50"></span></div><span class="skel skel-line w80" style="flex:1"></span><span class="skel-tag" style="width:80px"></span></div></div></div>
+    <div class="card"><div class="ct">EO Quick View <span class="tag tb">Effective Ownership</span></div><div id="d-eo"><div class="skel-wrap" role="status" aria-label="Loading effective ownership"><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w80"></span><span class="skel skel-line w50"></span></div><span class="skel skel-line w100" style="flex:1"></span><span class="skel-tag" style="width:80px"></span></div><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w70"></span><span class="skel skel-line w40"></span></div><span class="skel skel-line w90" style="flex:1"></span><span class="skel-tag" style="width:80px"></span></div><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w60"></span><span class="skel skel-line w50"></span></div><span class="skel skel-line w80" style="flex:1"></span><span class="skel-tag" style="width:80px"></span></div></div></div></div>
   </div>
 
   <!-- MY SQUAD -->
@@ -1060,7 +1108,7 @@ select.inp{
       <div class="kpi"><div class="kpi-l">Differential Slots</div><div class="kpi-v cy" id="tm-d">&mdash;</div><div class="kpi-d">off-template players</div></div>
     </div>
     <div class="card mb-16"><div class="ct">Position-by-Position Comparison</div><div id="tm-panel"><div class="skel-wrap" role="status" aria-label="Loading template comparison"><span class="skel skel-line lg w50"></span><span class="skel skel-line w90"></span><span class="skel skel-line w70"></span><span class="skel skel-line w80"></span><span class="skel skel-line lg w40"></span><span class="skel skel-line w90"></span><span class="skel skel-line w70"></span></div></div></div>
-    <div class="card"><div class="ct">Top 10k Template &mdash; Most Owned</div><div id="tm-squad"><div class="skel-wrap" role="status" aria-label="Loading template squad"><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w30"></span></div><span class="skel-tag"></span></div></div></div>
+    <div class="card"><div class="ct">Top 10k Template &mdash; Most Owned</div><div id="tm-squad"><div class="skel-wrap" role="status" aria-label="Loading template squad"><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w30"></span></div><span class="skel-tag"></span></div></div></div></div>
   </div>
 
   <!-- RIVAL SCOUT -->
@@ -1078,14 +1126,36 @@ select.inp{
 
   <!-- TRANSFER PLANNER -->
   <div class="page" id="page-transfers">
-    <div class="ph"><h2>Transfer Planner</h2><p>Multi-GW sequence planning &middot; Break-even calculator &middot; Hit analysis</p></div>
-    <div class="g2 mb-16">
-      <div class="card"><div class="ct">Budget &amp; Transfers</div>
-        <div class="g2 gap-8">
-          <div><label class="lbl" for="ft-cnt" id="lbl-ft">Free Transfers</label><select id="ft-cnt" class="inp"><option value="1">1 FT</option><option value="2">2 FTs</option></select></div>
-          <div><label class="lbl" for="itb-i" id="lbl-itb">In The Bank</label><input type="number" id="itb-i" class="inp" placeholder="e.g. 1.5" step="0.1" min="0"></div>
+    <div class="ph"><h2>Transfer Planner</h2><p>Multi-GW timeline &middot; Cumulative budget &middot; Hit calculator</p></div>
+    <!-- MULTI-GW PLANNER (v2.0) -->
+    <div class="card mb-16">
+      <div class="fbc mb-12" style="flex-wrap:wrap;gap:12px">
+        <div>
+          <div class="ct" style="margin-bottom:4px">Multi-GW Transfer Sequence</div>
+          <div class="xs t3c">Plan transfers across <span id="mp-depth-lbl">3</span> upcoming gameweeks. Click a slot to pick a player.</div>
+        </div>
+        <div class="fac gap-8" style="flex-wrap:wrap">
+          <label class="xs t3c" for="mp-depth">Plan depth</label>
+          <select id="mp-depth" class="inp" style="width:auto" onchange="rdPlanner()">
+            <option value="3">3 GWs</option>
+            <option value="4">4 GWs</option>
+            <option value="5">5 GWs</option>
+            <option value="6">6 GWs</option>
+          </select>
+          <button class="btn btn-g btn-sm" onclick="resetPlan()" type="button">Reset plan</button>
         </div>
       </div>
+      <div class="mp-totals mb-12" id="mp-totals">
+        <div class="mp-tot-c"><div class="mp-tot-l">Bank start</div><div class="mp-tot-v" id="mp-bank-start">£&mdash;</div></div>
+        <div class="mp-tot-c"><div class="mp-tot-l">Free transfers</div><div class="mp-tot-v" id="mp-ft-start">&mdash;</div></div>
+        <div class="mp-tot-c"><div class="mp-tot-l">Hits planned</div><div class="mp-tot-v" id="mp-hits"><span class="ca">0</span></div></div>
+        <div class="mp-tot-c"><div class="mp-tot-l">Net pts impact</div><div class="mp-tot-v" id="mp-net"><span class="ca">&mdash;</span></div></div>
+      </div>
+      <div class="mp-grid" id="mp-grid"></div>
+      <div id="mp-empty" class="al ai"><span class="al-ic">&#8644;</span><div>Load your squad first to plan transfers. The planner uses your real bank, free transfers and squad value.</div></div>
+    </div>
+    <!-- HIT CALCULATOR -->
+    <div class="g2 mb-16">
       <div class="card"><div class="ct">Hit Calculator &mdash; Is &minus;4 Worth It?</div>
         <div class="fac gap-8 mb-8" style="flex-wrap:wrap">
           <div style="flex:1;min-width:120px"><label class="lbl" for="hit-d" id="lbl-hit">Expected pts gain/GW</label><input type="number" id="hit-d" class="inp" placeholder="e.g. 3" step="0.5" min="0"></div>
@@ -1093,13 +1163,15 @@ select.inp{
         </div>
         <div id="hit-res"></div>
       </div>
+      <div class="card"><div class="ct">Manual budget override</div>
+        <div class="g2 gap-8">
+          <div><label class="lbl" for="ft-cnt" id="lbl-ft">Free Transfers</label><select id="ft-cnt" class="inp" onchange="syncManualBudget()"><option value="">From squad</option><option value="1">1 FT</option><option value="2">2 FTs</option></select></div>
+          <div><label class="lbl" for="itb-i" id="lbl-itb">In The Bank (&pound;m)</label><input type="number" id="itb-i" class="inp" placeholder="e.g. 1.5" step="0.1" min="0" oninput="syncManualBudget()"></div>
+        </div>
+        <div class="xs t3c mt-8">Override blank for live data from your squad.</div>
+      </div>
     </div>
-    <div class="card mb-16">
-      <div class="fbc mb-16"><div class="sh" style="margin-bottom:0">Multi-GW Transfer Sequence</div><button class="btn btn-p btn-sm" onclick="addTx()">+ Add Move</button></div>
-      <div id="tx-list"><div class="al ai"><span class="al-ic">&#8644;</span><div>Plan your next 3 GW transfer sequence &mdash; cumulative pts and hit cost calculated automatically.</div></div></div>
-      <div id="tx-sum" class="mt-12"></div>
-    </div>
-    <div class="card"><div class="ct">Smart Transfer Targets &mdash; Form &times; Fixture &times; Differential Value</div><div id="sm-tgts"><div class="skel-wrap" role="status" aria-label="Loading transfer targets"><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w50"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w30"></span></div><span class="skel-tag"></span></div></div></div>
+    <div class="card"><div class="ct">Smart Transfer Targets &mdash; Form &times; Fixture &times; Differential Value</div><div id="sm-tgts"><div class="skel-wrap" role="status" aria-label="Loading transfer targets"><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w50"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w30"></span></div><span class="skel-tag"></span></div></div></div></div>
     <div style="display:none" id="sm-tgts-impact-note"></div>
   </div>
 
@@ -1179,17 +1251,25 @@ select.inp{
     </div>
   </div>
 
-  <!-- ROTATION RISK -->
+  <!-- PREDICTED LINEUPS / ROTATION RISK (v2.0) -->
   <div class="page" id="page-rotation">
-    <div class="ph"><h2>Rotation Risk</h2><p>European fixture congestion &middot; Rotation patterns &middot; Start probability</p></div>
+    <div class="ph"><h2>Predicted Lineups</h2><p>Per-team starting XI predictions &middot; Rotation flags &middot; Chance of playing</p></div>
     <div class="g3 mb-16">
       <div class="kpi"><div class="kpi-l">High Risk</div><div class="kpi-v cr" id="rr-h">&mdash;</div><div class="kpi-d">likely rotated</div></div>
       <div class="kpi"><div class="kpi-l">Monitor</div><div class="kpi-v cy" id="rr-m">&mdash;</div><div class="kpi-d">50/50 start</div></div>
       <div class="kpi"><div class="kpi-l">Safe to Play</div><div class="kpi-v ca" id="rr-s">&mdash;</div><div class="kpi-d">likely starting</div></div>
     </div>
-    <div class="card"><div class="ct">Rotation Risk Register</div>
-      <div class="tw"><table><thead><tr><th>Player</th><th>Club</th><th>Fixture</th><th>Euro Midweek</th><th class="r">Start Prob.</th><th>Risk</th></tr></thead>
-      <tbody id="rr-bod"><tr><td colspan="6" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr></tbody></table></div>
+    <div class="card mb-16">
+      <div class="fbc mb-12"><div class="ct" style="margin-bottom:0">Predicted Starting XI &mdash; <span id="pl-gw-lbl">next GW</span></div>
+        <select id="pl-team-filter" class="inp" style="max-width:200px" onchange="rdPredLineups()">
+          <option value="all">All teams</option>
+        </select>
+      </div>
+      <div id="pl-grid" class="g2"></div>
+    </div>
+    <div class="card"><div class="ct">Rotation Risk Register &mdash; All Doubts</div>
+      <div class="tw"><table><thead><tr><th>Player</th><th>Club</th><th>Fixture</th><th class="r">Chance</th><th>News</th><th>Risk</th></tr></thead>
+      <tbody id="rr-bod"><tr><td colspan="6" style="text-align:center;padding:32px"><div class="skel-wrap" role="status" aria-label="Loading rotation register"><div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div></div></td></tr></tbody></table></div>
     </div>
   </div>
 
@@ -1707,7 +1787,13 @@ function retryLive(){loadBoot();}
 async function loadBoot(){
   showApiStatus('loading');
   try{
-    const d=await fplGet('bootstrap-static/');S.bs=d;
+    const [d,fixtures]=await Promise.all([
+      fplGet('bootstrap-static/'),
+      fplGet('fixtures/').catch(e=>{console.warn('Fixtures load failed, FDR will be empty:',e.message);return [];})
+    ]);
+    S.bs=d;
+    S.fixtures=fixtures;
+    S.fdrMap=buildFdrMap(fixtures);
     showApiStatus('live');
     // For the GW number/points display, use current GW
     const current=d.events.find(e=>e.is_current);
@@ -1788,10 +1874,72 @@ function rdDemoFDR(){
   document.getElementById('fdr-bod').innerHTML=DM.fdr.map(t=>`<tr><td class="cp">${t.n}</td>${t.d.map(v=>`<td><span class="fdr f${v}">${v}</span></td>`).join('')}</tr>`).join('');
   document.getElementById('d-fdr').innerHTML=`<table style="width:100%;font-size:.694rem"><thead><tr><th>Team</th>${DM.fdr[0].d.slice(0,5).map((_,i)=>`<th>GW${S.gw+i}</th>`).join('')}</tr></thead><tbody>${DM.fdr.slice(0,8).map(t=>`<tr><td class="cp">${t.n}</td>${t.d.slice(0,5).map(v=>`<td><span class="fdr f${v}">${v}</span></td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
+// Build a per-team, per-GW FDR map from the real /fixtures/ feed.
+// Returns: { teamId: { gw: { difficulty, opp, isHome, isDgw, isBgw, fixtures:[{opp,isHome,fdr}] } } }
+function buildFdrMap(fixtures){
+  const map={};
+  if(!Array.isArray(fixtures))return map;
+  fixtures.forEach(fx=>{
+    if(!fx.event)return; // unscheduled
+    const gw=fx.event;
+    const add=(teamId,oppId,isHome,fdr)=>{
+      if(!map[teamId])map[teamId]={};
+      if(!map[teamId][gw])map[teamId][gw]={fixtures:[]};
+      map[teamId][gw].fixtures.push({opp:oppId,isHome,fdr});
+    };
+    add(fx.team_h,fx.team_a,true,fx.team_h_difficulty);
+    add(fx.team_a,fx.team_h,false,fx.team_a_difficulty);
+  });
+  // Compute aggregate per GW (avg difficulty if DGW, single fixture if not)
+  Object.keys(map).forEach(tid=>{
+    Object.keys(map[tid]).forEach(gw=>{
+      const f=map[tid][gw].fixtures;
+      const avg=f.reduce((s,x)=>s+x.fdr,0)/f.length;
+      map[tid][gw].difficulty=Math.round(avg);
+      map[tid][gw].isDgw=f.length>=2;
+      map[tid][gw].isBgw=false;
+      map[tid][gw].opp=f[0].opp;
+      map[tid][gw].isHome=f[0].isHome;
+    });
+  });
+  return map;
+}
+// Look up FDR for one team in one gameweek. Falls back to empty (BGW indicator).
+function getTeamFdr(teamId, gw){
+  const m=S.fdrMap?.[teamId]?.[gw];
+  if(!m)return {difficulty:null,isBgw:true,isDgw:false,fixtures:[]};
+  return m;
+}
 function rdFDR(d){
-  const fx=d.teams.map(t=>({n:t.short_name,d:[1,2,3,4,5,6].map(()=>Math.min(5,Math.max(1,Math.round(3+(Math.random()-.5)*2.5))))}));
-  document.getElementById('fdr-bod').innerHTML=fx.map(t=>`<tr><td class="cp">${t.n}</td>${t.d.map(v=>`<td><span class="fdr f${v}">${v}</span></td>`).join('')}</tr>`).join('');
-  document.getElementById('d-fdr').innerHTML=`<table style="width:100%;font-size:.694rem"><thead><tr><th>Team</th>${fx[0].d.slice(0,5).map((_,i)=>`<th>GW+${i}</th>`).join('')}</tr></thead><tbody>${fx.slice(0,8).map(t=>`<tr><td class="cp">${t.n}</td>${t.d.slice(0,5).map(v=>`<td><span class="fdr f${v}">${v}</span></td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  const baseGw=S.gw||1;
+  const teams=[...d.teams].sort((a,b)=>a.short_name.localeCompare(b.short_name));
+  const tmById={};d.teams.forEach(t=>{tmById[t.id]=t;});
+  // Build a data array shape that the grid render below can consume
+  const fx=teams.map(t=>{
+    const cells=[];
+    for(let i=0;i<6;i++){
+      const gw=baseGw+i;
+      const m=getTeamFdr(t.id,gw);
+      cells.push({fdr:m.difficulty,opp:m.opp?(tmById[m.opp]||{}).short_name||'?':'',isHome:m.isHome,isDgw:m.isDgw,isBgw:m.isBgw,fixtures:m.fixtures});
+    }
+    return {n:t.short_name,id:t.id,cells};
+  });
+  const renderCell=c=>{
+    if(c.isBgw)return `<td><span class="fdr fb" title="Blank GW">BGW</span></td>`;
+    if(c.isDgw){
+      const dt=c.fixtures.map(fx=>{
+        const opp=(tmById[fx.opp]||{}).short_name||'?';
+        return `${fx.isHome?'':'@'}${opp}(${fx.fdr})`;
+      }).join(' / ');
+      return `<td><span class="fdr fd f${c.fdr}" title="Double GW: ${dt}">${c.fdr}×2</span></td>`;
+    }
+    if(c.fdr==null)return `<td><span class="fdr">—</span></td>`;
+    return `<td><span class="fdr f${c.fdr}" title="${c.isHome?'Home':'Away'} vs ${c.opp}">${c.fdr}</span></td>`;
+  };
+  document.getElementById('fdr-bod').innerHTML=fx.map(t=>`<tr><td class="cp">${t.n}</td>${t.cells.map(renderCell).join('')}</tr>`).join('');
+  // Dashboard mini-grid: show top 8 teams ranked by easiest 5-GW run
+  const ranked=[...fx].map(t=>({...t,run:t.cells.slice(0,5).reduce((s,c)=>s+(c.isBgw?5:c.fdr||3),0)})).sort((a,b)=>a.run-b.run).slice(0,8);
+  document.getElementById('d-fdr').innerHTML=`<table style="width:100%;font-size:.694rem"><thead><tr><th>Team</th>${[0,1,2,3,4].map(i=>`<th>GW${baseGw+i}</th>`).join('')}</tr></thead><tbody>${ranked.map(t=>`<tr><td class="cp">${t.n}</td>${t.cells.slice(0,5).map(renderCell).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
 function rdDemoPrices(){
@@ -1857,18 +2005,104 @@ function rdDemoCaps(){
     const tagCls=p.col==='gr'?'tg':p.col==='am'?'ty':'tb';
     return `<div class="cc"><div class="fbc mb-8"><div><div class="cn">${p.n}</div><div class="cclub">${p.cl}</div></div><div class="csv2" style="color:${colVar}">${p.s}</div></div><div class="flex gap-4 mb-8" style="flex-wrap:wrap"><span class="tag ${tagCls}">${p.tp}</span><span class="tag tz">EO: ${p.eo}</span><span class="fdr f${p.fdr}" style="font-size:9px;padding:2px 6px">FDR ${p.fdr}</span></div><div class="xs t3c mb-8">${p.r}</div><div class="sb2"><div class="sf" style="width:${p.s}%;background:${colVar}"></div></div></div>`;}).join('');
 }
+// CAPTAIN RANKER (v2.0) — six-factor weighted scoring
+// Weights: FDR 25 / Form 20 / xG+xA rate 20 / EO context 15 / Set-piece 10 / Home-Away 10
+// Returns the player object augmented with ._cap = {score, breakdown, tier, fdr, opp, isHome, isDgw}
+function captainScore(e, tmById){
+  const baseGw=S.gw||1;
+  const fdrM=getTeamFdr(e.team, baseGw);
+  const fdrVal=fdrM.difficulty;
+  // 1. FDR: invert and scale (1→100, 5→0). BGW = 0. DGW = +20% bonus capped at 100.
+  let fdrScore=0;
+  if(fdrM.isBgw)fdrScore=0;
+  else if(fdrVal!=null)fdrScore=Math.max(0,Math.min(100,(5-fdrVal)*25));
+  if(fdrM.isDgw)fdrScore=Math.min(100,fdrScore*1.2);
+  // 2. Form: form is 0–10 typically, scale to 0–100
+  const formScore=Math.max(0,Math.min(100,parseFloat(e.form||0)*10));
+  // 3. xG+xA per 90: cap at 1.5 per 90 → 100
+  const mins=parseInt(e.minutes||0);
+  const xga=parseFloat(e.expected_goals||0)+parseFloat(e.expected_assists||0);
+  const xgaPer90=mins>=180?(xga/(mins/90)):0;
+  const xgaScore=Math.max(0,Math.min(100,xgaPer90/1.5*100));
+  // 4. EO context: low EO = higher score (rank-gain potential when they return)
+  const own=parseFloat(e.selected_by_percent||0);
+  const eoScore=Math.max(0,Math.min(100,(60-own)/60*100));
+  // 5. Set-piece duty: penalty taker = 100, free-kick taker = 65, neither = 25 (still attacking returns)
+  const order=parseInt(e.penalties_order||0);
+  const fkOrder=parseInt(e.direct_freekicks_order||0);
+  let spScore=25;
+  if(order===1)spScore=100;
+  else if(order===2)spScore=70;
+  else if(fkOrder===1)spScore=65;
+  else if(fkOrder===2)spScore=45;
+  // 6. Home/Away: 100 home, 50 away, 0 BGW
+  let haScore=50;
+  if(fdrM.isBgw)haScore=0;
+  else if(fdrM.isHome)haScore=100;
+  else haScore=50;
+  // Weighted total
+  const score=Math.round(
+    fdrScore*0.25 + formScore*0.20 + xgaScore*0.20 +
+    eoScore*0.15 + spScore*0.10 + haScore*0.10
+  );
+  // Tier by EO (the spec defines the tier badge by EO)
+  let tier='Safe',tierCls='tb';
+  if(own<15){tier='Differential';tierCls='tg';}
+  else if(own<40){tier='Semi-Diff';tierCls='ty';}
+  return {
+    score,
+    breakdown:{fdr:Math.round(fdrScore),form:Math.round(formScore),xga:Math.round(xgaScore),eo:Math.round(eoScore),sp:Math.round(spScore),ha:Math.round(haScore)},
+    tier,tierCls,
+    fdr:fdrVal,
+    opp:fdrM.opp?(tmById[fdrM.opp]||{}).short_name||'?':'',
+    isHome:fdrM.isHome,
+    isDgw:fdrM.isDgw,
+    isBgw:fdrM.isBgw,
+    xga90:xgaPer90
+  };
+}
 function rdCaps(d){
   const tm={};d.teams.forEach(t=>tm[t.id]=t);
-  const top=[...d.elements].filter(e=>parseFloat(e.form)>5).sort((a,b)=>parseFloat(b.form)-parseFloat(a.form)).slice(0,6);
-  const cols=['bl','bl','gr','bl','am','gr'],types=['Safe','Safe','Differential','Safe','Semi-Diff','Differential'];
-  document.getElementById('cap-cards').innerHTML=top.map((e,i)=>{
-    const baseScore=parseFloat(e.form)*9;
-    const ps=HAS_PL_STATS?matchPLStats(e.web_name):null;
-    const ratingBonus=ps&&ps.rating?Math.max(0,Math.min(1,(ps.rating-6.0)/2.0))*10:0;
-    const s=Math.min(99,Math.round(baseScore*0.9+ratingBonus));
-    const colVar=cols[i]==='gr'?'var(--gr)':cols[i]==='am'?'var(--am)':'var(--bl)';
-    const ratingTag=ps&&ps.rating?`<span class="tag tt">Rating: ${ps.rating.toFixed(2)}</span>`:'';
-    return `<div class="cc"><div class="fbc mb-8"><div><div class="cn">${e.web_name}</div><div class="cclub">${(tm[e.team]||{}).short_name||'—'} · ${PM[e.element_type]}</div></div><div class="csv2" style="color:${colVar}">${s}</div></div><div class="flex gap-4 mb-8" style="flex-wrap:wrap"><span class="tag ${cols[i]==='gr'?'tg':cols[i]==='am'?'ty':'tb'}">${types[i]}</span><span class="tag tz">Own: ${e.selected_by_percent}%</span><span class="tag tt">Form: ${e.form}</span>${ratingTag}</div><div class="xs t3c mb-8">£${(e.now_cost/10).toFixed(1)}m · ${e.total_points} pts total</div><div class="sb2"><div class="sf" style="width:${s}%;background:${colVar}"></div></div></div>`;}).join('');
+  // Eligible: outfield (not GK), played 180+ minutes, not flagged out
+  const elig=d.elements.filter(e=>e.element_type!==1&&parseInt(e.minutes||0)>=180&&e.status!=='i'&&e.status!=='u');
+  const ranked=elig.map(e=>({...e,_cap:captainScore(e,tm)}))
+    .filter(e=>!e._cap.isBgw)
+    .sort((a,b)=>b._cap.score-a._cap.score)
+    .slice(0,10);
+  if(!ranked.length){
+    document.getElementById('cap-cards').innerHTML='<div class="al ai" style="grid-column:1/-1"><span class="al-ic">&#8505;</span><div>No fixture data for the next gameweek yet.</div></div>';
+    return;
+  }
+  document.getElementById('cap-cards').innerHTML=ranked.map((e,i)=>{
+    const c=e._cap;
+    const colVar=c.tierCls==='tg'?'var(--gr)':c.tierCls==='ty'?'var(--am)':'var(--bl)';
+    const fdrPill=c.isBgw?'<span class="fdr fb">BGW</span>':c.isDgw?`<span class="fdr fd f${c.fdr}">${c.fdr}×2</span>`:`<span class="fdr f${c.fdr}">${c.fdr}</span>`;
+    const oppLine=c.isBgw?'No fixture':`${c.isHome?'vs':'@'} ${c.opp}${c.isDgw?' (DGW)':''}`;
+    const reasons=[];
+    if(c.breakdown.fdr>=60)reasons.push('great fixture');
+    if(c.breakdown.form>=70)reasons.push('hot form');
+    if(c.breakdown.xga>=60)reasons.push('strong xG+xA rate');
+    if(c.breakdown.sp>=70)reasons.push('penalty duty');
+    if(c.breakdown.eo>=60)reasons.push('low EO — rank-gain pick');
+    if(c.breakdown.ha===100)reasons.push('home');
+    const reasonText=reasons.length?reasons.slice(0,3).join(' · '):'Mixed signals — see breakdown';
+    return `<div class="cc"><div class="fbc mb-8"><div><div class="cn">${i+1}. ${e.web_name}${c.isDgw?' <span class="tag tg" style="margin-left:4px">DGW</span>':''}</div><div class="cclub">${(tm[e.team]||{}).short_name||'—'} · ${PM[e.element_type]} · ${oppLine}</div></div><div class="csv2" style="color:${colVar}">${c.score}</div></div>
+    <div class="flex gap-4 mb-8" style="flex-wrap:wrap">
+      <span class="tag ${c.tierCls}">${c.tier}</span>
+      ${fdrPill}
+      <span class="tag tz">EO ${e.selected_by_percent}%</span>
+      <span class="tag tt">Form ${e.form}</span>
+    </div>
+    <div class="xs t3c mb-8">${reasonText}</div>
+    <div class="cap-breakdown" aria-label="Score breakdown">
+      <div class="cap-bd"><span class="cap-bd-l">FDR</span><div class="cap-bd-bar"><div style="width:${c.breakdown.fdr}%"></div></div><span class="cap-bd-v">${c.breakdown.fdr}</span></div>
+      <div class="cap-bd"><span class="cap-bd-l">Form</span><div class="cap-bd-bar"><div style="width:${c.breakdown.form}%"></div></div><span class="cap-bd-v">${c.breakdown.form}</span></div>
+      <div class="cap-bd"><span class="cap-bd-l">xG+xA</span><div class="cap-bd-bar"><div style="width:${c.breakdown.xga}%"></div></div><span class="cap-bd-v">${c.breakdown.xga}</span></div>
+      <div class="cap-bd"><span class="cap-bd-l">EO</span><div class="cap-bd-bar"><div style="width:${c.breakdown.eo}%"></div></div><span class="cap-bd-v">${c.breakdown.eo}</span></div>
+      <div class="cap-bd"><span class="cap-bd-l">Set-pc</span><div class="cap-bd-bar"><div style="width:${c.breakdown.sp}%"></div></div><span class="cap-bd-v">${c.breakdown.sp}</span></div>
+      <div class="cap-bd"><span class="cap-bd-l">H/A</span><div class="cap-bd-bar"><div style="width:${c.breakdown.ha}%"></div></div><span class="cap-bd-v">${c.breakdown.ha}</span></div>
+    </div>
+    <div class="sb2"><div class="sf" style="width:${c.score}%;background:${colVar}"></div></div></div>`;}).join('');
 }
 
 function rdDemoDiffs(){
@@ -1946,9 +2180,119 @@ function rdInj(d){
 function rdDemoRot(){
   const h=DM.rot.filter(r=>r.risk==='high').length,m=DM.rot.filter(r=>r.risk==='med').length;
   document.getElementById('rr-h').textContent=h;document.getElementById('rr-m').textContent=m;document.getElementById('rr-s').textContent=DM.rot.length-h-m;
-  document.getElementById('rr-bod').innerHTML=DM.rot.map(r=>`<tr><td class="cp">${r.n}</td><td class="t2c">${r.cl}</td><td><span class="fdr f2">${r.fix}</span></td><td><span class="tag ty">${r.euro}</span></td><td class="r w7">${r.prob}%</td><td class="${r.risk==='high'?'cr':r.risk==='med'?'cy':'ca'} w7 xs">${r.risk==='high'?'⚠ High Risk':r.risk==='med'?'◎ Monitor':'✓ Safe'}</td></tr>`).join('');
+  document.getElementById('rr-bod').innerHTML=DM.rot.map(r=>`<tr><td class="cp">${r.n}</td><td class="t2c">${r.cl}</td><td><span class="fdr f2">${r.fix}</span></td><td class="r w7">${r.prob}%</td><td class="xs">${r.euro}</td><td class="${r.risk==='high'?'cr':r.risk==='med'?'cy':'ca'} w7 xs">${r.risk==='high'?'⚠ High Risk':r.risk==='med'?'◎ Monitor':'✓ Safe'}</td></tr>`).join('');
 }
-function rdRot(d){rdDemoRot();}
+// Helper: classify a player's chance of playing into a rotation tier
+function rotationTier(e){
+  const cop=e.chance_of_playing_next_round;
+  if(e.status==='i'||e.status==='u'||e.status==='s')return {tier:'high',label:'⚠ Out',cls:'cr',pct:0};
+  if(cop===0)return {tier:'high',label:'⚠ High Risk',cls:'cr',pct:0};
+  if(cop!=null&&cop<75)return {tier:'med',label:'◎ Monitor',cls:'cy',pct:cop};
+  if(e.status==='d')return {tier:'med',label:'◎ Doubt',cls:'cy',pct:cop??50};
+  return {tier:'safe',label:'✓ Likely',cls:'ca',pct:cop??100};
+}
+// Predicted Lineups: per-team starting XI ranked by minutes-per-appearance.
+// Uses formation 4-3-3 by default, falls back to actual position counts if needed.
+function predStartingXI(teamId){
+  if(!S.bs)return [];
+  const els=S.bs.elements.filter(e=>e.team===teamId);
+  // Score each player: minutes per game * (chance/100), penalize if status flag present
+  const scored=els.map(e=>{
+    const mins=parseInt(e.minutes||0);
+    const starts=parseInt(e.starts||0);
+    const mpg=starts>=3?mins/Math.max(starts,1):mins/Math.max(parseInt(e.appearances||1),1);
+    const cop=(e.chance_of_playing_next_round!=null?e.chance_of_playing_next_round:100)/100;
+    const flagPen=(e.status!=='a'?0.6:1);
+    return {...e,_score:mpg*cop*flagPen,_mpg:mpg,_rot:rotationTier(e)};
+  }).sort((a,b)=>b._score-a._score);
+  // Group by element_type and pick formation 1-4-3-3 (standard top side)
+  const buckets={1:[],2:[],3:[],4:[]};
+  scored.forEach(p=>{if(buckets[p.element_type])buckets[p.element_type].push(p);});
+  const formation={1:1,2:4,3:3,4:3}; // GK, DEF, MID, FWD
+  const xi=[];
+  Object.keys(formation).forEach(pos=>{
+    xi.push(...buckets[pos].slice(0,formation[pos]));
+  });
+  return xi;
+}
+function rdPredLineups(){
+  const grid=document.getElementById('pl-grid');
+  if(!grid||!S.bs)return;
+  const filterEl=document.getElementById('pl-team-filter');
+  const filter=filterEl?filterEl.value:'all';
+  // Populate the team filter once
+  if(filterEl&&filterEl.options.length<=1){
+    [...S.bs.teams].sort((a,b)=>a.name.localeCompare(b.name)).forEach(t=>{
+      const o=document.createElement('option');o.value=t.id;o.textContent=t.name;filterEl.appendChild(o);
+    });
+  }
+  // GW label
+  const lbl=document.getElementById('pl-gw-lbl');if(lbl)lbl.textContent='GW'+(S.gw||1);
+  // Pick teams to render
+  const teams=filter==='all'?[...S.bs.teams].sort((a,b)=>a.name.localeCompare(b.name)):S.bs.teams.filter(t=>t.id==parseInt(filter));
+  grid.innerHTML=teams.map(t=>{
+    const xi=predStartingXI(t.id);
+    const fdr=getTeamFdr(t.id, S.gw||1);
+    const fdrPill=fdr.isBgw?'<span class="fdr fb">BGW</span>':fdr.difficulty?`<span class="fdr f${fdr.difficulty}">${fdr.difficulty}</span>`:'<span class="fdr">—</span>';
+    const oppLine=fdr.isBgw?'No fixture':fdr.opp?`${fdr.isHome?'vs':'@'} ${(S.bs.teams.find(x=>x.id===fdr.opp)||{}).short_name||'?'}`:'—';
+    return `<div class="pl-team">
+      <div class="fbc mb-8">
+        <div><div class="cn">${t.name}</div><div class="cclub">${oppLine}${fdr.isDgw?' · DGW':''}</div></div>
+        ${fdrPill}
+      </div>
+      <div class="pl-xi">
+        ${xi.map(p=>{
+          const r=p._rot;
+          const cop=p.chance_of_playing_next_round;
+          const copStr=cop===0||cop?cop+'%':r.tier==='safe'?'OK':'?';
+          return `<div class="pl-row pl-${r.tier}"><span class="pos p${PM[p.element_type]}">${PM[p.element_type]}</span><span class="pl-name">${p.web_name}</span><span class="pl-cop ${r.cls}">${copStr}</span></div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+function rdRot(d){
+  // KPI counts across the full league
+  let high=0,med=0,safe=0;
+  const tm={};d.teams.forEach(t=>tm[t.id]=t);
+  d.elements.forEach(e=>{
+    if(parseInt(e.minutes||0)<90)return; // ignore deep bench / not played
+    const r=rotationTier(e);
+    if(r.tier==='high')high++;
+    else if(r.tier==='med')med++;
+    else if(parseInt(e.minutes||0)>=270)safe++;
+  });
+  document.getElementById('rr-h').textContent=high;
+  document.getElementById('rr-m').textContent=med;
+  document.getElementById('rr-s').textContent=safe;
+  // Risk register: only doubts/risks (not 'safe'), sorted high→med
+  const doubts=d.elements
+    .filter(e=>parseInt(e.minutes||0)>=180)
+    .map(e=>({...e,_rot:rotationTier(e)}))
+    .filter(e=>e._rot.tier!=='safe')
+    .sort((a,b)=>{
+      const order={high:0,med:1};
+      return (order[a._rot.tier]-order[b._rot.tier])||(a._rot.pct-b._rot.pct);
+    })
+    .slice(0,40);
+  if(!doubts.length){
+    document.getElementById('rr-bod').innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--t3)">No rotation doubts in the league right now.</td></tr>';
+  }else{
+    document.getElementById('rr-bod').innerHTML=doubts.map(e=>{
+      const fdr=getTeamFdr(e.team,S.gw||1);
+      const fix=fdr.isBgw?'<span class="fdr fb">BGW</span>':fdr.isDgw?`<span class="fdr fd f${fdr.difficulty}">DGW</span>`:fdr.difficulty?`<span class="fdr f${fdr.difficulty}">${(tm[fdr.opp]||{}).short_name||'?'}</span>`:'—';
+      return `<tr>
+        <td class="cp">${e.web_name}</td>
+        <td class="t2c">${(tm[e.team]||{}).short_name||'—'}</td>
+        <td>${fix}</td>
+        <td class="r w7">${e._rot.pct!=null?e._rot.pct+'%':'—'}</td>
+        <td class="xs">${e.news||'—'}</td>
+        <td class="${e._rot.cls} w7 xs">${e._rot.label}</td>
+      </tr>`;
+    }).join('');
+  }
+  rdPredLineups();
+}
 
 function rdSP(d){
   if(!HAS_PL_STATS){rdDemoSP();return;}
@@ -2325,8 +2669,9 @@ async function loadSquad(){
     rdPitch(picks);
     rdSquadSum(info, hist, picks);
     rdLiveBar(info, hist, picks);
-    // Refresh Quick Intel now that we know which players are owned
+    // Refresh Quick Intel and Planner now that we know which players are owned
     rdQuickIntel();
+    rdPlanner();
     // Update pitch header with team name
     const phdr=document.getElementById('pitch-header');
     if(phdr)phdr.innerHTML=`${info.name||'Formation'} <span class="tag tz" style="font-weight:500;text-transform:none;letter-spacing:0">${info.player_first_name||''} ${info.player_last_name||''}</span>`;
@@ -2394,19 +2739,147 @@ function calcHit(){
   document.getElementById('hit-res').innerHTML=`<div class="al ${ok?'as':'ad2'}"><span class="al-ic">${ok?'✓':'✗'}</span><div>Break-even: <strong>${be} GWs</strong>. ${ok?'Hit is <strong>justified</strong> — pays back within 2 GWs.':'Hit is <strong>not worth it</strong> — wait for a free transfer.'}</div></div>`;
 }
 
-let txN=0;
-function addTx(){
-  txN++;const list=document.getElementById('tx-list');
-  const al=list.querySelector('.al');if(al&&list.children.length===1)list.innerHTML='';
-  const div=document.createElement('div');div.className='gwpr';div.id='tx-'+txN;
-  div.innerHTML=`<div class="gwp-l">GW ${S.gw+txN-1}</div><input type="text" class="inp" placeholder="OUT player" style="font-size:.833rem"><input type="text" class="inp" placeholder="IN player" style="font-size:.833rem"><label class="fac gap-4 xs t2c" style="cursor:pointer;white-space:nowrap"><input type="checkbox" style="accent-color:var(--gr)" onchange="updTxSum()"> &minus;4</label><button onclick="document.getElementById('tx-${txN}').remove();updTxSum()" style="color:var(--rd);font-size:12px;padding:4px;background:var(--rdd);border-radius:4px">✕</button>`;
-  list.appendChild(div);updTxSum();
+// ── MULTI-GW TRANSFER PLANNER (v2.0) ─────────────────────────
+// State shape: S.txPlan = { [gw]: [{out:elementId|name, in:elementId|name, projDelta}] }
+// Persists to localStorage so refreshes keep the plan.
+function loadTxPlan(){
+  try{return JSON.parse(localStorage.getItem('fwr_txplan')||'{}');}catch(e){return {};}
 }
-function updTxSum(){
-  const rows=document.querySelectorAll('.gwpr');const hits=[...rows].filter(r=>r.querySelector('input[type=checkbox]')?.checked).length;
-  const el=document.getElementById('tx-sum');if(!el)return;
-  if(!rows.length){el.innerHTML='';return;}
-  el.innerHTML=`<div class="fac gap-12 sm t2c"><span>${rows.length} transfer${rows.length!==1?'s':''} planned</span>·<span class="${hits>0?'cr':'ca'}">${hits} hit${hits!==1?'s':''} (${hits*-4} pts)</span></div>`;
+function saveTxPlan(){
+  try{localStorage.setItem('fwr_txplan',JSON.stringify(S.txPlan||{}));}catch(e){}
+}
+S.txPlan=S.txPlan||loadTxPlan();
+S.txPlanDepth=parseInt(localStorage.getItem('fwr_txdepth')||'3');
+
+function resetPlan(){
+  S.txPlan={};saveTxPlan();rdPlanner();
+}
+function syncManualBudget(){rdPlanner();}
+
+// Look up a player by partial name match (case-insensitive). Returns first hit.
+function findPlayer(name){
+  if(!S.bs||!name)return null;
+  const q=name.trim().toLowerCase();
+  return S.bs.elements.find(e=>(e.web_name||'').toLowerCase()===q)
+      || S.bs.elements.find(e=>(e.web_name||'').toLowerCase().startsWith(q))
+      || S.bs.elements.find(e=>(e.web_name||'').toLowerCase().includes(q))
+      || null;
+}
+// Project rough points-per-GW delta (in - out) for a transfer using form
+function projDelta(outName, inName){
+  const a=findPlayer(outName), b=findPlayer(inName);
+  if(!a||!b)return null;
+  return parseFloat(b.form||0)-parseFloat(a.form||0);
+}
+// Detect whether a planned IN player is at price-rise risk tonight (high transfers in)
+function priceRiseRisk(inName){
+  const p=findPlayer(inName);if(!p)return false;
+  const net=p.transfers_in_event-p.transfers_out_event;
+  // ~50k+ net daily is enough to flag as a near-certain rise
+  return net>50000&&p.cost_change_event===0;
+}
+
+function addPlanRow(gw){
+  if(!S.txPlan[gw])S.txPlan[gw]=[];
+  S.txPlan[gw].push({out:'',in:''});
+  saveTxPlan();rdPlanner();
+}
+function rmPlanRow(gw,idx){
+  if(!S.txPlan[gw])return;
+  S.txPlan[gw].splice(idx,1);
+  if(!S.txPlan[gw].length)delete S.txPlan[gw];
+  saveTxPlan();rdPlanner();
+}
+function setPlanField(gw,idx,field,val){
+  if(!S.txPlan[gw]||!S.txPlan[gw][idx])return;
+  S.txPlan[gw][idx][field]=val;
+  saveTxPlan();
+  // Just refresh totals + that row's risk indicator (cheap to re-render whole grid)
+  rdPlanner();
+}
+
+function rdPlanner(){
+  const grid=document.getElementById('mp-grid');if(!grid)return;
+  const empty=document.getElementById('mp-empty');
+  const depthSel=document.getElementById('mp-depth');
+  if(depthSel){depthSel.value=S.txPlanDepth;}
+  const depth=depthSel?parseInt(depthSel.value):S.txPlanDepth;
+  S.txPlanDepth=depth;localStorage.setItem('fwr_txdepth',String(depth));
+  const lbl=document.getElementById('mp-depth-lbl');if(lbl)lbl.textContent=depth;
+
+  // Bank + FT sources: manual override > squad live > demo defaults
+  const manualFt=document.getElementById('ft-cnt')?.value;
+  const manualItb=parseFloat(document.getElementById('itb-i')?.value);
+  let bank=null,ft=null;
+  if(S.myPicks&&S.myPicks.transfers){
+    bank=(S.myPicks.transfers.bank||0)/10;
+  }
+  if(!isNaN(manualItb))bank=manualItb;
+  if(manualFt)ft=parseInt(manualFt);
+  if(ft===null){ft=S.myPicks?.transfers?.limit?Math.max(1,S.myPicks.transfers.limit-S.myPicks.transfers.made):1;}
+  if(bank===null)bank=0;
+
+  document.getElementById('mp-bank-start').textContent='£'+bank.toFixed(1)+'m';
+  document.getElementById('mp-ft-start').textContent=ft+' FT';
+
+  // Show empty CTA only when there's no plan AND no squad
+  const hasPlan=Object.keys(S.txPlan||{}).some(gw=>S.txPlan[gw]?.length);
+  if(empty)empty.style.display=(S.myPicks||hasPlan)?'none':'flex';
+
+  // Build columns
+  const baseGw=S.gw||1;
+  const tmById={};if(S.bs)S.bs.teams.forEach(t=>tmById[t.id]=t);
+  let cumBank=bank, cumFt=ft, cumNet=0, totalHits=0;
+  let html='';
+  for(let i=0;i<depth;i++){
+    const gw=baseGw+i;
+    const rows=S.txPlan[gw]||[];
+    const fdrCells=[];
+    const transfersHere=rows.length;
+    // Each transfer: cost = priceIn - priceOut (impacts bank), free if free transfers > 0
+    let gwCostMs=0;let gwHits=0;let gwDelta=0;
+    rows.forEach(r=>{
+      const a=findPlayer(r.out),b=findPlayer(r.in);
+      if(a&&b){
+        gwCostMs+=(b.now_cost-a.now_cost)/10;
+      }
+    });
+    const usedFt=Math.min(cumFt,transfersHere);
+    gwHits=Math.max(0,transfersHere-cumFt);
+    cumBank-=gwCostMs;
+    cumFt=Math.min(2,(cumFt-usedFt)+1); // 1 FT carries over per GW, max 2
+    rows.forEach(r=>{const d=projDelta(r.out,r.in); if(d!=null)gwDelta+=d;});
+    const netGw=gwDelta-gwHits*4;
+    cumNet+=netGw;
+    totalHits+=gwHits;
+
+    const rowsHtml=rows.map((r,idx)=>{
+      const risk=priceRiseRisk(r.in);
+      return `<div class="mp-tx ${risk?'risk':''}">
+        <input type="text" placeholder="OUT player" value="${(r.out||'').replace(/"/g,'&quot;')}" oninput="setPlanField(${gw},${idx},'out',this.value)" aria-label="GW${gw} transfer out">
+        <span class="mp-tx-arrow">→</span>
+        <input type="text" placeholder="IN player" value="${(r.in||'').replace(/"/g,'&quot;')}" oninput="setPlanField(${gw},${idx},'in',this.value)" aria-label="GW${gw} transfer in">
+        <button class="mp-tx-rm" onclick="rmPlanRow(${gw},${idx})" aria-label="Remove transfer">✕</button>
+      </div>${risk?'<div class="mp-warn">⚡ Price rise risk — buy before tonight\'s 6am lock</div>':''}`;
+    }).join('');
+    const fdrM=S.fdrMap?[...Array(20).keys()].map(()=>null):null; // placeholder
+    html+=`<div class="mp-col">
+      <div class="mp-col-h">
+        <div class="mp-col-gw">GW${gw}</div>
+        <div class="mp-col-meta">FT in: <strong>${i===0?ft:'+1'}</strong>${gwHits?` · <span class="cr">${gwHits} hit</span>`:''}</div>
+      </div>
+      ${rowsHtml||'<div class="xs t3c" style="padding:4px 0">No transfers planned</div>'}
+      <button class="mp-add" onclick="addPlanRow(${gw})" type="button">+ Add transfer</button>
+      <div class="mp-foot">
+        <span>Bank after: <span class="mp-foot-v ${cumBank<0?'neg':''}">£${cumBank.toFixed(1)}m</span></span>
+        <span>Net pts: <span class="mp-foot-v ${netGw>0?'pos':netGw<0?'neg':''}">${netGw>0?'+':''}${netGw.toFixed(1)}</span></span>
+      </div>
+    </div>`;
+  }
+  grid.innerHTML=html;
+  // Totals
+  document.getElementById('mp-hits').innerHTML=`<span class="${totalHits>0?'cr':'ca'}">${totalHits}</span>${totalHits>0?` <span class="xs t3c">(${totalHits*-4} pts)</span>`:''}`;
+  document.getElementById('mp-net').innerHTML=`<span class="${cumNet>0?'pos':cumNet<0?'neg':''}">${cumNet>0?'+':''}${cumNet.toFixed(1)} pts</span>`;
 }
 
 function addRival(){
@@ -3324,6 +3797,7 @@ function updateFdrHeaders(){
   if(!S.bs)loadDemo();
   else{rdDemoRankCharts();rdDemoPitch();rdDemoSquadSum();rdDemoEO();}
   updateFdrHeaders();
+  rdPlanner();
   // Re-arm spinners after data load attempts
   setTimeout(armSpinnerTimeouts,500);
   // Auto-load squad if manager ID persisted
