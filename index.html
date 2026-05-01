@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="FPL War Room — the command centre for top 1% Fantasy Premier League managers. Live rank, captaincy lab, transfer planner and more.">
-<title>FPL War Room v4</title>
+<title>FPL War Room</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -29,6 +29,8 @@
   --rd:#dc2626;--rdd:rgba(220,38,38,.1);
   /* Teal */
   --te:#0891b2;--tdd:rgba(8,145,178,.1);
+  /* Success green — separate from primary accent for positive deltas */
+  --sg:#16a34a;--sgd:rgba(22,163,74,.1);
   /* Radii */
   --r1:8px;--r2:12px;--r3:16px;--r4:20px;
   /* Sidebar width (desktop) */
@@ -43,17 +45,28 @@
   --sh:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.04);
   --sh2:0 2px 8px rgba(0,0,0,.1),0 8px 24px rgba(0,0,0,.06);
 }
-/* Dark mode */
+/* Dark mode — v2.0 spec tokens */
 .dark{
-  --c0:#0a0c12;--c1:#12151e;--c2:#171b26;--c3:#1e2333;--c4:#252c3d;
-  --b1:rgba(255,255,255,.06);--b2:rgba(255,255,255,.1);--b3:rgba(255,255,255,.16);
-  --t1:#edf0f7;--t2:#8896aa;--t3:#505a6b;--t4:#303847;
-  --gr:#00d084;--gd:rgba(0,208,132,.12);--gg:rgba(0,208,132,.24);
-  --bl:#4f8ef7;--bd:rgba(79,142,247,.12);
+  /* Surfaces — spec dark bg #0f1117, card #1a1d26 */
+  --c0:#0f1117;--c1:#1a1d26;--c2:#1f232e;--c3:#252937;--c4:#2a2d36;
+  /* Borders — spec card border #2a2d36 (rendered as rgba over dark bg) */
+  --b1:rgba(232,234,237,.06);--b2:rgba(232,234,237,.1);--b3:rgba(232,234,237,.18);
+  /* Text — spec primary #e8eaed, secondary #9ca3af */
+  --t1:#e8eaed;--t2:#9ca3af;--t3:#6b7280;--t4:#4b5563;
+  /* Primary accent — spec #00c9a7 teal/green */
+  --gr:#00c9a7;--gd:rgba(0,201,167,.12);--gg:rgba(0,201,167,.26);
+  /* Secondary blue — spec #3b82f6 */
+  --bl:#3b82f6;--bd:rgba(59,130,246,.14);
+  /* Purple */
   --pu:#a78bfa;--pd:rgba(167,139,250,.12);
+  /* Warning amber — spec #f59e0b */
   --am:#f59e0b;--ad:rgba(245,158,11,.12);
-  --rd:#f04f55;--rdd:rgba(240,79,85,.12);
+  /* Danger red — spec #ef4444 */
+  --rd:#ef4444;--rdd:rgba(239,68,68,.12);
+  /* Teal accent (legacy) */
   --te:#2dd4bf;--tdd:rgba(45,212,191,.12);
+  /* Success green — spec #22c55e (separate from primary accent) */
+  --sg:#22c55e;--sgd:rgba(34,197,94,.12);
   --sh:0 1px 3px rgba(0,0,0,.3),0 4px 12px rgba(0,0,0,.2);
   --sh2:0 2px 8px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
 }
@@ -599,6 +612,48 @@ select.inp{
 .spinner{width:26px;height:26px;border:2px solid var(--b2);border-top-color:var(--gr);border-radius:50%;margin:40px auto}
 @media(prefers-reduced-motion:no-preference){.spinner{animation:spin .7s linear infinite}}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SKELETON LOADERS (v2.0) ────────────────────────────── */
+/* Shimmer placeholders shown while real data is being fetched.
+   Replaced by render functions when data arrives. */
+.skel-wrap{padding:8px 0}
+.skel{
+  display:block;background:var(--c3);border-radius:var(--r1);
+  position:relative;overflow:hidden;
+}
+.skel::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,var(--b1) 50%,transparent 100%);
+  transform:translateX(-100%);
+}
+@media(prefers-reduced-motion:no-preference){
+  .skel::after{animation:skel-shimmer 1.4s ease-in-out infinite}
+}
+@keyframes skel-shimmer{100%{transform:translateX(100%)}}
+.skel-line{height:10px;margin:6px 0}
+.skel-line.lg{height:14px}
+.skel-line.xl{height:22px;border-radius:var(--r1)}
+.skel-line.w20{width:20%}.skel-line.w30{width:30%}.skel-line.w40{width:40%}
+.skel-line.w50{width:50%}.skel-line.w60{width:60%}.skel-line.w70{width:70%}
+.skel-line.w80{width:80%}.skel-line.w90{width:90%}.skel-line.w100{width:100%}
+.skel-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--b1)}
+.skel-row:last-child{border-bottom:none}
+.skel-circle{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:block;background:var(--c3);position:relative;overflow:hidden}
+.skel-circle::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,var(--b1) 50%,transparent 100%);transform:translateX(-100%)}
+@media(prefers-reduced-motion:no-preference){.skel-circle::after{animation:skel-shimmer 1.4s ease-in-out infinite}}
+.skel-stack{flex:1;display:flex;flex-direction:column;gap:4px}
+.skel-tag{display:inline-block;height:18px;width:48px;border-radius:9px;margin-left:auto;background:var(--c3);position:relative;overflow:hidden}
+.skel-tag::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,var(--b1) 50%,transparent 100%);transform:translateX(-100%)}
+@media(prefers-reduced-motion:no-preference){.skel-tag::after{animation:skel-shimmer 1.4s ease-in-out infinite}}
+.skel-block{height:120px;border-radius:var(--r2)}
+.skel-pitch{height:280px;border-radius:var(--r2)}
+.skel-table-row{display:grid;grid-template-columns:1fr 60px 60px 60px;gap:8px;padding:10px 0;border-bottom:1px solid var(--b1)}
+.skel-table-row:last-child{border-bottom:none}
+.skel-table-row .skel{height:12px}
+.skel-fdr{display:grid;grid-template-columns:80px repeat(5,1fr);gap:4px;padding:6px 0}
+.skel-fdr .skel{height:24px;border-radius:6px}
+@media(prefers-reduced-motion:reduce){.skel,.skel-circle,.skel-tag{opacity:.55}}
+
 .chw{position:relative}.h200{height:200px}.h160{height:160px}
 
 /* ── OVERLAY ────────────────────────────────────────────── */
@@ -814,7 +869,7 @@ select.inp{
   </nav>
   <div class="sb-foot">
     <div class="sb-foot-text">
-      <div style="font-size:.69rem;color:var(--t4)">FPL War Room v4.0</div>
+      <div style="font-size:.69rem;color:var(--t4)">FPL War Room v5.0</div>
       <div style="font-size:.69rem;color:var(--t2);font-weight:600;margin-top:1px" id="sb-mid">Not loaded</div>
     </div>
     <button class="dm-btn" id="dm-btn" onclick="toggleDark()" title="Toggle dark mode" aria-label="Toggle dark mode"></button>
@@ -839,13 +894,13 @@ select.inp{
     <div id="d-alerts" class="mb-16"><div class="al ai"><span class="al-ic">&#8505;</span><div>Enter your FPL Manager ID in <strong>My Squad</strong> to load live data across all panels.</div></div></div>
     <div class="g2 mb-16">
       <div class="card"><div class="ct">Chips Status</div><div id="d-chips" class="flex" style="flex-wrap:wrap;gap:8px"></div></div>
-      <div class="card"><div class="ct">Top Transfer Targets <span id="d-tgt-gw"></span></div><div id="d-tgts"><div class="spinner"></div></div></div>
+      <div class="card"><div class="ct">Top Transfer Targets <span id="d-tgt-gw"></span></div><div id="d-tgts"><div class="skel-wrap" role="status" aria-label="Loading transfer targets"><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w30"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div></div></div></div>
     </div>
     <div class="g2 mb-16">
-      <div class="card"><div class="ct">Fixture Difficulty &mdash; Next 5 GWs</div><div id="d-fdr"><div class="spinner"></div></div></div>
-      <div class="card"><div class="ct">Price Movement</div><div id="d-prices"><div class="spinner"></div></div></div>
+      <div class="card"><div class="ct">Fixture Difficulty &mdash; Next 5 GWs</div><div id="d-fdr"><div class="skel-wrap" role="status" aria-label="Loading fixture difficulty"><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div></div></div></div>
+      <div class="card"><div class="ct">Price Movement</div><div id="d-prices"><div class="skel-wrap" role="status" aria-label="Loading price movement"><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w30"></span></div><span class="skel skel-line w40" style="flex:1"></span><span class="skel-tag" style="width:40px"></span></div><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel skel-line w50" style="flex:1"></span><span class="skel-tag" style="width:40px"></span></div><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w30"></span></div><span class="skel skel-line w60" style="flex:1"></span><span class="skel-tag" style="width:40px"></span></div></div></div></div>
     </div>
-    <div class="card"><div class="ct">EO Quick View <span class="tag tb">Effective Ownership</span></div><div id="d-eo"><div class="spinner"></div></div></div>
+    <div class="card"><div class="ct">EO Quick View <span class="tag tb">Effective Ownership</span></div><div id="d-eo"><div class="skel-wrap" role="status" aria-label="Loading effective ownership"><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w80"></span><span class="skel skel-line w50"></span></div><span class="skel skel-line w100" style="flex:1"></span><span class="skel-tag" style="width:80px"></span></div><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w70"></span><span class="skel skel-line w40"></span></div><span class="skel skel-line w90" style="flex:1"></span><span class="skel-tag" style="width:80px"></span></div><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w60"></span><span class="skel skel-line w50"></span></div><span class="skel skel-line w80" style="flex:1"></span><span class="skel-tag" style="width:80px"></span></div></div></div>
   </div>
 
   <!-- MY SQUAD -->
@@ -863,7 +918,7 @@ select.inp{
       <div>
         <div class="card"><div class="ct" id="pitch-header">Formation</div><div class="pitch" id="pitch"><div style="text-align:center;color:var(--t3);padding:40px 0;font-size:.833rem">Enter Manager ID above and click Load Squad</div></div></div>
       </div>
-      <div class="card"><div class="ct">Season Summary</div><div id="sq-sum"><div class="spinner"></div></div></div>
+      <div class="card"><div class="ct">Season Summary</div><div id="sq-sum"><div class="skel-wrap" role="status" aria-label="Loading season summary"><span class="skel skel-line xl w70"></span><span class="skel skel-line lg w50"></span><span class="skel skel-line w90"></span><span class="skel skel-line w60"></span><span class="skel skel-line w80"></span></div></div></div>
     </div>
     <div class="card"><div class="ct">Full Squad &mdash; Points, xG+xA, Status</div>
       <div class="tw"><table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th class="r">&pound;</th><th class="r">GW Pts</th><th class="r">Total</th><th class="r">Own%</th><th>xG+xA</th><th>Status</th></tr></thead>
@@ -898,7 +953,7 @@ select.inp{
   <div class="page" id="page-eo">
     <div class="ph"><h2>EO Tracker <span class="help-wrap"><button class="help-btn" onclick="toggleHelp(this)" aria-label="Help: EO Tracker">?</button><span class="help-pop">Effective Ownership = ownership% + captain rate%. A player at 50% owned with 40% captain rate has 90% EO.</span></span></h2><p>Effective Ownership &mdash; the true metric of rank gain at the top 1k level</p></div>
     <div class="al ai mb-16"><span class="al-ic">&#9678;</span><div>EO = ownership% + captain rate%. A player owned by 50% with 40% captain rate has 90% EO. That's your real benchmark, not raw ownership.</div></div>
-    <div class="card mb-16"><div class="ct">Squad EO &mdash; Rank Impact <span id="eo-gw"></span></div><div id="eo-tbl"><div class="spinner"></div></div></div>
+    <div class="card mb-16"><div class="ct">Squad EO &mdash; Rank Impact <span id="eo-gw"></span></div><div id="eo-tbl"><div class="skel-wrap" role="status" aria-label="Loading EO data"><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w80"></span><span class="skel skel-line w50"></span></div><span class="skel skel-line" style="flex:1;height:18px"></span><span class="skel-tag" style="width:80px"></span></div><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w70"></span><span class="skel skel-line w40"></span></div><span class="skel skel-line" style="flex:1;height:18px"></span><span class="skel-tag" style="width:80px"></span></div><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w60"></span><span class="skel skel-line w50"></span></div><span class="skel skel-line" style="flex:1;height:18px"></span><span class="skel-tag" style="width:80px"></span></div><div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w70"></span><span class="skel skel-line w30"></span></div><span class="skel skel-line" style="flex:1;height:18px"></span><span class="skel-tag" style="width:80px"></span></div></div></div></div>
     <div class="g2">
       <div class="card"><div class="ct">Captain EO Distribution</div><div class="chw h200"><canvas id="ch-eo"></canvas></div></div>
       <div class="card"><div class="ct">EO Guide for Top 1k</div>
@@ -933,8 +988,8 @@ select.inp{
       <div class="kpi"><div class="kpi-l">Template Match</div><div class="kpi-v ca" id="tm-m">&mdash;%</div><div class="kpi-d">vs top 10k</div></div>
       <div class="kpi"><div class="kpi-l">Differential Slots</div><div class="kpi-v cy" id="tm-d">&mdash;</div><div class="kpi-d">off-template players</div></div>
     </div>
-    <div class="card mb-16"><div class="ct">Position-by-Position Comparison</div><div id="tm-panel"><div class="spinner"></div></div></div>
-    <div class="card"><div class="ct">Top 10k Template &mdash; Most Owned</div><div id="tm-squad"><div class="spinner"></div></div></div>
+    <div class="card mb-16"><div class="ct">Position-by-Position Comparison</div><div id="tm-panel"><div class="skel-wrap" role="status" aria-label="Loading template comparison"><span class="skel skel-line lg w50"></span><span class="skel skel-line w90"></span><span class="skel skel-line w70"></span><span class="skel skel-line w80"></span><span class="skel skel-line lg w40"></span><span class="skel skel-line w90"></span><span class="skel skel-line w70"></span></div></div></div>
+    <div class="card"><div class="ct">Top 10k Template &mdash; Most Owned</div><div id="tm-squad"><div class="skel-wrap" role="status" aria-label="Loading template squad"><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w30"></span></div><span class="skel-tag"></span></div></div></div>
   </div>
 
   <!-- RIVAL SCOUT -->
@@ -973,7 +1028,7 @@ select.inp{
       <div id="tx-list"><div class="al ai"><span class="al-ic">&#8644;</span><div>Plan your next 3 GW transfer sequence &mdash; cumulative pts and hit cost calculated automatically.</div></div></div>
       <div id="tx-sum" class="mt-12"></div>
     </div>
-    <div class="card"><div class="ct">Smart Transfer Targets &mdash; Form &times; Fixture &times; Differential Value</div><div id="sm-tgts"><div class="spinner"></div></div></div>
+    <div class="card"><div class="ct">Smart Transfer Targets &mdash; Form &times; Fixture &times; Differential Value</div><div id="sm-tgts"><div class="skel-wrap" role="status" aria-label="Loading transfer targets"><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w50"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w30"></span></div><span class="skel-tag"></span></div></div></div>
     <div style="display:none" id="sm-tgts-impact-note"></div>
   </div>
 
@@ -981,7 +1036,7 @@ select.inp{
   <div class="page" id="page-captain">
     <div class="ph"><h2>Captaincy Lab</h2><p>Multi-factor scoring &middot; EO context &middot; Safe vs differential</p></div>
     <div class="al aw mb-16"><span class="al-ic">&#9733;</span><div>Template captain EO &gt;70%? A differential who scores gains more rank. Use the scoring below to calibrate risk.</div></div>
-    <div id="cap-cards" class="g3 mb-16"><div class="spinner"></div></div>
+    <div id="cap-cards" class="g3 mb-16"><div class="card"><div class="skel-wrap" role="status" aria-label="Loading captain options"><span class="skel skel-line lg w60"></span><span class="skel skel-line w40"></span><span class="skel skel-block" style="display:block;width:100%;height:80px;margin-top:12px"></span><span class="skel skel-line w50"></span></div></div><div class="card"><div class="skel-wrap"><span class="skel skel-line lg w50"></span><span class="skel skel-line w30"></span><span class="skel skel-block" style="display:block;width:100%;height:80px;margin-top:12px"></span><span class="skel skel-line w40"></span></div></div><div class="card"><div class="skel-wrap"><span class="skel skel-line lg w60"></span><span class="skel skel-line w40"></span><span class="skel skel-block" style="display:block;width:100%;height:80px;margin-top:12px"></span><span class="skel skel-line w50"></span></div></div></div>
     <div class="g2">
       <div class="card"><div class="ct">Scoring Matrix</div>
         <table><thead><tr><th>Factor</th><th class="r">Weight</th></tr></thead><tbody>
@@ -1020,7 +1075,7 @@ select.inp{
     </div></div>
     <div class="card"><div class="ct">All Teams &mdash; <span id="fdr-range">Next 6 GWs</span></div>
       <div class="tw"><table><thead><tr><th>Team</th><th id="fdr-h1">GW+1</th><th id="fdr-h2">GW+2</th><th id="fdr-h3">GW+3</th><th id="fdr-h4">GW+4</th><th id="fdr-h5">GW+5</th><th id="fdr-h6">GW+6</th></tr></thead>
-      <tbody id="fdr-bod"><tr><td colspan="7" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr></tbody></table></div>
+      <tbody id="fdr-bod"><tr><td colspan="7" style="padding:8px 4px"><div class="skel-wrap" role="status" aria-label="Loading fixture difficulty"><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div></div></td></tr></tbody></table></div>
     </div>
   </div>
 
@@ -1029,12 +1084,12 @@ select.inp{
     <div class="ph"><h2>Price Predictor</h2><p>Forward-looking momentum model &middot; Buy before the 6am lock</p></div>
     <div class="al aw mb-16"><span class="al-ic">&#8597;</span><div>Price changes lock at 6am. Buy rising players overnight. Falls accelerate once they start &mdash; sell early.</div></div>
     <div class="g2 mb-16">
-      <div class="card"><div class="ct">Rising &mdash; Buy Tonight</div><div id="pr-up"><div class="spinner"></div></div></div>
-      <div class="card"><div class="ct">Falling &mdash; Sell Window Closing</div><div id="pr-dn"><div class="spinner"></div></div></div>
+      <div class="card"><div class="ct">Rising &mdash; Buy Tonight</div><div id="pr-up"><div class="skel-wrap" role="status" aria-label="Loading rising players"><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel skel-line" style="flex:1;height:14px"></span><span class="skel-tag" style="width:48px"></span></div><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w30"></span></div><span class="skel skel-line" style="flex:1;height:14px"></span><span class="skel-tag" style="width:48px"></span></div><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w40"></span></div><span class="skel skel-line" style="flex:1;height:14px"></span><span class="skel-tag" style="width:48px"></span></div></div></div></div>
+      <div class="card"><div class="ct">Falling &mdash; Sell Window Closing</div><div id="pr-dn"><div class="skel-wrap" role="status" aria-label="Loading falling players"><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel skel-line" style="flex:1;height:14px"></span><span class="skel-tag" style="width:48px"></span></div><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w30"></span></div><span class="skel skel-line" style="flex:1;height:14px"></span><span class="skel-tag" style="width:48px"></span></div><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w40"></span></div><span class="skel skel-line" style="flex:1;height:14px"></span><span class="skel-tag" style="width:48px"></span></div></div></div></div>
     </div>
     <div class="card"><div class="ct">Full Price Movement Board</div>
       <div class="tw"><table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th class="r">Price</th><th class="r">GW Change</th><th class="r">Net Transfers</th><th>Momentum</th><th>Predicted</th></tr></thead>
-      <tbody id="pr-bod"><tr><td colspan="8" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr></tbody></table></div>
+      <tbody id="pr-bod"><tr><td colspan="8" style="padding:8px 4px"><div class="skel-wrap" role="status" aria-label="Loading price movement"><div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div></div></td></tr></tbody></table></div>
     </div>
   </div>
 
@@ -1431,13 +1486,45 @@ document.addEventListener('click',function(e){
   if(!e.target.closest('.help-wrap'))document.querySelectorAll('.help-pop.show').forEach(p=>p.classList.remove('show'));
 });
 
-// ── SPINNER TIMEOUT ──────────────────────────────────────────
+// ── SPINNER + SKELETON TIMEOUT ───────────────────────────────
 function armSpinnerTimeouts(){
+  // Old spinners — fall back to error message after 10s
   document.querySelectorAll('.spinner').forEach(sp=>{
     if(sp.dataset.armed)return;sp.dataset.armed='1';
     setTimeout(()=>{if(sp.isConnected&&sp.classList.contains('spinner'))sp.outerHTML='<div class="al ad2"><span class="al-ic">&#9888;</span><div>Could not load data. Check your connection and try again.</div></div>';},10000);
   });
+  // New skeleton wrappers — same 10s fallback
+  document.querySelectorAll('.skel-wrap').forEach(sk=>{
+    if(sk.dataset.armed)return;sk.dataset.armed='1';
+    setTimeout(()=>{if(sk.isConnected&&sk.classList.contains('skel-wrap'))sk.outerHTML='<div class="al ad2"><span class="al-ic">&#9888;</span><div>Could not load data. Check your connection and try again.</div></div>';},10000);
+  });
 }
+
+// ── SKELETON BUILDERS ────────────────────────────────────────
+// Returns skeleton HTML for common shapes. Replaced by renderers when data arrives.
+function mkSkel(type, count){
+  count = count || 4;
+  const row = '<div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div>';
+  const tableRow = '<div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div>';
+  const fdrRow = '<div class="skel-fdr"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div>';
+  const eoRow = '<div class="skel-row"><div class="skel-stack" style="max-width:140px"><span class="skel skel-line w80"></span><span class="skel skel-line w50"></span></div><span class="skel skel-line w100" style="flex:1"></span><span class="skel-tag" style="width:80px"></span></div>';
+  let inner='';
+  switch(type){
+    case 'list': inner = row.repeat(count); break;
+    case 'table': inner = tableRow.repeat(count); break;
+    case 'fdr': inner = fdrRow.repeat(count); break;
+    case 'eo': inner = eoRow.repeat(count); break;
+    case 'pitch': inner = '<span class="skel skel-pitch" style="display:block;width:100%"></span>'; break;
+    case 'chart': inner = '<span class="skel skel-block" style="display:block;width:100%;height:160px"></span>'; break;
+    case 'kpis': inner = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px">' +
+                          '<span class="skel skel-line xl"></span><span class="skel skel-line xl"></span><span class="skel skel-line xl"></span>' +
+                        '</div>'; break;
+    default: inner = row.repeat(count);
+  }
+  return '<div class="skel-wrap" role="status" aria-label="Loading">'+inner+'</div>';
+}
+// Drop a skeleton into a container by id. No-op if id missing.
+function setSkel(id, type, count){const el=document.getElementById(id);if(el)el.innerHTML=mkSkel(type,count);}
 
 // ── ONBOARDING ───────────────────────────────────────────────
 let onbStep=1,onbMode='dark';
