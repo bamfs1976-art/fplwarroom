@@ -655,6 +655,70 @@ select.inp{
 .lr-bonus-name{flex:1;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lr-bonus-bps{font-family:var(--fm);font-weight:700;color:var(--t2);font-size:.65rem}
 
+/* Rival Scout v2.0 — full rival cards */
+.rv-card{background:var(--c1);border:1px solid var(--b1);border-radius:var(--r2);padding:14px;box-shadow:var(--sh);position:relative}
+.rv-card:hover{border-color:var(--b2)}
+.rv-card-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--b1)}
+.rv-card-h-info{flex:1;min-width:0}
+.rv-card-h-name{font-size:.95rem;font-weight:800;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-card-h-team{font-size:.7rem;color:var(--t3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-card-h-rank{text-align:right;flex-shrink:0}
+.rv-card-h-rank-v{font-family:var(--fm);font-weight:800;color:var(--bl);font-size:.95rem}
+.rv-card-h-rank-l{font-size:.625rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
+.rv-card-rm{background:var(--rdd);color:var(--rd);border:none;border-radius:4px;width:24px;height:24px;cursor:pointer;font-size:11px;font-weight:700;line-height:1;flex-shrink:0;margin-left:4px}
+.rv-card-rm:hover{background:var(--rd);color:#fff}
+.rv-card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;font-size:.7rem}
+.rv-card-stat{text-align:center;padding:6px;border-radius:6px;background:var(--c3)}
+.rv-card-stat-v{font-family:var(--fm);font-weight:800;font-size:.8rem;color:var(--t1)}
+.rv-card-stat-l{font-size:.625rem;color:var(--t3);letter-spacing:.04em;text-transform:uppercase;margin-top:2px}
+/* Mini pitch for rivals */
+.rv-pitch{background:linear-gradient(180deg,#166534 0%,#15803d 50%,#166534 100%);border-radius:var(--r1);padding:10px 4px 6px;position:relative;overflow:hidden;margin-bottom:10px}
+.rv-pitch-row{display:flex;justify-content:center;gap:3px;margin-bottom:4px}
+.rv-mp{display:flex;flex-direction:column;align-items:center;gap:1px;width:46px;font-size:8px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.rv-mp .rv-mp-kit{width:28px;height:30px;display:flex;align-items:center;justify-content:center;clip-path:polygon(20% 0%,0% 13%,0% 30%,17% 24%,17% 100%,83% 100%,83% 24%,100% 30%,100% 13%,80% 0%,62% 7%,50% 9%,38% 7%);font-size:8px;font-weight:800;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4));position:relative}
+.rv-mp.diff .rv-mp-kit{box-shadow:0 0 0 2px var(--am)}
+.rv-mp.cap .rv-mp-kit::after{content:"C";position:absolute;top:-3px;right:-4px;background:var(--am);color:#0f1117;font-size:7px;font-weight:900;border-radius:50%;width:11px;height:11px;display:flex;align-items:center;justify-content:center;line-height:1;border:1px solid #fff}
+.rv-mp.vc .rv-mp-kit::after{content:"V";position:absolute;top:-3px;right:-4px;background:var(--bl);color:#fff;font-size:7px;font-weight:900;border-radius:50%;width:11px;height:11px;display:flex;align-items:center;justify-content:center;line-height:1;border:1px solid #fff}
+.rv-mp-name{max-width:46px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.rv-mp-pts{font-family:var(--fm);font-weight:700;color:rgba(255,255,255,.85)}
+.rv-card-section{margin-bottom:8px}
+.rv-card-sh{font-size:.625rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.rv-chip-row{display:flex;flex-wrap:wrap;gap:4px}
+.rv-chip{font-size:.625rem;padding:2px 7px;border-radius:8px;font-weight:700;background:var(--c3);color:var(--t3);border:1px solid var(--b1)}
+.rv-chip.used{background:var(--gd);color:var(--gr);border-color:var(--gr)}
+.rv-tx-row{display:flex;align-items:center;gap:6px;font-size:.72rem;padding:4px 0;border-bottom:1px solid var(--b1)}
+.rv-tx-row:last-child{border-bottom:none}
+.rv-tx-gw{font-family:var(--fm);font-weight:700;color:var(--gr);font-size:.625rem;min-width:32px}
+.rv-tx-out{color:var(--rd);font-weight:600}
+.rv-tx-arrow{color:var(--t3)}
+.rv-tx-in{color:var(--sg);font-weight:600}
+.rv-diffs{display:flex;flex-wrap:wrap;gap:4px}
+.rv-diff{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;padding:3px 8px;border-radius:8px;background:var(--ad);color:var(--am);border:1px solid var(--am);font-weight:700}
+.rv-diff::before{content:"▲";font-size:.55rem}
+.rv-state-loading{padding:18px;text-align:center;color:var(--t3);font-size:.75rem}
+.rv-state-error{padding:18px;text-align:center;color:var(--rd);font-size:.75rem}
+
+/* Mini-League Awards (v2.0 — phase 5) */
+.lr-ml-awards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 14px;border-bottom:1px solid var(--b1);background:var(--c3)}
+@media(max-width:600px){.lr-ml-awards{grid-template-columns:1fr}}
+.lr-ml-award{padding:8px 10px;background:var(--c1);border:1px solid var(--b1);border-radius:6px;display:flex;align-items:center;gap:8px;min-width:0}
+.lr-ml-award-ic{font-size:1.1rem;flex-shrink:0}
+.lr-ml-award-body{flex:1;min-width:0}
+.lr-ml-award-l{font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:2px}
+.lr-ml-award-n{font-size:.78rem;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lr-ml-award-v{font-family:var(--fm);font-weight:800;font-size:.85rem;flex-shrink:0}
+.lr-ml-award-v.up{color:var(--sg)}
+.lr-ml-award-v.dn{color:var(--rd)}
+
+/* Differential Finder v2.0 — league-aware columns */
+.df-mlbar{height:6px;background:var(--c4);border-radius:3px;overflow:hidden;margin-top:2px}
+.df-mlbar-f{height:100%;background:linear-gradient(90deg,var(--bl),var(--gr));border-radius:3px;transition:width .8s var(--ease)}
+.df-rg{font-family:var(--fm);font-weight:700;color:var(--gr);font-size:.75rem}
+.df-mlsel{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.df-mlsel-c{display:flex;align-items:center;gap:4px;font-size:.7rem;padding:4px 10px;border-radius:6px;background:var(--c3);border:1px solid var(--b1);cursor:pointer;color:var(--t2)}
+.df-mlsel-c.active{background:var(--gd);border-color:var(--gr);color:var(--gr)}
+.df-mlsel-c input{accent-color:var(--gr);margin-right:4px}
+
 /* Live Mini-Leagues (v2.0) */
 .lr-ml-card{background:var(--c3);border:1px solid var(--b1);border-radius:var(--r2);margin-bottom:10px;overflow:hidden}
 .lr-ml-h{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--c1);cursor:pointer;border-bottom:1px solid var(--b1)}
@@ -1194,16 +1258,17 @@ select.inp{
     <div class="card"><div class="ct">Top 10k Template &mdash; Most Owned</div><div id="tm-squad"><div class="skel-wrap" role="status" aria-label="Loading template squad"><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w40"></span></div><span class="skel-tag"></span></div><div class="skel-row"><div class="skel-circle"></div><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w30"></span></div><span class="skel-tag"></span></div></div></div></div>
   </div>
 
-  <!-- RIVAL SCOUT -->
+  <!-- RIVAL SCOUT (v2.0 enhanced) -->
   <div class="page" id="page-rivals">
-    <div class="ph"><h2>Rival Scout</h2><p>Track up to 5 rivals &mdash; squad overlap, captaincy divergence, what beats them</p></div>
+    <div class="ph"><h2>Rival Scout</h2><p>Track up to 5 rivals &middot; squad &middot; captain &middot; transfers &middot; chips &middot; differentials vs you</p></div>
     <div class="card mb-16">
       <div class="fac gap-12" style="flex-wrap:wrap">
         <div style="flex:1;min-width:160px"><label class="lbl" for="rv-id" id="lbl-rv">Rival Manager ID</label><input type="number" id="rv-id" class="inp" placeholder="e.g. 9876543" onkeydown="if(event.key==='Enter')addRival()"></div>
         <button class="btn btn-p" onclick="addRival()" style="align-self:flex-end;height:36px">+ Add Rival</button>
       </div>
+      <div class="xs t3c mt-8">Tip: copy a rival's manager ID from their FPL profile URL or from your mini-league standings.</div>
     </div>
-    <div id="rv-grid" class="g3 mb-16"></div>
+    <div id="rv-grid" class="g2 mb-16"></div>
     <div class="card"><div class="ct">Captaincy Divergence &mdash; What You Need to Beat Each Rival</div><div id="rv-div"><div class="al ai"><span class="al-ic">&#8853;</span><div>Add rivals above to see captaincy recommendations.</div></div></div></div>
   </div>
 
@@ -1366,13 +1431,17 @@ select.inp{
     </div>
   </div>
 
-  <!-- DIFFERENTIALS -->
+  <!-- DIFFERENTIALS (v2.0 — league-aware) -->
   <div class="page" id="page-diffs">
-    <div class="ph"><h2>Differential Scout</h2><p>Under 15% owned &middot; Strong underlying data &middot; Rank-boosting upside</p></div>
-    <div class="al as mb-16"><span class="al-ic">&#8599;</span><div>Differentials only win rank when they score. Target ones with easy fixtures AND captain potential &mdash; that's when low EO creates maximum rank swing.</div></div>
-    <div class="card"><div class="ct fbc"><span>Differential Candidates</span><div class="fac gap-8"><label class="xs t3c">Sort:</label><select id="df-sort" class="inp" style="font-size:.75rem;padding:3px 8px;height:auto" onchange="if(S.bs)rdDiffs(S.bs)"><option value="form">Form</option><option value="xgi90">xGI per 90</option></select></div></div>
-      <div class="tw"><table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th class="r">Own%</th><th class="r">&pound;</th><th class="r">Form</th><th class="r">xG+xA</th><th class="r">xGI/90</th><th class="r">Mins/App</th><th>Verdict</th></tr></thead>
-      <tbody id="df-bod"><tr><td colspan="10" style="text-align:center;padding:32px"><div class="spinner"></div></td></tr></tbody></table></div>
+    <div class="ph"><h2>Differential Finder</h2><p>League-aware ownership &middot; high predicted points &middot; rank-gain potential</p></div>
+    <div class="al as mb-16"><span class="al-ic">&#8599;</span><div>The fewer of your league mates own a player, the bigger the rank swing when they return. Add classic leagues on the <strong>Matchday</strong> page to enable league ownership.</div></div>
+    <div class="card"><div class="ct fbc" style="flex-wrap:wrap;gap:8px"><span>Differential Candidates</span>
+      <div class="fac gap-8" style="flex-wrap:wrap"><label class="xs t3c">Source:</label><select id="df-source" class="inp" style="font-size:.75rem;padding:3px 8px;height:auto" onchange="if(S.bs)rdDiffs(S.bs)"><option value="global">Global ownership</option><option value="leagues">Tracked leagues</option></select>
+      <label class="xs t3c">Sort:</label><select id="df-sort" class="inp" style="font-size:.75rem;padding:3px 8px;height:auto" onchange="if(S.bs)rdDiffs(S.bs)"><option value="rankgain">Rank-gain score</option><option value="form">Form</option><option value="xgi90">xGI per 90</option></select></div>
+    </div>
+      <div id="df-mlsel" class="df-mlsel" style="display:none"></div>
+      <div class="tw"><table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th class="r">Own%</th><th class="r">League Own%</th><th class="r">&pound;</th><th class="r">Form</th><th class="r">xG+xA</th><th class="r">xGI/90</th><th class="r">Rank-Gain</th><th>Verdict</th></tr></thead>
+      <tbody id="df-bod"><tr><td colspan="11" style="text-align:center;padding:32px"><div class="skel-wrap" role="status" aria-label="Loading"><div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div><div class="skel-table-row"><span class="skel"></span><span class="skel"></span><span class="skel"></span><span class="skel"></span></div></div></td></tr></tbody></table></div>
     </div>
   </div>
 
@@ -2214,34 +2283,145 @@ function rdCaps(d){
 function rdDemoDiffs(){
   document.getElementById('df-bod').innerHTML=DM.diffs.map(d=>`<tr><td class="cp">${d.n}</td><td><span class="pos p${d.p}">${d.p}</span></td><td class="t2c">${d.cl}</td><td class="r ${parseFloat(d.ow)<10?'ca w7':''}">${d.ow}</td><td class="r">£${d.pr.replace('£','')}</td><td class="r cy">${d.fm}</td><td class="r cbl">${d.xg}</td><td class="r t3c">—</td><td class="r t3c">—</td><td><span class="tag ${d.v==='Buy'?'tg':'ty'}">${d.v==='Buy'?'↗ Buy':'◎ Monitor'}</span></td></tr>`).join('');
 }
+// ── DIFFERENTIAL FINDER v2.0 (league-aware) ──────────────────
+// Cache picks for top-N members of selected leagues so we can compute
+// "league ownership". Cap per-league fetch at 20 to keep API load light.
+S.leagueMembersPicks = S.leagueMembersPicks || {}; // {leagueId: {entryId: picks}}
+S.diffSelectedLeagues = JSON.parse(localStorage.getItem('fwr_diffleagues')||'[]');
+
+async function fetchLeaguePicks(leagueId, gw, cap){
+  cap = cap || 20;
+  const cacheKey = leagueId+'-'+gw;
+  if(S.leagueMembersPicks[cacheKey])return S.leagueMembersPicks[cacheKey];
+  const data = S.miniLeagueData[leagueId];
+  if(!data?.standings?.results)return {};
+  const top = data.standings.results.slice(0, cap);
+  const map={};
+  await Promise.all(top.map(async row=>{
+    try{
+      const picks = await fplGet('entry/'+row.entry+'/event/'+gw+'/picks/');
+      map[row.entry] = picks;
+    }catch(e){/* ignore single member failures */}
+  }));
+  S.leagueMembersPicks[cacheKey]=map;
+  return map;
+}
+function toggleDiffLeague(id){
+  const idx = S.diffSelectedLeagues.indexOf(id);
+  if(idx>=0)S.diffSelectedLeagues.splice(idx,1);
+  else S.diffSelectedLeagues.push(id);
+  localStorage.setItem('fwr_diffleagues',JSON.stringify(S.diffSelectedLeagues));
+  if(S.bs)rdDiffs(S.bs);
+}
+
 function rdDiffs(d){
   const tm={};d.teams.forEach(t=>tm[t.id]=t);
-  const sortEl=document.getElementById('df-sort');
-  const sortMode=sortEl?sortEl.value:'form';
-  let diffs=[...d.elements].filter(e=>parseFloat(e.selected_by_percent)<15&&parseFloat(e.form)>4);
-  if(sortMode==='xgi90'&&HAS_PL_STATS){
-    diffs=diffs.map(e=>{
-      const ps=matchPLStats(e.web_name);
-      const mins=ps&&ps.minutesPlayed>=450?ps.minutesPlayed:null;
-      const apps=ps&&ps.appearances?ps.appearances:null;
-      const xgi90=(mins&&ps&&ps.position!=='G')?((ps.expectedGoals||0)+(ps.expectedAssists||0))/(mins/90):null;
-      return{...e,_xgi90:xgi90,_mins:mins,_apps:apps};
-    }).filter(e=>e._xgi90!==null).sort((a,b)=>b._xgi90-a._xgi90).slice(0,8);
-  }else{
-    diffs=diffs.sort((a,b)=>parseFloat(b.form)-parseFloat(a.form)).slice(0,8).map(e=>{
-      const ps=HAS_PL_STATS?matchPLStats(e.web_name):null;
-      const mins=ps&&ps.minutesPlayed>=450?ps.minutesPlayed:null;
-      const apps=ps&&ps.appearances?ps.appearances:null;
-      const xgi90=(mins&&ps&&ps.position!=='G')?((ps.expectedGoals||0)+(ps.expectedAssists||0))/(mins/90):null;
-      return{...e,_xgi90:xgi90,_mins:mins,_apps:apps};
+  const sortMode=document.getElementById('df-sort')?.value||'rankgain';
+  const source=document.getElementById('df-source')?.value||'global';
+  // Render mini-league chips when "leagues" source is selected
+  const sel=document.getElementById('df-mlsel');
+  if(sel){
+    if(source==='leagues' && S.miniLeagues.length){
+      sel.style.display='flex';
+      sel.innerHTML='<span class="xs t3c">Leagues:</span>'+S.miniLeagues.map(id=>{
+        const data=S.miniLeagueData[id];
+        const name=data?.league?.name||'#'+id;
+        const active=S.diffSelectedLeagues.includes(id);
+        return `<label class="df-mlsel-c${active?' active':''}"><input type="checkbox" ${active?'checked':''} onchange="toggleDiffLeague('${id}')"> ${name}</label>`;
+      }).join('');
+    } else if(source==='leagues' && !S.miniLeagues.length){
+      sel.style.display='block';
+      sel.innerHTML='<span class="xs t3c">No tracked leagues. Add them on the <strong>Matchday</strong> page first.</span>';
+    } else {
+      sel.style.display='none';
+    }
+  }
+
+  // Build league-ownership map if needed
+  let leagueOwn = null;
+  if(source==='leagues' && S.diffSelectedLeagues.length){
+    leagueOwn = computeLeagueOwnership(S.diffSelectedLeagues);
+  }
+
+  // Filter: only outfield, with form > 3 and minutes >= 270
+  let cands=d.elements.filter(e=>e.element_type!==1&&parseFloat(e.form)>3&&parseInt(e.minutes||0)>=270);
+
+  // Apply differential cut: <15% global OR <30% league-internal
+  cands = cands.filter(e=>{
+    if(source==='leagues' && leagueOwn){
+      const lo = leagueOwn.percent[e.id] ?? 0;
+      return lo < 30; // anything under 30% in your sample-of-20 is a differential
+    }
+    return parseFloat(e.selected_by_percent) < 15;
+  });
+
+  // Augment with derived fields
+  const augmented = cands.map(e=>{
+    const ps=HAS_PL_STATS?matchPLStats(e.web_name):null;
+    const mins=ps&&ps.minutesPlayed>=450?ps.minutesPlayed:parseInt(e.minutes||0);
+    const apps=ps&&ps.appearances?ps.appearances:parseInt(e.starts||1);
+    const xga=parseFloat(e.expected_goals||0)+parseFloat(e.expected_assists||0);
+    const xgi90=mins>=180?xga/(mins/90):null;
+    const lo = leagueOwn ? (leagueOwn.percent[e.id] || 0) : null;
+    // Rank-gain score: form * (1 - leagueOwn% / 100). Higher when good and rare.
+    const ownForRG = (lo!=null) ? lo : parseFloat(e.selected_by_percent||0);
+    const rankGain = (parseFloat(e.form||0) * 10) * (1 - ownForRG/100);
+    return {...e, _xgi90:xgi90, _mins:mins, _apps:apps, _lo:lo, _rg:rankGain};
+  });
+
+  // Sort
+  if(sortMode==='xgi90')augmented.sort((a,b)=>(b._xgi90||0)-(a._xgi90||0));
+  else if(sortMode==='form')augmented.sort((a,b)=>parseFloat(b.form)-parseFloat(a.form));
+  else augmented.sort((a,b)=>b._rg-a._rg);
+
+  const top = augmented.slice(0,12);
+  if(!top.length){
+    document.getElementById('df-bod').innerHTML='<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--t3)">No differentials match the current filter. Try the global ownership source or select more tracked leagues.</td></tr>';
+    return;
+  }
+  document.getElementById('df-bod').innerHTML=top.map(e=>{
+    const xgi90=e._xgi90;
+    const xgiCls=xgi90===null||xgi90===undefined?'t3c':xgi90>0.5?'ca':xgi90>=0.3?'cy':'t3c';
+    const xgiStr=(xgi90===null||xgi90===undefined)?'—':xgi90.toFixed(2);
+    const lo=e._lo;
+    const loCell = lo!=null
+      ? `<td class="r"><div class="ca w7">${lo.toFixed(0)}%</div><div class="df-mlbar"><div class="df-mlbar-f" style="width:${Math.min(100,lo)}%"></div></div></td>`
+      : '<td class="r t3c">—</td>';
+    return `<tr><td class="cp">${e.web_name}</td><td><span class="pos p${PM[e.element_type]}">${PM[e.element_type]}</span></td><td class="t2c">${(tm[e.team]||{}).short_name||'—'}</td><td class="r ca w7">${e.selected_by_percent}%</td>${loCell}<td class="r">£${(e.now_cost/10).toFixed(1)}m</td><td class="r cy">${e.form}</td><td class="r cbl">${(parseFloat(e.expected_goals||0)+parseFloat(e.expected_assists||0)).toFixed(2)}</td><td class="r ${xgiCls}">${xgiStr}</td><td class="r"><span class="df-rg">${e._rg.toFixed(1)}</span></td><td><span class="tag tg">↗ Watch</span></td></tr>`;
+  }).join('');
+}
+
+// Compute aggregate ownership across selected leagues. Uses cached picks if
+// available, else schedules a fetch and re-renders when ready.
+function computeLeagueOwnership(leagueIds){
+  const counts={}; // playerId -> count
+  let totalMembers=0;
+  let pendingFetches=[];
+  leagueIds.forEach(lid=>{
+    const cacheKey=lid+'-'+(S.gw||1);
+    const picksMap=S.leagueMembersPicks[cacheKey];
+    if(!picksMap){
+      pendingFetches.push(lid);
+      return;
+    }
+    Object.values(picksMap).forEach(picks=>{
+      if(!picks?.picks)return;
+      totalMembers++;
+      const seen=new Set();
+      picks.picks.forEach(p=>{if(!seen.has(p.element)){seen.add(p.element);counts[p.element]=(counts[p.element]||0)+1;}});
+    });
+  });
+  // Kick off pending fetches in the background
+  if(pendingFetches.length){
+    Promise.all(pendingFetches.map(lid=>fetchLeaguePicks(lid, S.gw||1, 20))).then(()=>{
+      if(S.bs)rdDiffs(S.bs);
     });
   }
-  document.getElementById('df-bod').innerHTML=diffs.map(e=>{
-    const xgi90=e._xgi90!=null?e._xgi90:null;
-    const xgiCls=xgi90===null?'t3c':xgi90>0.5?'ca':xgi90>=0.3?'cy':'t3c';
-    const xgiStr=xgi90===null?'—':xgi90.toFixed(2);
-    const minsApp=(e._mins&&e._apps)?Math.round(e._mins/e._apps)+'':'—';
-    return`<tr><td class="cp">${e.web_name}</td><td><span class="pos p${PM[e.element_type]}">${PM[e.element_type]}</span></td><td class="t2c">${(tm[e.team]||{}).short_name||'—'}</td><td class="r ca w7">${e.selected_by_percent}%</td><td class="r">£${(e.now_cost/10).toFixed(1)}m</td><td class="r cy">${e.form}</td><td class="r cbl">${(parseFloat(e.expected_goals||0)+parseFloat(e.expected_assists||0)).toFixed(2)}</td><td class="r ${xgiCls}">${xgiStr}</td><td class="r t2c">${minsApp}</td><td><span class="tag tg">↗ Watch</span></td></tr>`;}).join('');
+  const percent={};
+  if(totalMembers>0){
+    Object.entries(counts).forEach(([id,c])=>{percent[id]=(c/totalMembers)*100;});
+  }
+  return {percent, totalMembers};
 }
 
 const stIc={out:'🔴',doubt:'🟡',monitor:'🟢'};
@@ -2988,19 +3168,179 @@ function rdPlanner(){
   document.getElementById('mp-net').innerHTML=`<span class="${cumNet>0?'pos':cumNet<0?'neg':''}">${cumNet>0?'+':''}${cumNet.toFixed(1)} pts</span>`;
 }
 
-function addRival(){
-  const id=document.getElementById('rv-id').value.trim();if(!id)return;
-  if(S.rivals.find(r=>r.id===id)){alert('Already tracking this manager.');return;}
-  S.rivals.push({id,n:'Manager #'+id.slice(-4),rank:'—',pts:'—'});
-  localStorage.setItem('fplwr_rivals',JSON.stringify(S.rivals));localStorage.setItem('fwr_rivals',JSON.stringify(S.rivals));
-  document.getElementById('rv-id').value='';rdRivals();
+// ── RIVAL SCOUT v2.0 ─────────────────────────────────────────
+// Each rival is { id, n, rank, pts, gwPts, picks, info, history, transfers, error, loaded }
+S.rivalData = S.rivalData || {};
+function saveRivals(){localStorage.setItem('fplwr_rivals',JSON.stringify(S.rivals));localStorage.setItem('fwr_rivals',JSON.stringify(S.rivals));}
+async function addRival(){
+  const id=(document.getElementById('rv-id').value||'').trim();
+  if(!id||!/^\d+$/.test(id))return;
+  if(S.rivals.find(r=>r.id===id))return;
+  if(S.rivals.length>=5){alert('Track up to 5 rivals. Remove one first.');return;}
+  S.rivals.push({id, n:'Manager #'+id.slice(-4), rank:'—', pts:'—'});
+  saveRivals();
+  document.getElementById('rv-id').value='';
+  rdRivals();
+  // Fetch their data in the background
+  await loadRivalData(id);
+  rdRivals();
 }
-function rmRival(id){S.rivals=S.rivals.filter(r=>r.id!==id);localStorage.setItem('fplwr_rivals',JSON.stringify(S.rivals));localStorage.setItem('fwr_rivals',JSON.stringify(S.rivals));rdRivals();}
+function rmRival(id){
+  S.rivals=S.rivals.filter(r=>r.id!==id);
+  delete S.rivalData[id];
+  saveRivals();
+  rdRivals();
+}
+async function loadRivalData(id){
+  try{
+    const gw=S.gw||1;
+    const [info, picks, history, transfers] = await Promise.all([
+      fplGet('entry/'+id+'/').catch(()=>null),
+      fplGet('entry/'+id+'/event/'+gw+'/picks/').catch(()=>null),
+      fplGet('entry/'+id+'/history/').catch(()=>null),
+      fplGet('entry/'+id+'/transfers/').catch(()=>null)
+    ]);
+    S.rivalData[id]={info, picks, history, transfers, loaded:true};
+    // Update rival summary
+    const rv=S.rivals.find(r=>r.id===id);
+    if(rv && info){
+      rv.n=`${info.player_first_name||''} ${info.player_last_name||''}`.trim()||rv.n;
+      rv.team=info.name||'';
+      const last=history?.current?.[history.current.length-1];
+      if(last){rv.rank=last.overall_rank;rv.pts=last.total_points;rv.gwPts=last.points;}
+      saveRivals();
+    }
+  }catch(e){
+    S.rivalData[id]={error:e.message,loaded:true};
+  }
+}
+async function refreshAllRivals(){
+  await Promise.all(S.rivals.map(r=>loadRivalData(r.id)));
+  rdRivals();
+}
 function rdRivals(){
   const g=document.getElementById('rv-grid');if(!g)return;
-  if(!S.rivals.length){g.innerHTML='<div class="al ai" style="grid-column:1/-1"><span class="al-ic">&#8853;</span><div>No rivals added yet. Enter a Manager ID above to start tracking.</div></div>';return;}
-  g.innerHTML=S.rivals.map(r=>`<div class="rvc"><div class="fbc"><div class="cp sm">${r.n} <span class="xs t3c">#${r.id}</span></div><button onclick="rmRival('${r.id}')" class="btn btn-g btn-sm" style="padding:2px 6px;font-size:10px">✕</button></div><div class="xs t3c mt-4">Rank: ${r.rank} · Pts: ${r.pts}</div><div class="xs t3c mt-8">Load bootstrap data to see squad overlap analysis</div></div>`).join('');
-  document.getElementById('rv-div').innerHTML='<div class="al ai"><span class="al-ic">&#8853;</span><div>Add rivals with real Manager IDs to see detailed captaincy divergence analysis. This panel shows what you need to captain to beat each rival.</div></div>';
+  if(!S.rivals.length){
+    g.innerHTML='<div class="al ai" style="grid-column:1/-1"><span class="al-ic">&#8853;</span><div>No rivals added yet. Enter a Manager ID above to start tracking. Up to 5.</div></div>';
+    document.getElementById('rv-div').innerHTML='<div class="al ai"><span class="al-ic">&#8853;</span><div>Add rivals to see captaincy divergence analysis here.</div></div>';
+    return;
+  }
+  if(!S.bs){
+    g.innerHTML=S.rivals.map(r=>`<div class="rv-card"><div class="rv-card-h"><div class="rv-card-h-info"><div class="rv-card-h-name">Manager #${r.id}</div><div class="rv-card-h-team">Bootstrap not loaded yet</div></div><button class="rv-card-rm" onclick="rmRival('${r.id}')" aria-label="Remove rival">✕</button></div></div>`).join('');
+    return;
+  }
+  const tmById={};S.bs.teams.forEach(t=>tmById[t.id]=t);
+  const bsMap={};S.bs.elements.forEach(e=>bsMap[e.id]=e);
+  const myIds=new Set((S.myPicks?.picks||[]).map(p=>p.element));
+  g.innerHTML=S.rivals.map(r=>{
+    const data=S.rivalData[r.id];
+    if(!data||!data.loaded)return `<div class="rv-card"><div class="rv-card-h"><div class="rv-card-h-info"><div class="rv-card-h-name">${r.n}</div><div class="rv-card-h-team">#${r.id}</div></div><button class="rv-card-rm" onclick="rmRival('${r.id}')" aria-label="Remove rival">✕</button></div><div class="rv-state-loading">Loading rival data…</div></div>`;
+    if(data.error||!data.info||!data.picks)return `<div class="rv-card"><div class="rv-card-h"><div class="rv-card-h-info"><div class="rv-card-h-name">Manager #${r.id}</div><div class="rv-card-h-team">${data.error||'Could not load picks'}</div></div><button class="rv-card-rm" onclick="rmRival('${r.id}')" aria-label="Remove rival">✕</button></div></div>`;
+    const i=data.info;
+    const last=data.history?.current?.[data.history.current.length-1]||{};
+    const fullName=`${i.player_first_name||''} ${i.player_last_name||''}`.trim()||r.n;
+    // Mini pitch
+    const starters=data.picks.picks.filter(p=>p.position<=11);
+    const byPos={1:[],2:[],3:[],4:[]};
+    starters.forEach(p=>{
+      const el=bsMap[p.element];if(!el)return;
+      byPos[el.element_type].push(p);
+    });
+    const tok=p=>{
+      const el=bsMap[p.element]||{};
+      const club=(tmById[el.team]||{}).short_name||'?';
+      const tc=TEAM_COLORS[club]||{bg:'#555',tx:'#fff'};
+      const isDiff=!myIds.has(p.element)&&S.myPicks;
+      const cls=`rv-mp${p.is_captain?' cap':p.is_vice_captain?' vc':''}${isDiff?' diff':''}`;
+      return `<div class="${cls}" title="${el.web_name||'?'}${p.is_captain?' (Captain)':p.is_vice_captain?' (Vice)':''}${isDiff?' — differential':''}"><div class="rv-mp-kit" style="background:${tc.bg};color:${tc.tx}">${club}</div><div class="rv-mp-name">${el.web_name||'?'}</div></div>`;
+    };
+    let pitchHtml='';
+    [1,2,3,4].forEach(t=>{if(byPos[t].length)pitchHtml+=`<div class="rv-pitch-row">${byPos[t].map(tok).join('')}</div>`;});
+    // Captain
+    const cap=starters.find(p=>p.is_captain);
+    const capName=cap?bsMap[cap.element]?.web_name||'—':'—';
+    const capClub=cap?(tmById[bsMap[cap.element]?.team]||{}).short_name||'':'';
+    // Recent transfers (last 4)
+    const recentTx=(data.transfers||[]).slice(0,4);
+    const txHtml=recentTx.length?recentTx.map(tx=>{
+      const inN=bsMap[tx.element_in]?.web_name||'?';
+      const outN=bsMap[tx.element_out]?.web_name||'?';
+      return `<div class="rv-tx-row"><span class="rv-tx-gw">GW${tx.event}</span><span class="rv-tx-out">${outN}</span><span class="rv-tx-arrow">→</span><span class="rv-tx-in">${inN}</span></div>`;
+    }).join(''):'<div class="xs t3c">No transfers yet this season.</div>';
+    // Chips used
+    const chipsUsed=(data.history?.chips||[]).map(c=>c.name);
+    const allChips=[
+      {key:'wildcard',label:'Wildcard',count:chipsUsed.filter(c=>c==='wildcard').length},
+      {key:'freehit',label:'Free Hit',count:chipsUsed.filter(c=>c==='freehit').length},
+      {key:'bboost',label:'Bench Boost',count:chipsUsed.filter(c=>c==='bboost').length},
+      {key:'3xc',label:'Triple Capt.',count:chipsUsed.filter(c=>c==='3xc').length}
+    ];
+    const chipsHtml=allChips.map(c=>{
+      const cls=c.count>0?'rv-chip used':'rv-chip';
+      const lbl=c.count>1?`${c.label} ×${c.count}`:c.label;
+      return `<span class="${cls}">${lbl}</span>`;
+    }).join('');
+    // Differentials (their players you don't own)
+    let diffHtml='';
+    if(myIds.size){
+      const diffs=starters.filter(p=>!myIds.has(p.element)).map(p=>bsMap[p.element]).filter(Boolean).slice(0,8);
+      diffHtml=diffs.length?diffs.map(d=>`<span class="rv-diff">${d.web_name}</span>`).join(''):'<span class="xs t3c">None — you own all their starters.</span>';
+    } else {
+      diffHtml='<span class="xs t3c">Load your squad to see differentials.</span>';
+    }
+    return `<div class="rv-card">
+      <div class="rv-card-h">
+        <div class="rv-card-h-info">
+          <div class="rv-card-h-name">${fullName}</div>
+          <div class="rv-card-h-team">${i.name||''} · #${r.id}</div>
+        </div>
+        <div class="rv-card-h-rank">
+          <div class="rv-card-h-rank-v">${(last.overall_rank||0).toLocaleString()}</div>
+          <div class="rv-card-h-rank-l">overall</div>
+        </div>
+        <button class="rv-card-rm" onclick="rmRival('${r.id}')" aria-label="Remove rival">✕</button>
+      </div>
+      <div class="rv-card-stats">
+        <div class="rv-card-stat"><div class="rv-card-stat-v">${last.total_points||'—'}</div><div class="rv-card-stat-l">Total</div></div>
+        <div class="rv-card-stat"><div class="rv-card-stat-v">${last.points||'—'}</div><div class="rv-card-stat-l">GW</div></div>
+        <div class="rv-card-stat"><div class="rv-card-stat-v">${i.last_deadline_value?'£'+(i.last_deadline_value/10).toFixed(1)+'m':'—'}</div><div class="rv-card-stat-l">Value</div></div>
+      </div>
+      <div class="rv-pitch">${pitchHtml}</div>
+      <div class="rv-card-section">
+        <div class="rv-card-sh">Captain</div>
+        <div class="sm w7" style="color:var(--am)">${capName}${capClub?' <span class="xs t3c" style="font-weight:400">·  '+capClub+'</span>':''}</div>
+      </div>
+      <div class="rv-card-section">
+        <div class="rv-card-sh">Differentials (their players you don't own)</div>
+        <div class="rv-diffs">${diffHtml}</div>
+      </div>
+      <div class="rv-card-section">
+        <div class="rv-card-sh">Chips used</div>
+        <div class="rv-chip-row">${chipsHtml}</div>
+      </div>
+      <div class="rv-card-section">
+        <div class="rv-card-sh">Recent transfers</div>
+        ${txHtml}
+      </div>
+    </div>`;
+  }).join('');
+  // Captaincy divergence section: who you'd need to captain to beat each rival
+  const myCap=S.myPicks?.picks?.find(p=>p.is_captain);
+  const myCapName=myCap?bsMap[myCap.element]?.web_name:'—';
+  const divs=S.rivals.map(r=>{
+    const data=S.rivalData[r.id];
+    if(!data?.picks)return null;
+    const rivalCap=data.picks.picks.find(p=>p.is_captain);
+    if(!rivalCap)return null;
+    const rivalCapName=bsMap[rivalCap.element]?.web_name||'?';
+    const same=myCap && rivalCap.element===myCap.element;
+    return {name:r.n,rivalCap:rivalCapName,same};
+  }).filter(Boolean);
+  if(divs.length&&S.myPicks){
+    document.getElementById('rv-div').innerHTML=`<div class="xs t3c mb-12">Your captain: <strong style="color:var(--am)">${myCapName}</strong></div>` + divs.map(d=>`<div class="alitem"><span class="alitem-ic">${d.same?'⚖':'⚡'}</span><div class="alitem-b"><strong>${d.name}</strong> &mdash; captain: <span style="color:${d.same?'var(--t2)':'var(--am)'};font-weight:700">${d.rivalCap}</span> ${d.same?'(same as yours — fight on transfers and bench)':' (differential captain — must outscore them)'}</div></div>`).join('');
+  } else {
+    document.getElementById('rv-div').innerHTML='<div class="al ai"><span class="al-ic">&#8853;</span><div>Captaincy divergence appears once both your squad and rivals are loaded.</div></div>';
+  }
 }
 
 function addWatch(){const v=document.getElementById('wl-i').value.trim();if(!v)return;S.watch.push({n:v,added:new Date().toLocaleDateString('en-GB')});localStorage.setItem('fwr_watch',JSON.stringify(S.watch));document.getElementById('wl-i').value='';rdWatch();}
@@ -3590,6 +3930,23 @@ function renderMiniLeagues(){
         const isMe = S.mid && r.entry==parseInt(S.mid);
         return `<tr${isMe?' class="me"':''}><td class="r">${r.rank}</td><td>${r.player_name} <span class="xs t3c">${r.entry_name}</span></td><td class="r">${r.event_total||0}</td><td class="r">${(r.total||0).toLocaleString()}</td><td class="r">${mvHtml}</td></tr>`;
       }).join('')}</tbody></table>` : '<div class="xs t3c" style="padding:12px">No entries yet.</div>';
+    // Phase 5 — weekly awards: top scorer, biggest riser, biggest faller across the league
+    const allRows = data.standings?.results || [];
+    let awardsHtml = '';
+    if(allRows.length){
+      const sortedByGw = [...allRows].filter(r=>r.event_total!=null).sort((a,b)=>b.event_total-a.event_total);
+      const topScorer = sortedByGw[0];
+      const sortedByMove = [...allRows].filter(r=>r.last_rank&&r.rank).map(r=>({...r,_mv:r.last_rank-r.rank}));
+      sortedByMove.sort((a,b)=>b._mv-a._mv);
+      const riser = sortedByMove[0];
+      const faller = sortedByMove[sortedByMove.length-1];
+      const award=(ic,label,name,value,cls)=>`<div class="lr-ml-award"><span class="lr-ml-award-ic">${ic}</span><div class="lr-ml-award-body"><div class="lr-ml-award-l">${label}</div><div class="lr-ml-award-n">${name||'—'}</div></div><span class="lr-ml-award-v ${cls}">${value}</span></div>`;
+      awardsHtml = `<div class="lr-ml-awards">
+        ${topScorer?award('🏆','Top scorer',topScorer.player_name,topScorer.event_total||0,''):''}
+        ${riser&&riser._mv>0?award('🚀','Biggest riser',riser.player_name,'▲ '+riser._mv,'up'):''}
+        ${faller&&faller._mv<0?award('📉','Biggest faller',faller.player_name,'▼ '+Math.abs(faller._mv),'dn'):''}
+      </div>`;
+    }
     return `<div class="lr-ml-card">
       <div class="lr-ml-h" onclick="toggleMiniLeague('${id}')">
         <div>
@@ -3602,6 +3959,7 @@ function renderMiniLeagues(){
         </div>
         <button class="lr-ml-h-rm" onclick="event.stopPropagation();removeMiniLeague('${id}')" aria-label="Remove league">✕</button>
       </div>
+      ${awardsHtml}
       ${tbl}
     </div>`;
   }).join('');
@@ -3631,6 +3989,7 @@ async function updateAllLive(){
   renderLivePitch(data.picks, eleMapFromLive(data.liveEv), fxStatus);
   renderLiveBonus(data);
   refreshAllMiniLeagues();
+  refreshAllRivals();
   // Sync autosub toggle UI on first render
   setAutosub(S.autosubMode);
 }
