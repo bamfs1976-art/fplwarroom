@@ -315,6 +315,47 @@ select.inp{
 .chip-n{font-size:.83rem;font-weight:700;color:var(--t1)}
 .chip-m{font-size:.69rem;color:var(--t3);margin-top:1px}
 
+/* ── DEADLINE HERO CARD (v2.0) ──────────────────────────── */
+.dl-hero{display:flex;align-items:center;gap:16px;padding:18px 20px;background:linear-gradient(135deg,var(--gd) 0%,var(--c1) 60%);border:1px solid var(--b2);border-left:3px solid var(--gr);flex-wrap:wrap}
+.dl-hero-l{flex:1;min-width:200px}
+.dl-hero-lbl{display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gr);margin-bottom:6px}
+.dl-hero-when{font-size:1rem;font-weight:700;color:var(--t1);letter-spacing:-.01em}
+.dl-hero-r{display:flex;gap:8px}
+.dl-u{background:var(--c3);border:1px solid var(--b1);border-radius:var(--r2);padding:10px 14px;text-align:center;min-width:62px}
+.dl-v{font-family:var(--fm);font-size:1.6rem;font-weight:700;line-height:1;color:var(--t1);font-variant-numeric:tabular-nums}
+.dl-l{font-size:.625rem;text-transform:uppercase;letter-spacing:.12em;color:var(--t3);margin-top:4px;font-weight:700}
+@media(max-width:600px){
+  .dl-hero{padding:14px 16px}
+  .dl-u{min-width:48px;padding:8px 6px}
+  .dl-v{font-size:1.25rem}
+}
+
+/* ── QUICK INTEL CARD (v2.0) ────────────────────────────── */
+.qi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.qi-grid{grid-template-columns:1fr}}
+.qi-col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.qi-h{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);display:flex;align-items:center;gap:8px;padding-bottom:6px;border-bottom:1px solid var(--b1)}
+.qi-h-ic{font-size:.85rem;color:var(--am)}
+.qi-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r1);background:var(--c3);border:1px solid var(--b1);transition:border-color .12s}
+.qi-row:hover{border-color:var(--b2)}
+.qi-pill{font-size:.625rem;font-weight:700;color:var(--t1);background:var(--c4);border:1px solid var(--b2);border-radius:6px;padding:2px 5px;letter-spacing:.04em;flex-shrink:0;font-family:var(--fm)}
+.qi-name{font-size:.78rem;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qi-sub{font-size:.66rem;color:var(--t3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qi-body{flex:1;min-width:0}
+.qi-val{font-size:.78rem;font-weight:800;font-family:var(--fm);text-align:right;font-variant-numeric:tabular-nums;flex-shrink:0}
+.qi-val.up{color:var(--sg)}
+.qi-val.dn{color:var(--rd)}
+.qi-val.warn{color:var(--am)}
+.qi-empty{font-size:.75rem;color:var(--t3);padding:14px;text-align:center;background:var(--c3);border-radius:var(--r1);border:1px dashed var(--b2)}
+.qi-empty.ok{color:var(--sg);background:var(--gd);border-color:var(--gr);border-style:solid}
+
+/* Pitch tile additions (v2.0): price + injury flag */
+.pt-price{font-size:8px;font-weight:700;color:rgba(255,255,255,.85);background:rgba(0,0,0,.35);padding:1px 4px;border-radius:3px;font-family:var(--fm)}
+.pt-flag{position:absolute;top:-4px;left:-6px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;border:2px solid #fff;z-index:3;line-height:1}
+.pt-flag.f-out{background:var(--rd);color:#fff}
+.pt-flag.f-doubt{background:var(--am);color:#fff}
+.pt-flag.f-susp{background:var(--pu);color:#fff}
+
 /* ── PITCH (LiveFPL-inspired) ───────────────────────────── */
 .pitch{
   background:linear-gradient(180deg,#166534 0%,#15803d 18%,#166534 36%,#15803d 54%,#166534 72%,#15803d 90%,#166534 100%);
@@ -884,11 +925,41 @@ select.inp{
   <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
     <div class="ph"><h2>Command Overview</h2><p>Season snapshot &middot; EO analysis &middot; Price movement &middot; Live alerts</p></div>
+    <!-- PROMINENT DEADLINE COUNTDOWN (v2.0) -->
+    <div class="card dl-hero mb-16" aria-live="polite">
+      <div class="dl-hero-l">
+        <div class="dl-hero-lbl"><span class="live-dot"></span>Next deadline &middot; <span id="dl-hero-gw">GW&mdash;</span></div>
+        <div class="dl-hero-when" id="dl-hero-when">&mdash;</div>
+      </div>
+      <div class="dl-hero-r" role="timer" aria-label="Time remaining until deadline">
+        <div class="dl-u"><div class="dl-v" id="cd-bd">--</div><div class="dl-l">Days</div></div>
+        <div class="dl-u"><div class="dl-v" id="cd-bh">--</div><div class="dl-l">Hours</div></div>
+        <div class="dl-u"><div class="dl-v" id="cd-bm">--</div><div class="dl-l">Mins</div></div>
+        <div class="dl-u"><div class="dl-v" id="cd-bs">--</div><div class="dl-l">Secs</div></div>
+      </div>
+    </div>
     <div class="g4 mb-16">
       <div class="kpi"><div class="kpi-l">Total Points</div><div class="kpi-v ca" id="k-pts">&mdash;</div><div class="kpi-d">GW: <span class="up" id="k-gw">&mdash;</span></div></div>
       <div class="kpi"><div class="kpi-l">Overall Rank</div><div class="kpi-v cbl" id="k-rank">&mdash;</div><div class="kpi-d" id="k-rdel">&mdash;</div></div>
       <div class="kpi"><div class="kpi-l">Team Value</div><div class="kpi-v cy" id="k-tv">&pound;&mdash;m</div><div class="kpi-d">ITB: <span class="t2c" id="k-itb">&pound;&mdash;m</span></div></div>
       <div class="kpi"><div class="kpi-l">Free Transfers</div><div class="kpi-v cpu" id="k-ft">&mdash;</div><div class="kpi-d" id="k-chips">&mdash; chips</div></div>
+    </div>
+    <!-- QUICK INTEL (v2.0) -->
+    <div class="card mb-16"><div class="ct">Quick Intel <span class="tag tb">Squad-aware</span></div>
+      <div class="qi-grid" id="qi-grid">
+        <div class="qi-col">
+          <div class="qi-h"><span class="qi-h-ic">&#9888;</span>Squad injuries</div>
+          <div id="qi-inj"><div class="qi-empty">Load your squad to see injury alerts.</div></div>
+        </div>
+        <div class="qi-col">
+          <div class="qi-h"><span class="qi-h-ic" style="color:var(--sg)">&#9650;</span>Risers you don't own</div>
+          <div id="qi-rise"><div class="skel-wrap" role="status" aria-label="Loading risers"><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w60"></span><span class="skel skel-line w40"></span></div><span class="skel-tag" style="width:48px"></span></div><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w50"></span><span class="skel skel-line w30"></span></div><span class="skel-tag" style="width:48px"></span></div><div class="skel-row"><div class="skel-stack"><span class="skel skel-line w70"></span><span class="skel skel-line w40"></span></div><span class="skel-tag" style="width:48px"></span></div></div></div>
+        </div>
+        <div class="qi-col">
+          <div class="qi-h"><span class="qi-h-ic" style="color:var(--rd)">&#9660;</span>Fallers in your squad</div>
+          <div id="qi-fall"><div class="qi-empty">Load your squad to see fallers.</div></div>
+        </div>
+      </div>
     </div>
     <div class="card mb-16" id="gw-actions-card"><div class="ct">This GW — 3 Actions</div><div id="gw-actions"><div class="alitem"><span class="alitem-ic">&#128204;</span><div class="alitem-b">Load your squad to see personalised actions.</div><span class="alitem-t">&mdash;</span></div></div></div>
     <div id="d-alerts" class="mb-16"><div class="al ai"><span class="al-ic">&#8505;</span><div>Enter your FPL Manager ID in <strong>My Squad</strong> to load live data across all panels.</div></div></div>
@@ -1657,6 +1728,8 @@ async function loadBoot(){
     const eg=document.getElementById('eo-gw');if(eg)eg.innerHTML='<span class="tag tg">GW'+S.gw+'</span>';
     rdTgts(d);rdFDR(d);rdCaps(d);rdDiffs(d);rdInj(d);rdPrices(d);rdRot(d);rdTmpl(d);rdSP(d);rdBonus();rdAlerts(d);
     rdSmTgts(d);
+    rdQuickIntel();
+    updateDlHero();
     updateFdrHeaders();
     setTimeout(armSpinnerTimeouts,200);
     return d;
@@ -1695,6 +1768,7 @@ function loadDemo(){
   if(sel)sel.innerHTML=Array.from({length:38},(_,i)=>`<option value="${i+1}"${i+1===29?' selected':''}>${i+1===29?'⚡ ':''}GW ${i+1}</option>`).join('');
   const dtg=document.getElementById('d-tgt-gw');if(dtg)dtg.textContent='GW29';
   const eg=document.getElementById('eo-gw');if(eg)eg.innerHTML='<span class="tag tg">GW29</span>';
+  updateDlHero();
   rdAllDemo();
 }
 function setKPI(id,val,cls=''){const el=document.getElementById(id);if(el){el.textContent=val;if(cls)el.classList.add(cls);}}
@@ -2026,36 +2100,45 @@ function rdPitch(picks){
   const bsMap={};S.bs.elements.forEach(e=>bsMap[e.id]=e);
   const tm={};S.bs.teams.forEach(t=>tm[t.id]=t);
 
+  // Build a player metadata object for the tile (used by both starters + bench)
+  const meta=(pick)=>{
+    const el=bsMap[pick.element]||{};
+    const club=(tm[el.team]||{}).short_name||'?';
+    const tc=TEAM_COLORS[club]||{bg:'#555',tx:'#fff'};
+    let flag=null;
+    if(el.status==='i'||el.status==='o'||el.status==='u')flag='out';
+    else if(el.status==='s')flag='susp';
+    else if(el.status==='d'||el.status==='n')flag='doubt';
+    return {
+      el,name:el.web_name||'?',club,bg:tc.bg,tx:tc.tx,
+      pts:el.event_points||0,
+      isCap:pick.is_captain,isVc:pick.is_vice_captain,
+      own:el.selected_by_percent||'0',
+      price:el.now_cost?(el.now_cost/10).toFixed(1):'—',
+      flag
+    };
+  };
+
   // Split starters (position 1-11) by FPL element type
   const starters=picks.picks.filter(p=>p.position<=11);
   const byPos={1:[],2:[],3:[],4:[]};
   starters.forEach(pick=>{
     const el=bsMap[pick.element]||{};
     const pos=el.element_type||4;
-    const club=(tm[el.team]||{}).short_name||'?';
-    const tc=TEAM_COLORS[club]||{bg:'#555',tx:'#fff'};
-    byPos[pos].push({
-      name:el.web_name||'?',
-      club:club,
-      pts:el.event_points||0,
-      isCap:pick.is_captain,
-      isVc:pick.is_vice_captain,
-      own:el.selected_by_percent||'0',
-      form:el.form||'0.0',
-      bg:tc.bg,
-      tx:tc.tx
-    });
+    byPos[pos].push(meta(pick));
   });
 
+  const flagBadge=f=>f?`<div class="pt-flag f-${f}" aria-label="${f==='out'?'Unavailable':f==='susp'?'Suspended':'Doubt'}">!</div>`:'';
   const tok=p=>`<div class="pt">
     <div class="kit-wrap">
       <div class="kit" style="background:${p.bg};color:${p.tx}">${p.club}</div>
+      ${flagBadge(p.flag)}
       ${p.isCap?'<div class="cap-b">C</div>':''}
       ${p.isVc?'<div class="cap-b vc-b">V</div>':''}
     </div>
     <div class="ptn">${p.name}</div>
     <div class="ptp">${p.pts}</div>
-    <div class="pt-stats"><span class="pt-own">${p.own}%</span><span class="pt-xp">${p.form}</span></div>
+    <div class="pt-stats"><span class="pt-own">${p.own}%</span><span class="pt-price">£${p.price}</span></div>
   </div>`;
 
   let html='<div class="pitch-marks"></div>';
@@ -2068,16 +2151,15 @@ function rdPitch(picks){
   const bench=picks.picks.filter(p=>p.position>11).sort((a,b)=>a.position-b.position);
   if(bench.length){
     const benchToks=bench.map(pick=>{
-      const el=bsMap[pick.element]||{};
-      const club=(tm[el.team]||{}).short_name||'?';
-      const tc=TEAM_COLORS[club]||{bg:'#555',tx:'#fff'};
+      const p=meta(pick);
       return `<div class="pt">
         <div class="kit-wrap">
-          <div class="kit" style="background:${tc.bg};color:${tc.tx}">${club}</div>
+          <div class="kit" style="background:${p.bg};color:${p.tx}">${p.club}</div>
+          ${flagBadge(p.flag)}
         </div>
-        <div class="ptn">${el.web_name||'?'}</div>
-        <div class="ptp">${el.event_points||0}</div>
-        <div class="pt-stats"><span class="pt-own">${el.selected_by_percent||0}%</span><span class="pt-xp">${el.form||'0.0'}</span></div>
+        <div class="ptn">${p.name}</div>
+        <div class="ptp">${p.pts}</div>
+        <div class="pt-stats"><span class="pt-own">${p.own}%</span><span class="pt-price">£${p.price}</span></div>
       </div>`;
     });
     html+=`<div class="bench-section"><div class="bench-label">Bench</div><div class="pr2">${benchToks.join('')}</div></div>`;
@@ -2212,8 +2294,11 @@ async function loadSquad(){
     const [picks,info,hist]=await Promise.all([fplGet(`entry/${id}/event/${gw}/picks/`),fplGet(`entry/${id}/`),fplGet(`entry/${id}/history/`)]);
     const gwh=hist.current;const lat=gwh[gwh.length-1];
     if(lat){
-      setKPI('k-pts',lat.total_points.toLocaleString());setKPI('k-gw',lat.points,'up');
-      setKPI('k-rank',lat.overall_rank.toLocaleString());setKPI('r-cur',lat.overall_rank.toLocaleString());
+      // Animate Total Points and Overall Rank for rank-change feedback
+      animateCounter(document.getElementById('k-pts'), lat.total_points);
+      setKPI('k-gw',lat.points,'up');
+      animateCounter(document.getElementById('k-rank'), lat.overall_rank);
+      animateCounter(document.getElementById('r-cur'), lat.overall_rank);
       S.preGwRank=lat.overall_rank;
       const gap=lat.overall_rank-85000;
       document.getElementById('r-gap').textContent=gap>0?`Gap: ${gap.toLocaleString()}`:'🏆 Top 1%!';
@@ -2234,10 +2319,14 @@ async function loadSquad(){
       }).join('');
       rdSmTgts(S.bs);
     }
+    // Cache picks for squad-aware features (Quick Intel etc.)
+    S.myPicks=picks;
     // Render real formation pitch, season summary, and LiveFPL-style bar
     rdPitch(picks);
     rdSquadSum(info, hist, picks);
     rdLiveBar(info, hist, picks);
+    // Refresh Quick Intel now that we know which players are owned
+    rdQuickIntel();
     // Update pitch header with team name
     const phdr=document.getElementById('pitch-header');
     if(phdr)phdr.innerHTML=`${info.name||'Formation'} <span class="tag tz" style="font-weight:500;text-transform:none;letter-spacing:0">${info.player_first_name||''} ${info.player_last_name||''}</span>`;
@@ -2379,16 +2468,130 @@ function tickCD(){
   const diff=S.deadline-new Date();
   if(diff<=0){
     // Deadline passed — show GW LIVE state instead of 00:00:00
-    ['cd-d','cd-h','cd-m','cd-s'].forEach(id=>{
+    ['cd-d','cd-h','cd-m','cd-s','cd-bd','cd-bh','cd-bm','cd-bs'].forEach(id=>{
       const el=document.getElementById(id);
       if(el)el.textContent='--';
     });
     const dlEl=document.getElementById('sb-dl');
     if(dlEl&&!dlEl.textContent.includes('GW Live'))dlEl.textContent='⚡ GW Live';
+    const heroWhen=document.getElementById('dl-hero-when');
+    if(heroWhen&&!heroWhen.textContent.includes('GW Live'))heroWhen.textContent='⚡ GW Live';
     return;
   }
   const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s2=Math.floor((diff%60000)/1000);
-  [['cd-d',d],['cd-h',h],['cd-m',m],['cd-s',s2]].forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=String(v).padStart(2,'0');});
+  [['cd-d',d],['cd-h',h],['cd-m',m],['cd-s',s2],
+   ['cd-bd',d],['cd-bh',h],['cd-bm',m],['cd-bs',s2]].forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=String(v).padStart(2,'0');});
+}
+
+// ── DEADLINE HERO TEXT (v2.0) ────────────────────────────────
+function updateDlHero(){
+  const gwEl=document.getElementById('dl-hero-gw');
+  const whenEl=document.getElementById('dl-hero-when');
+  if(gwEl&&S.gw)gwEl.textContent='GW'+S.gw;
+  if(whenEl&&S.deadline)whenEl.textContent=S.deadline.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+}
+
+// ── ANIMATED RANK COUNTER (v2.0) ─────────────────────────────
+// Counts the displayed rank up or down to its target value over ~1.2s.
+// Respects prefers-reduced-motion.
+function animateCounter(el, target, opts){
+  if(!el)return;
+  opts=opts||{};
+  const fmt=opts.fmt||(v=>Math.round(v).toLocaleString());
+  const dur=opts.dur||1200;
+  const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduced){el.textContent=fmt(target);return;}
+  const startTxt=(el.textContent||'').replace(/[^\d.-]/g,'');
+  const start=parseFloat(startTxt)||target;
+  if(start===target){el.textContent=fmt(target);return;}
+  const t0=performance.now();
+  function step(t){
+    const p=Math.min(1,(t-t0)/dur);
+    const eased=1-Math.pow(1-p,3); // easeOutCubic
+    const cur=start+(target-start)*eased;
+    el.textContent=fmt(cur);
+    if(p<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ── QUICK INTEL (v2.0) ───────────────────────────────────────
+// Top 3 squad injuries / top 3 risers you don't own / top 3 fallers in your squad.
+// Uses S.bs (bootstrap-static) + S.picks (current squad). Squad-aware sections
+// gracefully fall back to instructional empty states when no squad is loaded.
+function rdQuickIntel(){
+  if(!S.bs)return;
+  const tm={};S.bs.teams.forEach(t=>tm[t.id]=t);
+  const ownedIds=new Set((S.myPicks?.picks||[]).map(p=>p.element));
+
+  // 1. Squad injuries — players you own with status !== 'a'
+  const injEl=document.getElementById('qi-inj');
+  if(injEl){
+    if(!ownedIds.size){
+      injEl.innerHTML='<div class="qi-empty">Load your squad to see injury alerts.</div>';
+    }else{
+      const hurt=S.bs.elements
+        .filter(e=>ownedIds.has(e.id)&&e.status!=='a')
+        .sort((a,b)=>{
+          const rank={i:0,o:0,s:1,d:2,u:3,n:4};
+          return (rank[a.status]??9)-(rank[b.status]??9);
+        })
+        .slice(0,3);
+      if(!hurt.length){
+        injEl.innerHTML='<div class="qi-empty ok">No injury concerns. Squad is healthy.</div>';
+      }else{
+        injEl.innerHTML=hurt.map(e=>{
+          const cl=(tm[e.team]||{}).short_name||'—';
+          const stMap={i:{lbl:'Injured',cls:'dn'},o:{lbl:'Out',cls:'dn'},s:{lbl:'Suspended',cls:'warn'},d:{lbl:'Doubt',cls:'warn'},u:{lbl:'Unavailable',cls:'dn'},n:{lbl:'Not in squad',cls:'warn'}};
+          const st=stMap[e.status]||{lbl:'Doubt',cls:'warn'};
+          const cop=e.chance_of_playing_next_round;
+          const cText=(cop===0||cop)?cop+'%':st.lbl;
+          const news=e.news?e.news.length>56?e.news.slice(0,53)+'…':e.news:st.lbl;
+          return `<div class="qi-row"><span class="qi-pill">${cl}</span><div class="qi-body"><div class="qi-name">${e.web_name}</div><div class="qi-sub">${news}</div></div><div class="qi-val ${st.cls}">${cText}</div></div>`;
+        }).join('');
+      }
+    }
+  }
+
+  // 2. Risers you don't own — biggest cost_change_event among non-owned
+  const riseEl=document.getElementById('qi-rise');
+  if(riseEl){
+    const risers=S.bs.elements
+      .filter(e=>e.cost_change_event>0&&!ownedIds.has(e.id))
+      .sort((a,b)=>(b.cost_change_event-a.cost_change_event)||(b.transfers_in_event-a.transfers_in_event))
+      .slice(0,3);
+    if(!risers.length){
+      riseEl.innerHTML='<div class="qi-empty">No price risers right now.</div>';
+    }else{
+      riseEl.innerHTML=risers.map(e=>{
+        const cl=(tm[e.team]||{}).short_name||'—';
+        const ch=(e.cost_change_event/10).toFixed(1);
+        return `<div class="qi-row"><span class="qi-pill">${cl}</span><div class="qi-body"><div class="qi-name">${e.web_name}</div><div class="qi-sub">£${(e.now_cost/10).toFixed(1)}m · ${e.selected_by_percent}% own</div></div><div class="qi-val up">▲ ${ch}</div></div>`;
+      }).join('');
+    }
+  }
+
+  // 3. Fallers in your squad — players you own with cost_change_event < 0
+  const fallEl=document.getElementById('qi-fall');
+  if(fallEl){
+    if(!ownedIds.size){
+      fallEl.innerHTML='<div class="qi-empty">Load your squad to see fallers.</div>';
+    }else{
+      const fallers=S.bs.elements
+        .filter(e=>ownedIds.has(e.id)&&e.cost_change_event<0)
+        .sort((a,b)=>a.cost_change_event-b.cost_change_event)
+        .slice(0,3);
+      if(!fallers.length){
+        fallEl.innerHTML='<div class="qi-empty ok">No fallers in your squad.</div>';
+      }else{
+        fallEl.innerHTML=fallers.map(e=>{
+          const cl=(tm[e.team]||{}).short_name||'—';
+          const ch=Math.abs(e.cost_change_event/10).toFixed(1);
+          return `<div class="qi-row"><span class="qi-pill">${cl}</span><div class="qi-body"><div class="qi-name">${e.web_name}</div><div class="qi-sub">£${(e.now_cost/10).toFixed(1)}m · sell now to lock in</div></div><div class="qi-val dn">▼ ${ch}</div></div>`;
+        }).join('');
+      }
+    }
+  }
 }
 
 
